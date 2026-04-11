@@ -56,29 +56,31 @@ export default function Admin() {
 function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
   const [liveTrips, setLiveTrips] = useState([]);
   const [allTrips, setAllTrips] = useState([]);
+  const [completedTrips, setCompletedTrips] = useState([]);
   const [allCrossings, setAllCrossings] = useState([]);
   const [tripCrossings, setTripCrossings] = useState([]);
   const [selectedTripId, setSelectedTripId] = useState(null);
   const [stats, setStats] = useState(null);
 
   async function loadData() {
-    const [live, all, crossings] = await Promise.all([
+    const [live, all, completed, crossings] = await Promise.all([
       supabase.from('live_trips').select('*').eq('is_active', true).order('updated_at', { ascending: false }),
       supabase.from('live_trips').select('*').order('created_at', { ascending: false }).limit(50),
+      supabase.from('trips').select('*').order('created_at', { ascending: false }).limit(50),
       supabase.from('live_crossings').select('*').order('crossed_at', { ascending: false }).limit(100),
     ]);
     setLiveTrips(live.data || []);
     setAllTrips(all.data || []);
+    setCompletedTrips(completed.data || []);
     setAllCrossings(crossings.data || []);
 
-    // Stats
-    const trips = all.data || [];
-    const cx = crossings.data || [];
-    const drivers = [...new Set(trips.map(t => t.driver))];
-    const totalCost = trips.reduce((s, t) => s + (t.total_cost || 0), 0);
-    const totalTolls = trips.reduce((s, t) => s + (t.toll_count || 0), 0);
+    // Stats combinados
+    const cTrips = completed.data || [];
+    const drivers = [...new Set(cTrips.map(t => t.driver))];
+    const totalCost = cTrips.reduce((s, t) => s + (t.total_cost || 0), 0);
+    const totalTolls = cTrips.reduce((s, t) => s + (t.toll_count || 0), 0);
     setStats({
-      totalTrips: trips.length,
+      totalTrips: cTrips.length,
       activeTrips: (live.data || []).length,
       drivers: drivers.length,
       driverList: drivers,
@@ -228,44 +230,69 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
           </div>
         )}
 
-        {/* TAB: Viajes */}
+        {/* TAB: Viajes (completados en Supabase) */}
         {tab === 'trips' && (
           <div className="flex flex-col gap-2">
-            {allTrips.map(t => (
-              <button
-                key={t.id}
-                onClick={() => setSelectedTripId(selectedTripId === t.id ? null : t.id)}
-                className={`text-left rounded-xl p-4 transition-colors ${selectedTripId === t.id ? 'bg-primary/20' : 'bg-cream/5'}`}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-sm">
-                      {t.driver}
-                      <span className={`ml-2 text-xs ${t.is_active ? 'text-green-400' : 'text-tierra'}`}>
-                        {t.is_active ? 'ACTIVO' : 'terminado'}
-                      </span>
-                    </p>
-                    <p className="text-xs text-tierra mt-0.5">
-                      {formatDate(t.created_at)} &middot; {formatTime(t.created_at)}
-                    </p>
+            {completedTrips.length === 0 && (
+              <p className="text-center text-tierra text-sm py-4">
+                Los viajes aparecerán aquí cuando alguien presione "Detener viaje" (versión nueva)
+              </p>
+            )}
+            {completedTrips.map(t => {
+              const cx = t.crossings || [];
+              const isOpen = selectedTripId === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setSelectedTripId(isOpen ? null : t.id)}
+                  className={`text-left rounded-xl p-4 transition-colors ${isOpen ? 'bg-primary/20' : 'bg-cream/5'}`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium text-sm">{t.driver}</p>
+                      <p className="text-xs text-tierra mt-0.5">
+                        {formatDate(t.start_time)} &middot; {formatTime(t.start_time)} – {formatTime(t.end_time)}
+                      </p>
+                      <p className="text-xs text-tierra mt-0.5">
+                        {(t.routes || []).join(' → ')}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-primary text-sm">{formatCLP(t.total_cost || 0)}</p>
+                      <p className="text-xs text-tierra">{t.toll_count || 0} peajes</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-primary text-sm">{formatCLP(t.total_cost || 0)}</p>
-                    <p className="text-xs text-tierra">{t.toll_count || 0} peajes</p>
+                  {isOpen && cx.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {cx.map((c, i) => (
+                        <div key={i} className="flex justify-between text-xs bg-cream/5 rounded-lg px-3 py-2">
+                          <span>
+                            {c.tollNombre} <span className="text-tierra">({c.tollRuta})</span>
+                            <span className="text-tierra ml-1">{formatTime(c.timestamp)}</span>
+                          </span>
+                          <span className="text-primary font-medium">{formatCLP(c.tarifa)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+
+            {/* Live trips section */}
+            {allTrips.length > 0 && (
+              <>
+                <p className="text-xs text-tierra mt-4 mb-1 font-medium">Viajes en vivo (live_trips)</p>
+                {allTrips.map(t => (
+                  <div key={t.id} className="bg-cream/5 rounded-xl p-3 text-xs">
+                    <div className="flex justify-between">
+                      <span>{t.driver} <span className={t.is_active ? 'text-green-400' : 'text-tierra'}>{t.is_active ? 'ACTIVO' : 'fin'}</span></span>
+                      <span className="text-primary">{formatCLP(t.total_cost || 0)} &middot; {t.toll_count || 0} peajes</span>
+                    </div>
                   </div>
-                </div>
-                {selectedTripId === t.id && tripCrossings.length > 0 && (
-                  <div className="mt-3 flex flex-col gap-1.5">
-                    {tripCrossings.map(c => (
-                      <div key={c.id} className="flex justify-between text-xs bg-cream/5 rounded-lg px-3 py-2">
-                        <span>{c.toll_nombre} <span className="text-tierra">({c.toll_ruta})</span></span>
-                        <span className="text-primary font-medium">{formatCLP(c.tarifa)}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </button>
-            ))}
+                ))}
+              </>
+            )}
           </div>
         )}
 

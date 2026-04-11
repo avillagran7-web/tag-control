@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { getTarifa } from '../lib/pricing';
 import { saveTrip } from '../lib/storage';
+import { supabase } from '../lib/supabase';
 
 export function useTrip() {
   const [isActive, setIsActive] = useState(false);
@@ -25,7 +26,7 @@ export function useTrip() {
     if (prev.length > 0) {
       const totalCost = prev.reduce((sum, c) => sum + getTarifa(c.toll, new Date(c.timestamp)), 0);
       const routes = [...new Set(prev.map((c) => c.toll.ruta))];
-      saveTrip({
+      const tripData = {
         id: Date.now().toString(),
         driver: driver || 'Sin nombre',
         startTime: startTime || prev[0].timestamp,
@@ -40,6 +41,23 @@ export function useTrip() {
         totalCost,
         tollCount: prev.length,
         routes,
+      };
+
+      // Guardar local
+      saveTrip(tripData);
+
+      // Guardar en Supabase
+      supabase.from('trips').insert({
+        id: tripData.id,
+        driver: tripData.driver,
+        start_time: new Date(tripData.startTime).toISOString(),
+        end_time: new Date(tripData.endTime).toISOString(),
+        total_cost: tripData.totalCost,
+        toll_count: tripData.tollCount,
+        routes: tripData.routes,
+        crossings: tripData.crossings,
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase save error:', error.message);
       });
     }
     setIsActive(false);
