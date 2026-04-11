@@ -6,6 +6,7 @@ import { formatCLP } from '../lib/format';
 import { playTollSound, initAudio } from '../lib/sound';
 import { upsertLiveTrip, insertLiveCrossing, endLiveTrip } from '../lib/liveTracking';
 import { inferMissingTolls } from '../lib/inference';
+import { supabase } from '../lib/supabase';
 import TollChip from '../components/TollChip';
 import { useUser } from '../App';
 
@@ -14,6 +15,32 @@ export default function Home() {
   const trip = useTrip();
   const wakeLockRef = useRef(null);
   const tripIdRef = useRef(null);
+  const [budget, setBudget] = useState(null); // { monthly_limit, spent }
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
+
+  // Cargar meta y gasto del mes
+  useEffect(() => {
+    async function loadBudget() {
+      try {
+        const { data: b } = await supabase.from('budgets').select('*').eq('user_name', user.name).single();
+        const now = new Date();
+        const { data: trips } = await supabase.from('trips').select('total_cost,start_time').eq('driver', user.name);
+        const monthSpent = (trips || [])
+          .filter(t => { const d = new Date(t.start_time); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); })
+          .reduce((s, t) => s + (t.total_cost || 0), 0);
+        setBudget({ monthly_limit: b?.monthly_limit || 0, spent: monthSpent });
+      } catch { setBudget({ monthly_limit: 0, spent: 0 }); }
+    }
+    loadBudget();
+  }, [user.name, trip.isActive]);
+
+  const saveBudget = async () => {
+    const amount = parseInt(budgetInput) || 0;
+    await supabase.from('budgets').upsert({ user_name: user.name, monthly_limit: amount, updated_at: new Date().toISOString() });
+    setBudget(prev => ({ ...prev, monthly_limit: amount }));
+    setEditingBudget(false);
+  };
 
   const handleTollCrossed = useCallback(
     (crossing) => {
@@ -157,6 +184,52 @@ export default function Home() {
             Detecta automáticamente cada peaje que cruzas
           </p>
         </div>
+
+        {/* Meta de gasto mensual */}
+        {budget && (
+          <div className="bg-surface-secondary rounded-2xl p-5">
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-[13px] font-semibold text-text-secondary uppercase tracking-wide">Este mes</p>
+              <button
+                onClick={() => { setEditingBudget(!editingBudget); setBudgetInput(budget.monthly_limit > 0 ? String(budget.monthly_limit) : ''); }}
+                className="text-[12px] text-primary font-medium"
+              >
+                {budget.monthly_limit > 0 ? 'Editar meta' : 'Fijar meta'}
+              </button>
+            </div>
+            <p className="text-[28px] font-bold text-text tracking-tight">{formatCLP(budget.spent)}</p>
+            {budget.monthly_limit > 0 && (
+              <>
+                <div className="flex justify-between text-[12px] text-text-tertiary mt-2 mb-1">
+                  <span>{Math.round((budget.spent / budget.monthly_limit) * 100)}% usado</span>
+                  <span>Meta: {formatCLP(budget.monthly_limit)}</span>
+                </div>
+                <div className="w-full bg-surface-tertiary rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${budget.spent > budget.monthly_limit ? 'bg-danger' : budget.spent > budget.monthly_limit * 0.8 ? 'bg-yellow-500' : 'bg-primary'}`}
+                    style={{ width: `${Math.min((budget.spent / budget.monthly_limit) * 100, 100)}%` }}
+                  />
+                </div>
+                {budget.spent > budget.monthly_limit && (
+                  <p className="text-[12px] text-danger mt-1">Excediste tu meta por {formatCLP(budget.spent - budget.monthly_limit)}</p>
+                )}
+              </>
+            )}
+            {editingBudget && (
+              <div className="mt-3 flex gap-2">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={budgetInput}
+                  onChange={(e) => setBudgetInput(e.target.value)}
+                  placeholder="Ej: 50000"
+                  className="flex-1 bg-surface rounded-xl px-3 py-2 text-[15px] text-text border border-surface-tertiary focus:outline-none focus:border-primary"
+                />
+                <button onClick={saveBudget} className="px-4 py-2 bg-primary text-white rounded-xl text-[14px] font-semibold">OK</button>
+              </div>
+            )}
+          </div>
+        )}
 
         <button
           onClick={handleToggleTrip}

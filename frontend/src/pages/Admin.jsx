@@ -54,6 +54,9 @@ export default function Admin() {
 }
 
 function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
+  const [dark, setDark] = useState(() => {
+    try { return localStorage.getItem('admin_theme') !== 'light'; } catch { return true; }
+  });
   const [liveTrips, setLiveTrips] = useState([]);
   const [allTrips, setAllTrips] = useState([]);
   const [completedTrips, setCompletedTrips] = useState([]);
@@ -62,6 +65,18 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
   const [expandedLiveTrip, setExpandedLiveTrip] = useState(null);
   const [users, setUsers] = useState([]);
   const [tripCrossings, setTripCrossings] = useState([]);
+
+  const toggleTheme = () => {
+    const next = !dark;
+    setDark(next);
+    try { localStorage.setItem('admin_theme', next ? 'dark' : 'light'); } catch {}
+  };
+
+  const bg = dark ? 'bg-[#111]' : 'bg-white';
+  const text = dark ? 'text-white' : 'text-[#212529]';
+  const textSec = dark ? 'text-[#6C757D]' : 'text-[#6C757D]';
+  const card = dark ? 'bg-white/5' : 'bg-[#F8F9FA]';
+  const border = dark ? 'border-white/10' : 'border-[#E9ECEF]';
   const [selectedTripId, setSelectedTripId] = useState(null);
   const [stats, setStats] = useState(null);
 
@@ -287,20 +302,35 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
   ];
 
   return (
-    <div className="min-h-screen bg-negro text-cream">
+    <div className="min-h-screen transition-colors" style={{
+      background: dark ? '#111' : '#FFFFFF',
+      color: dark ? '#F0F0F0' : '#212529',
+      '--admin-card': dark ? 'rgba(255,255,255,0.05)' : '#F8F9FA',
+      '--admin-border': dark ? 'rgba(255,255,255,0.1)' : '#E9ECEF',
+      '--admin-text-sec': dark ? '#6C757D' : '#6C757D',
+    }}>
       {/* Header */}
-      <div className="bg-negro border-b border-cream/10 px-4 py-3 flex items-center justify-between">
-        <span className="font-bold">Admin — Tag Control</span>
-        <div className="flex gap-1">
-          {tabs.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium ${tab === t.id ? 'bg-primary text-cream' : 'text-tierra'}`}
-            >
-              {t.label}
-            </button>
-          ))}
+      <div className={`${bg} border-b ${border} px-4 py-3 flex items-center justify-between sticky top-0 z-50`}>
+        <span className="font-bold text-sm">Admin</span>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {tabs.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${tab === t.id ? 'bg-primary text-white' : textSec}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <button onClick={toggleTheme} className={`p-1.5 rounded-lg ${card}`}>
+            {dark ? (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            )}
+          </button>
         </div>
       </div>
 
