@@ -1,0 +1,134 @@
+{
+  "tolls": [
+    {
+      "id": "ruta68-el-abrazo",
+      "nombre": "El Abrazo (Casablanca)",
+      "ruta": "Ruta 68",
+      "tarifa_semana": 1800,
+      "tarifa_finde": 2700,
+      "lat": -33.3156,
+      "lng": -71.4187,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "ruta68-la-polvora",
+      "nombre": "La Pólvora (Curacaví)",
+      "ruta": "Ruta 68",
+      "tarifa_semana": 1600,
+      "tarifa_finde": 2400,
+      "lat": -33.3891,
+      "lng": -71.1423,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "ruta68-lo-prado",
+      "nombre": "Lo Prado",
+      "ruta": "Ruta 68",
+      "tarifa_semana": 2100,
+      "tarifa_finde": 3200,
+      "lat": -33.4612,
+      "lng": -70.8734,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "ruta68-pudahuel",
+      "nombre": "Pudahuel",
+      "ruta": "Ruta 68",
+      "tarifa_semana": 1500,
+      "tarifa_finde": 2300,
+      "lat": -33.4401,
+      "lng": -70.7891,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "costanera-acceso-autopista",
+      "nombre": "Acceso Autopista (entrada)",
+      "ruta": "Costanera Norte",
+      "tarifa_semana": 2300,
+      "tarifa_finde": 2300,
+      "lat": -33.4123,
+      "lng": -70.6234,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "costanera-los-leones",
+      "nombre": "Acceso Los Leones",
+      "ruta": "Costanera Norte",
+      "tarifa_semana": 1900,
+      "tarifa_finde": 1900,
+      "lat": -33.4198,
+      "lng": -70.5912,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "costanera-einstein",
+      "nombre": "Acceso Einstein / Kennedy",
+      "ruta": "Costanera Norte",
+      "tarifa_semana": 1600,
+      "tarifa_finde": 1600,
+      "lat": -33.3987,
+      "lng": -70.5687,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-norte-pio-nono",
+      "nombre": "Acceso Pío Nono",
+      "ruta": "Vespucio Norte Express",
+      "tarifa_semana": 1200,
+      "tarifa_finde": 1200,
+      "lat": -33.4234,
+      "lng": -70.6512,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-norte-independencia",
+      "nombre": "Acceso Independencia",
+      "ruta": "Vespucio Norte Express",
+      "tarifa_semana": 1400,
+      "tarifa_finde": 1400,
+      "lat": -33.4056,
+      "lng": -70.6789,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-norte-el-salto",
+      "nombre": "Acceso El Salto",
+      "ruta": "Vespucio Norte Express",
+      "tarifa_semana": 1300,
+      "tarifa_finde": 1300,
+      "lat": -33.3845,
+      "lng": -70.6234,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-sur-miraflores",
+      "nombre": "Acceso Miraflores",
+      "ruta": "Vespucio Sur",
+      "tarifa_semana": 1500,
+      "tarifa_finde": 1500,
+      "lat": -33.4678,
+      "lng": -70.6234,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-sur-la-florida",
+      "nombre": "Acceso La Florida",
+      "ruta": "Vespucio Sur",
+      "tarifa_semana": 1300,
+      "tarifa_finde": 1300,
+      "lat": -33.5012,
+      "lng": -70.5987,
+      "radio_deteccion_m": 150
+    },
+    {
+      "id": "vespucio-sur-departamental",
+      "nombre": "Acceso Departamental",
+      "ruta": "Vespucio Sur",
+      "tarifa_semana": 1200,
+      "tarifa_finde": 1200,
+      "lat": -33.4823,
+      "lng": -70.6012,
+      "radio_deteccion_m": 150
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "routes": [
+    {
+      "id": "algarrobo-santiago",
+      "origen": "Algarrobo",
+      "destino": "Santiago Centro",
+      "distancia_km": 120,
+      "tiempo_min": 95,
+      "via": "Ruta 68 + Costanera Norte",
+      "peajes": ["ruta68-el-abrazo", "ruta68-la-polvora", "ruta68-lo-prado", "ruta68-pudahuel"]
+    },
+    {
+      "id": "algarrobo-santiago-vespucio",
+      "origen": "Algarrobo",
+      "destino": "Santiago (Vespucio Norte)",
+      "distancia_km": 125,
+      "tiempo_min": 100,
+      "via": "Ruta 68 + Vespucio Norte",
+      "peajes": ["ruta68-el-abrazo", "ruta68-la-polvora", "ruta68-lo-prado", "ruta68-pudahuel", "vespucio-norte-pio-nono"]
+    },
+    {
+      "id": "santiago-algarrobo",
+      "origen": "Santiago Centro",
+      "destino": "Algarrobo",
+      "distancia_km": 120,
+      "tiempo_min": 90,
+      "via": "Costanera Norte + Ruta 68",
+      "peajes": ["ruta68-pudahuel", "ruta68-lo-prado", "ruta68-la-polvora", "ruta68-el-abrazo"]
+    },
+    {
+      "id": "algarrobo-lascondes",
+      "origen": "Algarrobo",
+      "destino": "Las Condes",
+      "distancia_km": 130,
+      "tiempo_min": 105,
+      "via": "Ruta 68 + Costanera Norte",
+      "peajes": ["ruta68-el-abrazo", "ruta68-la-polvora", "ruta68-lo-prado", "ruta68-pudahuel", "costanera-acceso-autopista", "costanera-los-leones"]
+    },
+    {
+      "id": "algarrobo-laflorida",
+      "origen": "Algarrobo",
+      "destino": "La Florida",
+      "distancia_km": 140,
+      "tiempo_min": 115,
+      "via": "Ruta 68 + Vespucio Sur",
+      "peajes": ["ruta68-el-abrazo", "ruta68-la-polvora", "ruta68-lo-prado", "ruta68-pudahuel", "vespucio-sur-miraflores", "vespucio-sur-la-florida"]
+    },
+    {
+      "id": "santiago-vina",
+      "origen": "Santiago Centro",
+      "destino": "Viña del Mar",
+      "distancia_km": 120,
+      "tiempo_min": 85,
+      "via": "Ruta 68",
+      "peajes": ["ruta68-pudahuel", "ruta68-lo-prado", "ruta68-la-polvora", "ruta68-el-abrazo"]
+    }
+  ]
+}
