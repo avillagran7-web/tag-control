@@ -2,6 +2,7 @@ import { useEffect, useCallback, useRef } from 'react';
 import { useGPS } from '../hooks/useGPS';
 import { useTrip } from '../hooks/useTrip';
 import { getTarifaLabel } from '../lib/pricing';
+import { playTollSound, initAudio } from '../lib/sound';
 import TollChip from '../components/TollChip';
 
 function formatCLP(amount) {
@@ -16,6 +17,7 @@ export default function Home() {
     (crossing) => {
       if (!trip.isActive) return;
       trip.addCrossing(crossing);
+      playTollSound();
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     },
     [trip.isActive, trip.addCrossing]
@@ -50,6 +52,7 @@ export default function Home() {
       gps.stopTracking();
       trip.endTrip();
     } else {
+      initAudio(); // Desbloquear audio en Safari iOS (requiere gesto del usuario)
       trip.startTrip();
       gps.startTracking();
     }
