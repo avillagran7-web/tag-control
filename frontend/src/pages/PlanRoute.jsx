@@ -94,7 +94,7 @@ export default function PlanRoute() {
   return (
     <div className="flex flex-col gap-4 p-4 pb-24">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-bold text-negro">Planificar ruta</h1>
+        <h1 className="text-lg font-bold text-text">Planificar ruta</h1>
         <span className="text-xs bg-primary-light text-primary px-2 py-1 rounded-full font-medium">
           {tarifaLabel}
         </span>
@@ -103,21 +103,21 @@ export default function PlanRoute() {
       {/* Inputs con autocomplete */}
       <div className="flex flex-col gap-3">
         <div>
-          <label className="text-xs font-medium text-tierra mb-1 block">Origen</label>
+          <label className="text-xs font-medium text-text-secondary mb-1 block">Origen</label>
           <input
             ref={originRef}
             type="text"
             placeholder="Ej: Algarrobo"
-            className="w-full bg-cream-dark border border-cream-dark rounded-xl px-4 py-3 text-sm text-negro placeholder-hongo focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="w-full bg-surface-secondary border border-surface-tertiary rounded-xl px-4 py-3 text-sm text-text placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-tierra mb-1 block">Destino</label>
+          <label className="text-xs font-medium text-text-secondary mb-1 block">Destino</label>
           <input
             ref={destRef}
             type="text"
             placeholder="Ej: Santiago Centro"
-            className="w-full bg-cream-dark border border-cream-dark rounded-xl px-4 py-3 text-sm text-negro placeholder-hongo focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="w-full bg-surface-secondary border border-surface-tertiary rounded-xl px-4 py-3 text-sm text-text placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
       </div>
@@ -126,10 +126,10 @@ export default function PlanRoute() {
       <button
         onClick={handleSearch}
         disabled={loading}
-        className={`w-full py-3.5 rounded-xl font-semibold text-cream transition-colors ${
+        className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors ${
           loading
             ? 'bg-tierra/40'
-            : 'bg-negro active:bg-negro/80'
+            : 'bg-text active:bg-text/80'
         }`}
       >
         {loading ? 'Calculando ruta...' : 'Calcular peajes'}
@@ -138,7 +138,7 @@ export default function PlanRoute() {
       {/* Rutas rápidas */}
       {!routes && !loading && (
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-medium text-tierra px-1">Rutas frecuentes</p>
+          <p className="text-xs font-medium text-text-secondary px-1">Rutas frecuentes</p>
           {quickRoutes.map((qr) => (
             <button
               key={qr.label}
@@ -148,9 +148,9 @@ export default function PlanRoute() {
                 if (originRef.current) originRef.current.value = qr.from;
                 if (destRef.current) destRef.current.value = qr.to;
               }}
-              className="bg-cream-dark rounded-xl px-4 py-3 text-left active:bg-cream-dark/70 transition-colors"
+              className="bg-surface-secondary rounded-xl px-4 py-3 text-left active:bg-surface-secondary/70 transition-colors"
             >
-              <p className="text-sm font-medium text-negro">{qr.label}</p>
+              <p className="text-sm font-medium text-text">{qr.label}</p>
             </button>
           ))}
         </div>
@@ -166,8 +166,8 @@ export default function PlanRoute() {
       {/* Loading spinner */}
       {loading && (
         <div className="text-center py-6">
-          <div className="w-10 h-10 mx-auto border-4 border-cream-dark border-t-primary rounded-full animate-spin" />
-          <p className="text-sm text-tierra mt-3">Consultando Google Maps...</p>
+          <div className="w-10 h-10 mx-auto border-4 border-surface-tertiary border-t-primary rounded-full animate-spin" />
+          <p className="text-sm text-text-secondary mt-3">Consultando Google Maps...</p>
         </div>
       )}
 
@@ -180,8 +180,8 @@ export default function PlanRoute() {
               onClick={() => setSelectedIdx(i)}
               className={`shrink-0 rounded-xl px-4 py-2 text-xs font-medium transition-colors ${
                 i === selectedIdx
-                  ? 'bg-negro text-cream'
-                  : 'bg-cream-dark text-tierra'
+                  ? 'bg-text text-white'
+                  : 'bg-surface-secondary text-text-secondary'
               }`}
             >
               <p>{route.summary || `Ruta ${i + 1}`}</p>
@@ -195,17 +195,17 @@ export default function PlanRoute() {
       {selected && (
         <>
           {/* Card resumen */}
-          <div className="bg-negro rounded-2xl p-5 text-cream">
-            <p className="text-sm text-tierra mb-1">Costo estimado en peajes</p>
+          <div className="bg-text rounded-2xl p-5 text-white">
+            <p className="text-sm text-text-secondary mb-1">Costo estimado en peajes</p>
             <p className="text-4xl font-bold tracking-tight">{formatCLP(selected.totalCost)}</p>
-            <div className="flex gap-4 mt-3 text-sm text-tierra">
+            <div className="flex gap-4 mt-3 text-sm text-text-secondary">
               <span>{selected.distance.text}</span>
               <span>&middot;</span>
               <span>{selected.duration.text}</span>
               <span>&middot;</span>
               <span>{selected.tolls.length} peajes</span>
             </div>
-            <p className="text-xs text-hongo mt-2">
+            <p className="text-xs text-text-tertiary mt-2">
               Vía {selected.summary} &middot; Tarifa {tarifaLabel.toLowerCase()}
             </p>
           </div>
@@ -213,18 +213,18 @@ export default function PlanRoute() {
           {/* Desglose */}
           {selected.tolls.length > 0 ? (
             <div className="flex flex-col gap-2">
-              <h2 className="text-sm font-semibold text-negro px-1">Desglose de peajes</h2>
+              <h2 className="text-sm font-semibold text-text px-1">Desglose de peajes</h2>
               {selected.tolls.map((toll, i) => (
                 <div
                   key={toll.id}
-                  className="flex items-center gap-3 bg-cream-dark rounded-xl px-4 py-3"
+                  className="flex items-center gap-3 bg-surface-secondary rounded-xl px-4 py-3"
                 >
                   <div className="w-7 h-7 bg-primary-light rounded-full flex items-center justify-center shrink-0">
                     <span className="text-xs font-bold text-primary">{i + 1}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-negro text-sm truncate">{toll.nombre}</p>
-                    <p className="text-xs text-tierra">{toll.ruta}</p>
+                    <p className="font-medium text-text text-sm truncate">{toll.nombre}</p>
+                    <p className="text-xs text-text-secondary">{toll.ruta}</p>
                   </div>
                   <span className="font-semibold text-primary shrink-0">
                     {formatCLP(getTarifa(toll))}
@@ -240,10 +240,10 @@ export default function PlanRoute() {
 
           {/* Ida y vuelta */}
           {selected.tolls.length > 0 && (
-            <div className="bg-cream-dark rounded-xl p-4">
+            <div className="bg-surface-secondary rounded-xl p-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-tierra">Ida y vuelta (estimado)</span>
-                <span className="font-bold text-negro">{formatCLP(selected.totalCost * 2)}</span>
+                <span className="text-sm text-text-secondary">Ida y vuelta (estimado)</span>
+                <span className="font-bold text-text">{formatCLP(selected.totalCost * 2)}</span>
               </div>
             </div>
           )}
@@ -257,7 +257,7 @@ export default function PlanRoute() {
               if (originRef.current) originRef.current.value = '';
               if (destRef.current) destRef.current.value = '';
             }}
-            className="w-full py-3 rounded-xl text-sm text-tierra border border-cream-dark active:bg-cream-dark transition-colors"
+            className="w-full py-3 rounded-xl text-sm text-text-secondary border border-surface-tertiary active:bg-surface-secondary transition-colors"
           >
             Buscar otra ruta
           </button>

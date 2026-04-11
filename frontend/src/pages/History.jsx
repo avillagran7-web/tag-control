@@ -202,7 +202,8 @@ export default function History() {
 
   function handleClear() {
     clearTrips();
-    setAllTrips((prev) => prev.filter((t) => t._source === 'cloud'));
+    // Recargar solo desde Supabase (local se borró)
+    setAllTrips((prev) => prev.filter((t) => t.id && !t.id.startsWith('local-')));
     setShowConfirmClear(false);
   }
 }

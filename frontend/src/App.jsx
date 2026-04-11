@@ -43,7 +43,7 @@ const navItems = [
   },
   {
     to: '/planificar',
-    label: 'Planificar',
+    label: 'Rutas',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -66,15 +66,19 @@ function AppShell({ user, logout }) {
     <UserContext.Provider value={{ user, logout }}>
       <div className="max-w-[430px] mx-auto min-h-screen bg-surface flex flex-col relative shadow-2xl">
         {/* Header Apple-style */}
-        <header className="bg-surface/80 backdrop-blur-xl border-b border-surface-tertiary/50 px-5 py-3 flex items-center justify-between sticky top-0 z-40">
+        <header className="bg-surface/80 backdrop-blur-xl border-b border-surface-tertiary/50 px-5 py-3 flex items-center justify-between sticky top-0 z-40" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
               <span className="text-white text-sm font-bold">TC</span>
             </div>
             <span className="font-semibold text-text text-[17px] tracking-tight">Tag Control</span>
           </div>
-          <button onClick={logout} className="text-[13px] text-text-secondary active:text-primary transition-colors">
+          <button
+            onClick={() => { if (window.confirm('¿Cerrar sesión?')) logout(); }}
+            className="text-[13px] text-text-secondary active:text-primary transition-colors flex items-center gap-1"
+          >
             {user.name}
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
           </button>
         </header>
 
@@ -90,8 +94,8 @@ function AppShell({ user, logout }) {
         </main>
 
         {/* Tab bar Apple-style */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-xl border-t border-surface-tertiary/50">
-          <div className="flex justify-around items-center h-[52px] pt-1 pb-1">
+        <nav className="absolute bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-xl border-t border-surface-tertiary/50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <div className="flex justify-around items-center h-[56px] pt-1 pb-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}

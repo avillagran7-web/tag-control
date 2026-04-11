@@ -295,48 +295,55 @@ export default function Home() {
       {/* Botones */}
       {trip.isActive ? (
         <button
-          onClick={handleToggleTrip}
+          onClick={() => {
+            if (window.confirm('¿Seguro que quieres detener el viaje?')) handleToggleTrip();
+          }}
           className="w-full py-[16px] rounded-2xl font-semibold text-[17px] bg-danger text-white active:opacity-80 transition-all"
         >
           Detener viaje
         </button>
       ) : (
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-2">
           {trip.crossings.length > 0 && (
             <button
               onClick={handleResumeTrip}
-              className="flex-1 py-[16px] rounded-2xl font-semibold text-[17px] bg-primary text-white active:opacity-80 transition-all"
+              className="w-full py-[16px] rounded-2xl font-semibold text-[17px] bg-primary text-white active:opacity-80 transition-all"
             >
-              Reanudar
+              Reanudar viaje
             </button>
           )}
           <button
             onClick={handleToggleTrip}
-            className="flex-1 py-[16px] rounded-2xl font-semibold text-[17px] bg-text text-white active:opacity-80 transition-all"
+            className="w-full py-[14px] rounded-2xl font-semibold text-[15px] bg-surface-secondary text-text-secondary active:opacity-80 transition-all"
           >
             Nuevo viaje
           </button>
         </div>
       )}
 
-      {/* Aviso */}
+      {/* Aviso prominente */}
       {trip.isActive && (
-        <div className="bg-primary/8 rounded-2xl p-4">
-          <p className="text-[13px] font-medium text-primary">Mantén esta pantalla abierta</p>
-          <p className="text-[12px] text-text-secondary mt-0.5">No cambies de app ni bloquees el celular</p>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+          <span className="text-[20px] mt-0.5">⚠️</span>
+          <div>
+            <p className="text-[14px] font-semibold text-yellow-800">No cierres esta pantalla</p>
+            <p className="text-[13px] text-yellow-700 mt-0.5">Si cambias de app o bloqueas el celular, los peajes no se detectarán</p>
+          </div>
         </div>
       )}
 
-      {/* Error */}
+      {/* Error GPS */}
       {gps.error && (
-        <div className="bg-danger/10 rounded-2xl p-4 text-[14px] text-danger">{gps.error}</div>
+        <div className="bg-danger/10 rounded-2xl p-4">
+          <p className="text-[14px] font-medium text-danger">Problema con el GPS</p>
+          <p className="text-[13px] text-danger/80 mt-0.5">{gps.error}</p>
+        </div>
       )}
 
-      {/* GPS info */}
+      {/* Velocidad (sin coordenadas crudas) */}
       {gps.isTracking && gps.position && (
-        <div className="flex justify-between px-1 text-[12px] text-text-tertiary">
-          <span>{gps.position.lat.toFixed(4)}, {gps.position.lng.toFixed(4)}</span>
-          <span>{Math.round(gps.speed)} km/h</span>
+        <div className="flex justify-center px-1">
+          <span className="text-[14px] text-text-tertiary">{Math.round(gps.speed || 0)} km/h</span>
         </div>
       )}
 
