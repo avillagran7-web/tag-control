@@ -5,6 +5,7 @@ import { getTarifaLabel, getTarifa } from '../lib/pricing';
 import { formatCLP } from '../lib/format';
 import { playTollSound, initAudio } from '../lib/sound';
 import { upsertLiveTrip, insertLiveCrossing, endLiveTrip } from '../lib/liveTracking';
+import { inferMissingTolls } from '../lib/inference';
 import TollChip from '../components/TollChip';
 import { useUser } from '../App';
 
@@ -19,20 +20,36 @@ export default function Home() {
       if (!trip.isActive) return;
       trip.addCrossing(crossing);
       playTollSound();
+
       // Enviar cruce a Supabase
-      if (tripIdRef.current) {
+      const sendToSupabase = (c) => {
+        if (!tripIdRef.current) return;
         insertLiveCrossing({
           tripId: tripIdRef.current,
-          tollId: crossing.toll.id,
-          tollNombre: crossing.toll.nombre,
-          tollRuta: crossing.toll.ruta,
-          tarifa: getTarifa(crossing.toll, new Date(crossing.timestamp)),
-          lat: crossing.lat,
-          lng: crossing.lng,
+          tollId: c.toll.id,
+          tollNombre: c.toll.nombre,
+          tollRuta: c.toll.ruta,
+          tarifa: getTarifa(c.toll, new Date(c.timestamp)),
+          lat: c.lat,
+          lng: c.lng,
         }).catch(() => {});
+      };
+
+      sendToSupabase(crossing);
+
+      // Inferir pórticos faltantes (ej: túneles donde GPS no funciona)
+      const allCrossings = [...trip.crossings, crossing];
+      const inferred = inferMissingTolls(allCrossings);
+      for (const inf of inferred) {
+        // Solo agregar si no está ya en los crossings
+        const alreadyCrossed = allCrossings.some(c => (c.toll?.id || c.tollId) === inf.toll.id);
+        if (!alreadyCrossed) {
+          trip.addCrossing(inf);
+          sendToSupabase(inf);
+        }
       }
     },
-    [trip.isActive, trip.addCrossing]
+    [trip.isActive, trip.addCrossing, trip.crossings]
   );
 
   const gps = useGPS({ onTollCrossed: handleTollCrossed });
