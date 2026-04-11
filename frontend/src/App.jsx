@@ -48,12 +48,12 @@ export default function App() {
   return (
     <BrowserRouter>
       {/* Contenedor tipo celular centrado */}
-      <div className="max-w-[390px] mx-auto min-h-screen bg-gray-50 flex flex-col relative shadow-2xl">
+      <div className="max-w-[390px] mx-auto min-h-screen bg-cream flex flex-col relative shadow-2xl">
         {/* Header */}
-        <header className="bg-primary text-white px-4 py-3 flex items-center gap-2">
+        <header className="bg-negro text-cream px-4 py-3 flex items-center gap-2">
           <svg className="w-7 h-7" viewBox="0 0 100 100">
-            <rect width="100" height="100" rx="20" fill="rgba(255,255,255,0.2)" />
-            <text x="50" y="68" fontSize="50" fontFamily="system-ui" fontWeight="700" fill="white" textAnchor="middle">TC</text>
+            <rect width="100" height="100" rx="20" fill="#5C6B5A" />
+            <text x="50" y="68" fontSize="50" fontFamily="system-ui" fontWeight="700" fill="#F7F5F1" textAnchor="middle">TC</text>
           </svg>
           <span className="font-bold text-lg">Tag Control</span>
         </header>
@@ -68,8 +68,8 @@ export default function App() {
           </Routes>
         </main>
 
-        {/* Bottom navigation — dentro del contenedor celular */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        {/* Bottom navigation */}
+        <nav className="absolute bottom-0 left-0 right-0 bg-cream border-t border-cream-dark">
           <div className="flex justify-around items-center h-16">
             {navItems.map((item) => (
               <NavLink
@@ -78,7 +78,7 @@ export default function App() {
                 end={item.to === '/'}
                 className={({ isActive }) =>
                   `flex flex-col items-center gap-0.5 text-xs transition-colors ${
-                    isActive ? 'text-primary' : 'text-gray-400'
+                    isActive ? 'text-primary' : 'text-tierra'
                   }`
                 }
               >

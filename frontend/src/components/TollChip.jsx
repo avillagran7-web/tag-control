@@ -15,7 +15,7 @@ export default function TollChip({ crossing }) {
   const { toll, timestamp } = crossing;
 
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm">
+    <div className="flex items-center justify-between bg-cream-dark rounded-xl px-4 py-3">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center">
           <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -23,8 +23,8 @@ export default function TollChip({ crossing }) {
           </svg>
         </div>
         <div>
-          <p className="font-medium text-gray-900 text-sm">{toll.nombre}</p>
-          <p className="text-xs text-gray-500">{toll.ruta} &middot; {formatTime(timestamp)}</p>
+          <p className="font-medium text-negro text-sm">{toll.nombre}</p>
+          <p className="text-xs text-tierra">{toll.ruta} &middot; {formatTime(timestamp)}</p>
         </div>
       </div>
       <span className="font-semibold text-primary">{formatCLP(getTarifa(toll, new Date(timestamp)))}</span>
