@@ -175,8 +175,9 @@ export default function Home() {
         <div className="text-center pt-8 pb-4">
           <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
             <svg viewBox="0 0 512 512" className="w-12 h-12">
-              <path d="M256 96c-80 0-144 16-144 16v176c0 80 64 136 144 160 80-24 144-80 144-160V112S336 96 256 96z" fill="none" stroke="#fff" strokeWidth="28" strokeLinejoin="round" opacity="0.9"/>
-              <path d="M200 268 L240 308 L312 220" fill="none" stroke="#A7F3D0" strokeWidth="32" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M256 80c-70 0-126 56-126 126 0 90 126 210 126 210s126-120 126-210c0-70-56-126-126-126z" fill="#fff" opacity="0.95"/>
+              <circle cx="256" cy="206" r="56" fill="#2D6A4F"/>
+              <path d="M232 210 L250 228 L284 188" fill="none" stroke="#A7F3D0" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
           <h1 className="text-[22px] font-bold text-text tracking-tight">Registra tus peajes</h1>

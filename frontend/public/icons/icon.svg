@@ -1,12 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Fondo: rectángulo redondeado Apple-style -->
   <rect width="512" height="512" rx="112" fill="#2D6A4F"/>
-
-  <!-- Escudo minimalista (protección/control) -->
-  <path d="M256 96c-80 0-144 16-144 16v176c0 80 64 136 144 160 80-24 144-80 144-160V112S336 96 256 96z"
-        fill="none" stroke="#fff" stroke-width="24" stroke-linejoin="round" opacity="0.9"/>
-
-  <!-- Check mark dentro del escudo (control verificado) -->
-  <path d="M200 268 L240 308 L312 220"
-        fill="none" stroke="#A7F3D0" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Sombra sutil del pin -->
+  <ellipse cx="256" cy="410" rx="50" ry="12" fill="#000" opacity="0.15"/>
+  <!-- Pin de mapa -->
+  <path d="M256 80c-70 0-126 56-126 126 0 90 126 210 126 210s126-120 126-210c0-70-56-126-126-126z"
+        fill="#fff" opacity="0.95"/>
+  <!-- Círculo interior del pin -->
+  <circle cx="256" cy="206" r="56" fill="#2D6A4F"/>
+  <!-- Check dentro del pin -->
+  <path d="M232 210 L250 228 L284 188"
+        fill="none" stroke="#A7F3D0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

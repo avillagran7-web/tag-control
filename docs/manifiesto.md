@@ -2,6 +2,10 @@
 
 ## Tu peaje, bajo control.
 
+![Tag Control](../frontend/public/icons/icon.svg)
+
+*Un pin de mapa con un check: cada peaje marcado, cada peso verificado.*
+
 ---
 
 Cada mes, miles de familias chilenas cruzan peajes sin saber cuánto están gastando.

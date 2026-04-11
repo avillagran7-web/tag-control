@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2D6A4F"/>
+  <!-- Lente/lupa -->
+  <circle cx="230" cy="220" r="100" fill="none" stroke="#fff" stroke-width="22" opacity="0.9"/>
+  <!-- Mango de la lupa -->
+  <line x1="305" y1="295" x2="390" y2="380" stroke="#fff" stroke-width="26" stroke-linecap="round" opacity="0.9"/>
+  <!-- Ruta curva dentro de la lupa (lo que se descubre) -->
+  <path d="M175 230 Q205 190 230 220 Q255 250 285 210" stroke="#A7F3D0" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <!-- Punto/peaje sobre la ruta -->
+  <circle cx="230" cy="218" r="10" fill="#A7F3D0"/>
+</svg>

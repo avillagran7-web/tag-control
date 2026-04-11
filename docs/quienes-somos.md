@@ -1,5 +1,7 @@
 # Tag Control — Quiénes Somos
 
+![Tag Control](../frontend/public/icons/icon.svg)
+
 ---
 
 ## La historia
@@ -17,6 +19,8 @@ Desde ahí, no paramos.
 ## Qué es Tag Control
 
 Una Progressive Web App (PWA) que usa el GPS del celular para detectar automáticamente cada peaje que cruzas en las autopistas de Chile.
+
+Nuestro isotipo es un pin de mapa con un check adentro: cada peaje marcado en tu ruta, cada peso verificado en tu cuenta. Claridad sobre tus gastos, punto por punto.
 
 No necesitas TAG. No necesitas descargar nada del App Store. Abres un link, creas tu cuenta con nombre y PIN, y empiezas a registrar.
 
