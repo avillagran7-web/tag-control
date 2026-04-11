@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { formatCLP, formatTime, formatDate } from '../lib/format';
 
@@ -205,9 +205,34 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
     }
   }, [liveTrips, mapsReady]);
 
+  // Calcular datos de growth por día
+  const growthData = useMemo(() => {
+    const days = {};
+    // Usuarios por día
+    for (const u of users) {
+      const day = new Date(u.created_at).toLocaleDateString('es-CL');
+      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, revenue: 0, tolls: 0 };
+      days[day].newUsers++;
+    }
+    // Viajes por día
+    for (const t of completedTrips) {
+      const day = new Date(t.start_time).toLocaleDateString('es-CL');
+      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, revenue: 0, tolls: 0 };
+      days[day].trips++;
+      days[day].revenue += t.total_cost || 0;
+      days[day].tolls += t.toll_count || 0;
+    }
+    return Object.values(days).sort((a, b) => {
+      const da = a.date.split('-').reverse().join('-');
+      const db = b.date.split('-').reverse().join('-');
+      return da.localeCompare(db);
+    });
+  }, [users, completedTrips]);
+
   const tabs = [
     { id: 'live', label: 'En vivo' },
     { id: 'trips', label: 'Viajes' },
+    { id: 'growth', label: 'Growth' },
     { id: 'users', label: 'Usuarios' },
     { id: 'data', label: 'Datos' },
   ];
@@ -380,6 +405,82 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                 ))}
               </>
             )}
+          </div>
+        )}
+
+        {/* TAB: Growth */}
+        {tab === 'growth' && (
+          <div className="flex flex-col gap-4">
+            {/* KPIs */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-cream/5 rounded-xl p-4">
+                <p className="text-3xl font-bold">{stats?.registeredUsers || 0}</p>
+                <p className="text-xs text-tierra">Usuarios totales</p>
+              </div>
+              <div className="bg-cream/5 rounded-xl p-4">
+                <p className="text-3xl font-bold">{stats?.totalTrips || 0}</p>
+                <p className="text-xs text-tierra">Viajes totales</p>
+              </div>
+              <div className="bg-cream/5 rounded-xl p-4">
+                <p className="text-3xl font-bold text-primary">{formatCLP(stats?.totalCost || 0)}</p>
+                <p className="text-xs text-tierra">Recaudación total</p>
+              </div>
+              <div className="bg-cream/5 rounded-xl p-4">
+                <p className="text-3xl font-bold">{stats?.totalTolls || 0}</p>
+                <p className="text-xs text-tierra">Peajes detectados</p>
+              </div>
+            </div>
+
+            {/* Gráfico de barras por día */}
+            <div className="bg-cream/5 rounded-xl p-4">
+              <p className="text-sm font-medium mb-4">Actividad por día</p>
+              {growthData.length === 0 ? (
+                <p className="text-tierra text-sm text-center py-4">Sin datos aún</p>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {growthData.map((day) => {
+                    const maxRevenue = Math.max(...growthData.map(d => d.revenue), 1);
+                    const barWidth = Math.max((day.revenue / maxRevenue) * 100, 2);
+                    return (
+                      <div key={day.date}>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-tierra">{day.date}</span>
+                          <span className="text-cream">{formatCLP(day.revenue)}</span>
+                        </div>
+                        <div className="w-full bg-cream/5 rounded-full h-6 flex items-center">
+                          <div
+                            className="bg-primary h-6 rounded-full flex items-center px-2 transition-all"
+                            style={{ width: `${barWidth}%`, minWidth: 'fit-content' }}
+                          >
+                            <span className="text-[10px] text-cream whitespace-nowrap">
+                              {day.trips} viaje{day.trips !== 1 ? 's' : ''} &middot; {day.tolls} peajes
+                            </span>
+                          </div>
+                        </div>
+                        {day.newUsers > 0 && (
+                          <p className="text-[10px] text-green-400 mt-0.5">+{day.newUsers} usuario{day.newUsers > 1 ? 's' : ''} nuevo{day.newUsers > 1 ? 's' : ''}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Promedios */}
+            <div className="bg-cream/5 rounded-xl p-4">
+              <p className="text-sm font-medium mb-3">Promedios</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-lg font-bold">{formatCLP(stats?.avgCostPerTrip || 0)}</p>
+                  <p className="text-xs text-tierra">Por viaje</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold">{stats?.avgTollsPerTrip || 0}</p>
+                  <p className="text-xs text-tierra">Peajes por viaje</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

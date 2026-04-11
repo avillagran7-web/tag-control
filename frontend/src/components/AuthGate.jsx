@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { getCurrentUser, loginUser, registerUser, logout } from '../lib/auth';
 
 export default function AuthGate({ children }) {
-  const [user, setUser] = useState(getCurrentUser);
-  const [mode, setMode] = useState('login'); // login | register
+  const [user, setUser] = useState(() => {
+    try { return getCurrentUser(); } catch { return null; }
+  });
+  const [mode, setMode] = useState('login');
   const [name, setName] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -29,59 +31,68 @@ export default function AuthGate({ children }) {
         setUser(u);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Error de conexión');
     }
     setLoading(false);
   };
 
+  // Estilos inline como fallback por si Tailwind no carga en Safari iOS
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-xs">
+    <div style={{ minHeight: '100vh', background: '#F7F5F1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ width: '100%', maxWidth: 320 }}>
         {/* Logo */}
-        <div className="text-center mb-8">
-          <svg className="w-16 h-16 mx-auto mb-3" viewBox="0 0 100 100">
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <svg width="64" height="64" viewBox="0 0 100 100" style={{ margin: '0 auto 12px' }}>
             <rect width="100" height="100" rx="20" fill="#5C6B5A" />
             <text x="50" y="68" fontSize="50" fontFamily="system-ui" fontWeight="700" fill="#F7F5F1" textAnchor="middle">TC</text>
           </svg>
-          <p className="text-xl font-bold text-negro">Tag Control</p>
-          <p className="text-sm text-tierra">Tu peaje, bajo control</p>
+          <p style={{ fontSize: 20, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>Tag Control</p>
+          <p style={{ fontSize: 14, color: '#8B7D6B', margin: '4px 0 0' }}>Tu peaje, bajo control</p>
         </div>
 
-        {/* Toggle login/register */}
-        <div className="flex bg-cream-dark rounded-xl p-1 mb-5">
+        {/* Toggle */}
+        <div style={{ display: 'flex', background: '#EDECEA', borderRadius: 12, padding: 4, marginBottom: 20 }}>
           <button
             onClick={() => { setMode('login'); setError(''); }}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              mode === 'login' ? 'bg-negro text-cream' : 'text-tierra'
-            }`}
+            style={{
+              flex: 1, padding: '8px 0', borderRadius: 8, border: 'none', fontSize: 14, fontWeight: 500, cursor: 'pointer',
+              background: mode === 'login' ? '#1A1A1A' : 'transparent',
+              color: mode === 'login' ? '#F7F5F1' : '#8B7D6B',
+            }}
           >
             Entrar
           </button>
           <button
             onClick={() => { setMode('register'); setError(''); }}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              mode === 'register' ? 'bg-negro text-cream' : 'text-tierra'
-            }`}
+            style={{
+              flex: 1, padding: '8px 0', borderRadius: 8, border: 'none', fontSize: 14, fontWeight: 500, cursor: 'pointer',
+              background: mode === 'register' ? '#1A1A1A' : 'transparent',
+              color: mode === 'register' ? '#F7F5F1' : '#8B7D6B',
+            }}
           >
             Registrarse
           </button>
         </div>
 
         {/* Inputs */}
-        <div className="flex flex-col gap-3 mb-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
           <div>
-            <label className="text-xs font-medium text-tierra mb-1 block">Nombre</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: '#8B7D6B', display: 'block', marginBottom: 4 }}>Nombre</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Raul"
-              className="w-full bg-cream-dark rounded-xl px-4 py-3 text-sm text-negro placeholder-hongo focus:outline-none focus:ring-2 focus:ring-primary/30"
               autoFocus
+              style={{
+                width: '100%', background: '#EDECEA', border: 'none', borderRadius: 12,
+                padding: '12px 16px', fontSize: 14, color: '#1A1A1A', boxSizing: 'border-box',
+                outline: 'none',
+              }}
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-tierra mb-1 block">PIN (4 dígitos)</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: '#8B7D6B', display: 'block', marginBottom: 4 }}>PIN (4 dígitos)</label>
             <input
               type="password"
               inputMode="numeric"
@@ -90,24 +101,32 @@ export default function AuthGate({ children }) {
               onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
               placeholder="****"
               onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
-              className="w-full bg-cream-dark rounded-xl px-4 py-3 text-sm text-negro placeholder-hongo text-center tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-primary/30"
+              style={{
+                width: '100%', background: '#EDECEA', border: 'none', borderRadius: 12,
+                padding: '12px 16px', fontSize: 14, color: '#1A1A1A', boxSizing: 'border-box',
+                textAlign: 'center', letterSpacing: '0.3em', outline: 'none',
+              }}
             />
           </div>
         </div>
 
         {error && (
-          <p className="text-red-600 text-xs text-center mb-3">{error}</p>
+          <p style={{ color: '#dc2626', fontSize: 12, textAlign: 'center', margin: '0 0 12px' }}>{error}</p>
         )}
 
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full py-4 rounded-2xl font-bold text-lg text-cream bg-negro active:bg-negro/80 transition-colors"
+          style={{
+            width: '100%', padding: '16px 0', borderRadius: 16, border: 'none',
+            fontSize: 18, fontWeight: 700, cursor: 'pointer',
+            background: loading ? '#8B7D6B' : '#1A1A1A', color: '#F7F5F1',
+          }}
         >
           {loading ? 'Cargando...' : mode === 'register' ? 'Crear cuenta' : 'Entrar'}
         </button>
 
-        <p className="text-xs text-tierra text-center mt-4">
+        <p style={{ fontSize: 12, color: '#8B7D6B', textAlign: 'center', marginTop: 16 }}>
           {mode === 'login'
             ? '¿Primera vez? Toca "Registrarse" arriba'
             : 'Elige un nombre y PIN que puedas recordar'}
