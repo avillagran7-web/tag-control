@@ -269,16 +269,16 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
     }
   }, [liveTrips, mapsReady]);
 
+  const [growthView, setGrowthView] = useState('dia');
+
   // Calcular datos de growth por día
   const growthData = useMemo(() => {
     const days = {};
-    // Usuarios por día
     for (const u of users) {
       const day = new Date(u.created_at).toLocaleDateString('es-CL');
       if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
       days[day].newUsers++;
     }
-    // Viajes por día
     for (const t of completedTrips) {
       const day = new Date(t.start_time).toLocaleDateString('es-CL');
       if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
@@ -292,6 +292,21 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
       return da.localeCompare(db);
     });
   }, [users, completedTrips]);
+
+  // Datos acumulados
+  const cumulativeData = useMemo(() => {
+    let cumUsers = 0, cumTrips = 0, cumGasto = 0, cumTolls = 0;
+    return growthData.map((day, i) => {
+      cumUsers += day.newUsers;
+      cumTrips += day.trips;
+      cumGasto += day.gasto;
+      cumTolls += day.tolls;
+      // Tasa de crecimiento vs día anterior
+      const prev = i > 0 ? growthData[i - 1] : null;
+      const growthRate = prev && prev.gasto > 0 ? Math.round(((day.gasto - prev.gasto) / prev.gasto) * 100) : null;
+      return { ...day, cumUsers, cumTrips, cumGasto, cumTolls, growthRate };
+    });
+  }, [growthData]);
 
   const tabs = [
     { id: 'live', label: 'En vivo' },
@@ -518,6 +533,19 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
         {/* TAB: Growth — todo en una pantalla */}
         {tab === 'growth' && (
           <div className="flex flex-col gap-3">
+            {/* Toggle diario / acumulado */}
+            <div className="flex bg-cream/5 rounded-lg p-0.5">
+              {['dia', 'acumulado'].map(v => (
+                <button
+                  key={v}
+                  onClick={() => setGrowthView(v)}
+                  className={`flex-1 py-1.5 rounded-md text-[11px] font-medium transition-colors ${growthView === v ? 'bg-primary text-white' : 'text-tierra'}`}
+                >
+                  {v === 'dia' ? 'Por día' : 'Acumulado'}
+                </button>
+              ))}
+            </div>
+
             {/* KPIs */}
             <div className="grid grid-cols-4 gap-2">
               {[
@@ -545,58 +573,82 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
               </div>
             </div>
 
-            {/* 3 gráficos de barras: Usuarios, Viajes, Gasto */}
-            {growthData.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { key: 'newUsers', label: 'Usuarios', color: '#22c55e' },
-                  { key: 'trips', label: 'Viajes', color: '#3b82f6' },
-                  { key: 'gasto', label: 'Gasto', color: '#2D6A4F', isMoney: true },
-                ].map(chart => {
-                  const max = Math.max(...growthData.map(d => d[chart.key] || 0), 1);
-                  return (
-                    <div key={chart.key} className="bg-cream/5 rounded-lg p-2">
-                      <p className="text-[9px] text-tierra mb-1">{chart.label}</p>
-                      <div className="flex items-end gap-[2px] h-14">
-                        {growthData.slice(-7).map((day) => {
-                          const val = day[chart.key] || 0;
-                          const h = Math.max((val / max) * 100, 3);
-                          return (
-                            <div key={day.date} className="flex-1 flex flex-col items-center">
-                              <div className="w-full rounded-sm" style={{ height: `${h}%`, background: chart.color, minHeight: 2 }} />
-                            </div>
-                          );
-                        })}
+            {/* 3 gráficos */}
+            {growthData.length > 0 && (() => {
+              const isCum = growthView === 'acumulado';
+              const src = isCum ? cumulativeData : growthData;
+              const charts = isCum
+                ? [{ key: 'cumUsers', label: 'Usuarios', color: '#22c55e' }, { key: 'cumTrips', label: 'Viajes', color: '#3b82f6' }, { key: 'cumGasto', label: 'Gasto', color: '#2D6A4F' }]
+                : [{ key: 'newUsers', label: '+Usuarios', color: '#22c55e' }, { key: 'trips', label: 'Viajes', color: '#3b82f6' }, { key: 'gasto', label: 'Gasto', color: '#2D6A4F' }];
+              const sliced = src.slice(-7);
+              return (
+                <div className="grid grid-cols-3 gap-2">
+                  {charts.map(chart => {
+                    const max = Math.max(...sliced.map(d => d[chart.key] || 0), 1);
+                    const latest = sliced[sliced.length - 1]?.[chart.key] || 0;
+                    return (
+                      <div key={chart.key} className="bg-cream/5 rounded-lg p-2">
+                        <p className="text-[9px] text-tierra">{chart.label}</p>
+                        <p className="text-[13px] font-bold" style={{ color: chart.color }}>
+                          {chart.key.includes('asto') ? formatCLP(latest) : latest}
+                        </p>
+                        <div className="flex items-end gap-[2px] h-12 mt-1">
+                          {sliced.map((day) => {
+                            const val = day[chart.key] || 0;
+                            const h = Math.max((val / max) * 100, 3);
+                            return (
+                              <div key={day.date} className="flex-1">
+                                <div className="w-full rounded-sm" style={{ height: `${h}%`, background: chart.color, minHeight: 2 }} />
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex justify-between mt-0.5">
+                          <span className="text-[7px] text-tierra">{sliced[0]?.date?.split('/').slice(0,2).join('/')}</span>
+                          <span className="text-[7px] text-tierra">hoy</span>
+                        </div>
                       </div>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-[7px] text-tierra">{growthData.slice(-7)[0]?.date?.split('/').slice(0,2).join('/')}</span>
-                        <span className="text-[7px] text-tierra">hoy</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
-            {/* Tabla diaria */}
+            {/* Tabla */}
             <div className="bg-cream/5 rounded-lg p-3">
-              <p className="text-[10px] text-tierra mb-2">Detalle por día</p>
-              <div className="grid grid-cols-5 gap-0 text-[9px] text-tierra border-b border-cream/10 pb-1 mb-1 font-medium">
-                <span>Día</span><span className="text-center">+Users</span><span className="text-center">Viajes</span><span className="text-center">Peajes</span><span className="text-right">Gasto</span>
+              <p className="text-[10px] text-tierra mb-2">{growthView === 'acumulado' ? 'Acumulado' : 'Por día'}</p>
+              <div className="grid grid-cols-6 gap-0 text-[9px] text-tierra border-b border-cream/10 pb-1 mb-1 font-medium">
+                <span>Día</span><span className="text-center">Users</span><span className="text-center">Viajes</span><span className="text-center">Peajes</span><span className="text-right">Gasto</span><span className="text-right">%</span>
               </div>
-              {growthData.length === 0 ? (
-                <p className="text-tierra text-xs text-center py-2">Sin datos</p>
-              ) : (
-                growthData.map(day => (
-                  <div key={day.date} className="grid grid-cols-5 gap-0 text-[11px] py-1.5 border-b border-cream/5">
-                    <span className="text-tierra">{day.date}</span>
-                    <span className="text-center">{day.newUsers > 0 ? <span className="text-green-400">+{day.newUsers}</span> : '—'}</span>
-                    <span className="text-center">{day.trips || '—'}</span>
-                    <span className="text-center">{day.tolls || '—'}</span>
-                    <span className="text-right text-primary font-medium">{day.gasto > 0 ? formatCLP(day.gasto) : '—'}</span>
-                  </div>
-                ))
-              )}
+              {(() => {
+                const src = growthView === 'acumulado' ? cumulativeData : growthData;
+                return src.length === 0 ? (
+                  <p className="text-tierra text-xs text-center py-2">Sin datos</p>
+                ) : (
+                  src.map((day, i) => {
+                    const isCum = growthView === 'acumulado';
+                    const u = isCum ? day.cumUsers : day.newUsers;
+                    const t = isCum ? day.cumTrips : day.trips;
+                    const tl = isCum ? day.cumTolls : day.tolls;
+                    const g = isCum ? day.cumGasto : day.gasto;
+                    // Tasa: comparar con día anterior
+                    const prevG = i > 0 ? (isCum ? src[i-1].cumGasto : src[i-1].gasto) : 0;
+                    const rate = prevG > 0 ? Math.round(((g - prevG) / prevG) * 100) : null;
+                    return (
+                      <div key={day.date} className="grid grid-cols-6 gap-0 text-[11px] py-1.5 border-b border-cream/5">
+                        <span className="text-tierra">{day.date}</span>
+                        <span className="text-center">{u > 0 ? (isCum ? u : <span className="text-green-400">+{u}</span>) : '—'}</span>
+                        <span className="text-center">{t || '—'}</span>
+                        <span className="text-center">{tl || '—'}</span>
+                        <span className="text-right text-primary font-medium">{g > 0 ? formatCLP(g) : '—'}</span>
+                        <span className={`text-right text-[10px] ${rate > 0 ? 'text-green-400' : rate < 0 ? 'text-red-400' : 'text-tierra'}`}>
+                          {rate !== null ? (rate > 0 ? '+' : '') + rate + '%' : '—'}
+                        </span>
+                      </div>
+                    );
+                  })
+                );
+              })()}
             </div>
 
             {/* Usuarios con barras */}
