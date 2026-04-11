@@ -8,26 +8,21 @@
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif; color: #212529; background: #fff; -webkit-font-smoothing: antialiased; }
-  .page { max-width: 700px; margin: 0 auto; padding: 60px 50px; }
-  .logo { width: 64px; height: 64px; margin-bottom: 32px; }
-  h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: #212529; margin-bottom: 4px; }
-  .subtitle { font-size: 16px; color: #6C757D; margin-bottom: 40px; }
-  .divider { width: 40px; height: 3px; background: #2D6A4F; border-radius: 2px; margin: 36px 0; }
-  h2 { font-size: 20px; font-weight: 600; color: #2D6A4F; margin: 36px 0 12px; }
-  p { font-size: 15px; line-height: 1.75; color: #495057; margin-bottom: 12px; }
-  .highlight { font-size: 15px; line-height: 1.75; color: #212529; background: #F8F9FA; border-radius: 12px; padding: 16px 20px; margin: 16px 0; }
-  .highlight strong { color: #2D6A4F; }
-  ol { padding-left: 20px; margin: 12px 0; }
-  ol li { font-size: 15px; line-height: 1.75; color: #495057; padding: 4px 0; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin: 12px 0; }
-  .grid-item { font-size: 14px; line-height: 1.6; color: #495057; padding: 6px 0; padding-left: 16px; position: relative; }
-  .grid-item::before { content: ''; position: absolute; left: 0; top: 13px; width: 6px; height: 6px; background: #A7F3D0; border-radius: 50%; }
-  .tech { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-  .tech span { font-size: 13px; background: #F8F9FA; color: #495057; padding: 6px 14px; border-radius: 20px; }
-  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #E9ECEF; }
-  .footer p { font-size: 14px; color: #ADB5BD; }
-  .footer strong { color: #2D6A4F; }
-  @media print { .page { padding: 40px; } .divider { margin: 24px 0; } h2 { margin: 24px 0 8px; } }
+  .page { max-width: 680px; margin: 0 auto; padding: 72px 50px; }
+  .logo { width: 56px; height: 56px; margin-bottom: 36px; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: #212529; }
+  .divider { width: 32px; height: 2px; background: #2D6A4F; margin: 28px 0; }
+  p { font-size: 15px; line-height: 1.8; color: #495057; margin-bottom: 14px; }
+  .bold { color: #212529; font-weight: 500; }
+  .section { margin-top: 32px; }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #ADB5BD; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 32px; }
+  .grid-item { font-size: 14px; line-height: 1.7; color: #495057; padding: 4px 0; }
+  .tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tech span { font-size: 12px; color: #6C757D; border: 1px solid #DEE2E6; padding: 4px 12px; border-radius: 16px; }
+  .footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid #E9ECEF; }
+  .footer p { font-size: 13px; color: #ADB5BD; margin-bottom: 4px; }
+  @media print { .page { padding: 48px; } }
 </style>
 </head>
 <body>
@@ -41,60 +36,50 @@
   </svg>
 
   <h1>Tag Control</h1>
-  <p class="subtitle">Quiénes Somos</p>
 
   <div class="divider"></div>
 
-  <h2>La historia</h2>
-  <p>Tag Control nació de una conversación simple entre un hijo y su papá.</p>
-  <p>Raúl vive en Algarrobo y viaja seguido a Santiago. Nunca quiso contratar TAG — le parecía caro y poco transparente. Pero tampoco tenía forma de saber cuánto gastaba en peajes cada mes.</p>
-  <p>Un viernes de abril de 2026, decidimos resolver el problema. Ese mismo día, Raúl hizo su primer viaje con Tag Control. La app detectó el Peaje Troncal Zapata a las 15:38 hrs.</p>
+  <p>Tag Control es una plataforma que permite a las personas saber exactamente cuánto gastan en peajes.</p>
 
-  <div class="highlight">
-    <strong>Primer peaje detectado en la historia de Tag Control.</strong><br>
-    11 de abril de 2026, 15:38 hrs — Peaje Troncal Zapata, Ruta 68.
+  <p>En Chile, la información de cobros de autopistas está fragmentada entre múltiples concesionarias, cada una con su propio sistema. Para quienes no tienen TAG, no existe registro alguno. Tag Control resuelve ese problema.</p>
+
+  <p>La plataforma detecta peajes automáticamente usando GPS, registra cada cruce con tarifa y hora exacta, y entrega al usuario un historial completo y una visión clara de su gasto en transporte por autopistas.</p>
+
+  <div class="section">
+    <p class="section-title">Producto</p>
+    <p>Progressive Web App. Funciona desde el navegador, sin descarga. Detección GPS en tiempo real, planificación de rutas con costo estimado, historial en la nube, y metas de gasto mensual.</p>
   </div>
 
-  <h2>Qué es</h2>
-  <p>Una app que usa el GPS del celular para detectar automáticamente cada peaje que cruzas en las autopistas de Chile.</p>
-  <p>Nuestro isotipo es un pin de mapa con un check: cada peaje marcado en tu ruta, cada peso verificado.</p>
-  <p>No necesitas TAG. No necesitas descargar nada. Abres un link, creas tu cuenta, y empiezas a registrar.</p>
-
-  <h2>Cómo funciona</h2>
-  <ol>
-    <li>Abres la app y presionas <strong>"Comenzar viaje"</strong></li>
-    <li>El GPS detecta cada peaje que cruzas y suena una alerta</li>
-    <li>Al llegar, presionas <strong>"Detener viaje"</strong> y ves el resumen</li>
-    <li>Tu historial se guarda en la nube — nunca pierdes un dato</li>
-  </ol>
-
-  <h2>Cobertura</h2>
-  <p>35+ peajes en 8 autopistas de Santiago y rutas interurbanas:</p>
-  <div class="grid">
-    <div class="grid-item">Ruta 68 — Zapata, Lo Prado</div>
-    <div class="grid-item">Costanera Norte — 11 pórticos</div>
-    <div class="grid-item">Autopista Central — 5 pórticos</div>
-    <div class="grid-item">Vespucio Norte — 5 pórticos</div>
-    <div class="grid-item">Vespucio Sur — 4 pórticos</div>
-    <div class="grid-item">Ruta 78 — 3 peajes</div>
-    <div class="grid-item">Autopista Nororiente</div>
-    <div class="grid-item">Túnel San Cristóbal</div>
+  <div class="section">
+    <p class="section-title">Cobertura</p>
+    <p>35+ puntos de cobro en 8 autopistas de la Región Metropolitana y rutas interurbanas.</p>
+    <div class="grid">
+      <div class="grid-item">Ruta 68</div>
+      <div class="grid-item">Costanera Norte</div>
+      <div class="grid-item">Autopista Central</div>
+      <div class="grid-item">Vespucio Norte Express</div>
+      <div class="grid-item">Vespucio Sur</div>
+      <div class="grid-item">Ruta 78</div>
+      <div class="grid-item">Autopista Nororiente</div>
+      <div class="grid-item">Túnel San Cristóbal</div>
+    </div>
   </div>
 
-  <h2>Tecnología</h2>
-  <div class="tech">
-    <span>React + Vite</span>
-    <span>Supabase</span>
-    <span>Google Maps API</span>
-    <span>GPS nativo iOS</span>
-    <span>PWA</span>
-    <span>Vercel</span>
+  <div class="section">
+    <p class="section-title">Stack</p>
+    <div class="tech">
+      <span>React</span>
+      <span>Supabase</span>
+      <span>Google Maps API</span>
+      <span>GPS nativo</span>
+      <span>PWA</span>
+      <span>Vercel</span>
+    </div>
   </div>
 
   <div class="footer">
-    <p><strong>Tag Control</strong> — Tu peaje, bajo control.</p>
-    <p>Construido en Chile, para Chile. Abril 2026.</p>
-    <p>tagcontrol.vercel.app</p>
+    <p>Tag Control — tagcontrol.vercel.app</p>
+    <p>Santiago, Chile. 2026.</p>
   </div>
 </div>
 </body>
