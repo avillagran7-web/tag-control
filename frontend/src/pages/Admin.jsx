@@ -275,15 +275,15 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
     // Usuarios por día
     for (const u of users) {
       const day = new Date(u.created_at).toLocaleDateString('es-CL');
-      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, revenue: 0, tolls: 0 };
+      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
       days[day].newUsers++;
     }
     // Viajes por día
     for (const t of completedTrips) {
       const day = new Date(t.start_time).toLocaleDateString('es-CL');
-      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, revenue: 0, tolls: 0 };
+      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
       days[day].trips++;
-      days[day].revenue += t.total_cost || 0;
+      days[day].gasto += t.total_cost || 0;
       days[day].tolls += t.toll_count || 0;
     }
     return Object.values(days).sort((a, b) => {
@@ -533,10 +533,10 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
               ))}
             </div>
 
-            {/* Revenue hero */}
+            {/* Gasto hero */}
             <div className="bg-cream/5 rounded-lg p-3 flex justify-between items-center">
               <div>
-                <p className="text-[10px] text-tierra">Revenue total</p>
+                <p className="text-[10px] text-tierra">Gasto total</p>
                 <p className="text-2xl font-bold text-primary">{formatCLP(stats?.totalCost || 0)}</p>
               </div>
               <div className="text-right">
@@ -545,13 +545,13 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
               </div>
             </div>
 
-            {/* 3 gráficos de barras: Usuarios, Viajes, Revenue */}
+            {/* 3 gráficos de barras: Usuarios, Viajes, Gasto */}
             {growthData.length > 0 && (
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { key: 'newUsers', label: 'Usuarios', color: '#22c55e' },
                   { key: 'trips', label: 'Viajes', color: '#3b82f6' },
-                  { key: 'revenue', label: 'Revenue', color: '#2D6A4F', isMoney: true },
+                  { key: 'gasto', label: 'Gasto', color: '#2D6A4F', isMoney: true },
                 ].map(chart => {
                   const max = Math.max(...growthData.map(d => d[chart.key] || 0), 1);
                   return (
@@ -582,7 +582,7 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
             <div className="bg-cream/5 rounded-lg p-3">
               <p className="text-[10px] text-tierra mb-2">Detalle por día</p>
               <div className="grid grid-cols-5 gap-0 text-[9px] text-tierra border-b border-cream/10 pb-1 mb-1 font-medium">
-                <span>Día</span><span className="text-center">+Users</span><span className="text-center">Viajes</span><span className="text-center">Peajes</span><span className="text-right">Revenue</span>
+                <span>Día</span><span className="text-center">+Users</span><span className="text-center">Viajes</span><span className="text-center">Peajes</span><span className="text-right">Gasto</span>
               </div>
               {growthData.length === 0 ? (
                 <p className="text-tierra text-xs text-center py-2">Sin datos</p>
@@ -593,7 +593,7 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                     <span className="text-center">{day.newUsers > 0 ? <span className="text-green-400">+{day.newUsers}</span> : '—'}</span>
                     <span className="text-center">{day.trips || '—'}</span>
                     <span className="text-center">{day.tolls || '—'}</span>
-                    <span className="text-right text-primary font-medium">{day.revenue > 0 ? formatCLP(day.revenue) : '—'}</span>
+                    <span className="text-right text-primary font-medium">{day.gasto > 0 ? formatCLP(day.gasto) : '—'}</span>
                   </div>
                 ))
               )}
