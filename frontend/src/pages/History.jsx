@@ -1,13 +1,45 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getSavedTrips, clearTrips } from '../lib/storage';
+import { supabase } from '../lib/supabase';
 import { formatCLP, formatDate, formatTime } from '../lib/format';
 
 export default function History() {
-  const [allTrips, setAllTrips] = useState(getSavedTrips);
+  const [allTrips, setAllTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
   const [filterDriver, setFilterDriver] = useState('todos');
 
-  // Obtener lista de conductores
+  // Cargar viajes: Supabase + localStorage, sin duplicados
+  useEffect(() => {
+    async function load() {
+      const local = getSavedTrips();
+
+      let cloud = [];
+      try {
+        const { data } = await supabase.from('trips').select('*').order('created_at', { ascending: false });
+        cloud = (data || []).map((t) => ({
+          id: t.id,
+          driver: t.driver,
+          startTime: new Date(t.start_time).getTime(),
+          endTime: new Date(t.end_time).getTime(),
+          totalCost: t.total_cost,
+          tollCount: t.toll_count,
+          routes: t.routes || [],
+          crossings: t.crossings || [],
+        }));
+      } catch {}
+
+      // Merge: cloud primero, luego local que no esté en cloud
+      const cloudIds = new Set(cloud.map((t) => t.id));
+      const merged = [...cloud, ...local.filter((t) => !cloudIds.has(t.id))];
+      merged.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+
+      setAllTrips(merged);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
   const driverList = useMemo(() => {
     const names = new Set();
     for (const t of allTrips) {
@@ -16,7 +48,6 @@ export default function History() {
     return [...names].sort();
   }, [allTrips]);
 
-  // Filtrar viajes
   const trips = useMemo(() => {
     if (filterDriver === 'todos') return allTrips;
     return allTrips.filter((t) => t.driver === filterDriver);
@@ -56,9 +87,18 @@ export default function History() {
 
   const handleClear = () => {
     clearTrips();
-    setAllTrips([]);
+    setAllTrips((prev) => prev.filter((t) => t._source === 'cloud'));
     setShowConfirmClear(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8">
+        <div className="w-10 h-10 border-4 border-cream-dark border-t-primary rounded-full animate-spin" />
+        <p className="text-sm text-tierra mt-4">Cargando historial...</p>
+      </div>
+    );
+  }
 
   if (allTrips.length === 0) {
     return (
@@ -78,7 +118,6 @@ export default function History() {
     <div className="flex flex-col gap-4 p-4 pb-24">
       <h1 className="text-lg font-bold text-negro">Historial</h1>
 
-      {/* Filtro por conductor */}
       {driverList.length > 0 && (
         <div className="flex gap-2 overflow-x-auto">
           <button
@@ -186,7 +225,7 @@ export default function History() {
             onClick={() => setShowConfirmClear(true)}
             className="w-full py-3 rounded-xl text-sm text-tierra border border-cream-dark active:bg-cream-dark transition-colors"
           >
-            Borrar historial
+            Borrar historial local
           </button>
         ) : (
           <div className="flex gap-2">
