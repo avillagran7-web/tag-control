@@ -58,16 +58,6 @@ const navItems = [
       </svg>
     ),
   },
-  {
-    to: '/live',
-    label: 'En vivo',
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-      </svg>
-    ),
-  },
 ];
 
 function AppShell({ user, logout }) {
@@ -93,8 +83,7 @@ function AppShell({ user, logout }) {
               <Route path="/" element={<Home />} />
               <Route path="/planificar" element={<PlanRoute />} />
               <Route path="/historial" element={<History />} />
-              <Route path="/live" element={<Settings />} />
-            </Routes>
+              </Routes>
           </ErrorBoundary>
         </main>
 
