@@ -3,8 +3,11 @@ import { getTarifa } from './pricing';
 
 // Orden de pórticos por ruta (poniente → oriente)
 const ROUTE_SEQUENCES = {
-  'Costanera Norte': [
+  'Costanera Norte (eje)': [
     'cn-p9', 'cn-p6.2', 'cn-p6.1', 'cn-p5', 'cn-ev', 'cn-ep', 'cn-p3', 'cn-sb', 'cn-p2.2', 'cn-p2.1', 'cn-p1', 'cn-p0'
+  ],
+  'Costanera Norte (Kennedy)': [
+    'cn-p2.2', 'cn-p2.1', 'cn-p7', 'cn-p8'
   ],
 };
 

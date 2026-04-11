@@ -1,22 +1,22 @@
 {
   "tolls": [
-    { "id": "ruta68-zapata", "nombre": "Peaje Troncal Zapata", "ruta": "Ruta 68", "tarifa_semana": 2700, "tarifa_finde": 4000, "lat": -33.371068, "lng": -71.299739, "radio_deteccion_m": 250 },
-    { "id": "ruta68-lo-prado", "nombre": "Peaje Troncal Lo Prado", "ruta": "Ruta 68", "tarifa_semana": 2700, "tarifa_finde": 4000, "lat": -33.456658, "lng": -70.898203, "radio_deteccion_m": 250 },
+    { "id": "ruta68-zapata", "nombre": "Peaje Troncal Zapata", "ruta": "Ruta 68", "tarifa_semana": 2700, "tarifa_finde": 4000, "lat": -33.371068, "lng": -71.299739, "radio_deteccion_m": 300 },
+    { "id": "ruta68-lo-prado", "nombre": "Peaje Troncal Lo Prado", "ruta": "Ruta 68", "tarifa_semana": 2700, "tarifa_finde": 4000, "lat": -33.45720, "lng": -70.90060, "radio_deteccion_m": 300 },
 
-    { "id": "cn-p9", "nombre": "Pórtico Vespucio-Ruta68", "ruta": "Costanera Norte", "tarifa_semana": 535, "tarifa_finde": 535, "lat": -33.41866, "lng": -70.79190, "radio_deteccion_m": 300 },
-    { "id": "cn-p6.2", "nombre": "Pórtico Petersen", "ruta": "Costanera Norte", "tarifa_semana": 365, "tarifa_finde": 365, "lat": -33.41209, "lng": -70.75662, "radio_deteccion_m": 300 },
-    { "id": "cn-p6.1", "nombre": "Pórtico Carrascal", "ruta": "Costanera Norte", "tarifa_semana": 240, "tarifa_finde": 240, "lat": -33.41185, "lng": -70.73176, "radio_deteccion_m": 300 },
-    { "id": "cn-p5", "nombre": "Pórtico Vivaceta", "ruta": "Costanera Norte", "tarifa_semana": 716, "tarifa_finde": 716, "lat": -33.40739, "lng": -70.70977, "radio_deteccion_m": 300 },
-    { "id": "cn-ev", "nombre": "Entrada Vivaceta", "ruta": "Costanera Norte", "tarifa_semana": 119, "tarifa_finde": 119, "lat": -33.41055, "lng": -70.69886, "radio_deteccion_m": 300 },
-    { "id": "cn-ep", "nombre": "Entrada Purísima", "ruta": "Costanera Norte", "tarifa_semana": 226, "tarifa_finde": 226, "lat": -33.42152, "lng": -70.68257, "radio_deteccion_m": 300 },
-    { "id": "cn-sb", "nombre": "Salida Bellavista", "ruta": "Costanera Norte", "tarifa_semana": 234, "tarifa_finde": 234, "lat": -33.43105, "lng": -70.62550, "radio_deteccion_m": 300 },
-    { "id": "cn-p3", "nombre": "Pórtico Lo Saldes", "ruta": "Costanera Norte", "tarifa_semana": 719, "tarifa_finde": 719, "lat": -33.43341, "lng": -70.64671, "radio_deteccion_m": 300 },
-    { "id": "cn-p2.2", "nombre": "Pórtico Centenario", "ruta": "Costanera Norte", "tarifa_semana": 264, "tarifa_finde": 264, "lat": -33.41544, "lng": -70.60777, "radio_deteccion_m": 300 },
-    { "id": "cn-p2.1", "nombre": "Pórtico Gran Vía", "ruta": "Costanera Norte", "tarifa_semana": 426, "tarifa_finde": 426, "lat": -33.39479, "lng": -70.60356, "radio_deteccion_m": 300 },
-    { "id": "cn-p1", "nombre": "Pórtico San Francisco", "ruta": "Costanera Norte", "tarifa_semana": 449, "tarifa_finde": 449, "lat": -33.37725, "lng": -70.56801, "radio_deteccion_m": 300 },
+    { "id": "cn-p9", "nombre": "Pórtico Vespucio-Ruta68", "ruta": "Costanera Norte", "tarifa_semana": 535, "tarifa_finde": 535, "lat": -33.42030, "lng": -70.79420, "radio_deteccion_m": 300 },
+    { "id": "cn-p6.2", "nombre": "Pórtico Petersen", "ruta": "Costanera Norte", "tarifa_semana": 365, "tarifa_finde": 365, "lat": -33.41210, "lng": -70.75980, "radio_deteccion_m": 300 },
+    { "id": "cn-p6.1", "nombre": "Pórtico Carrascal", "ruta": "Costanera Norte", "tarifa_semana": 240, "tarifa_finde": 240, "lat": -33.41160, "lng": -70.73480, "radio_deteccion_m": 300 },
+    { "id": "cn-p5", "nombre": "Pórtico Vivaceta", "ruta": "Costanera Norte", "tarifa_semana": 716, "tarifa_finde": 716, "lat": -33.40780, "lng": -70.71290, "radio_deteccion_m": 300 },
+    { "id": "cn-ev", "nombre": "Entrada Vivaceta", "ruta": "Costanera Norte", "tarifa_semana": 119, "tarifa_finde": 119, "lat": -33.41055, "lng": -70.69886, "radio_deteccion_m": 350 },
+    { "id": "cn-ep", "nombre": "Entrada Purísima", "ruta": "Costanera Norte", "tarifa_semana": 226, "tarifa_finde": 226, "lat": -33.42152, "lng": -70.68257, "radio_deteccion_m": 350 },
+    { "id": "cn-p3", "nombre": "Pórtico Lo Saldes", "ruta": "Costanera Norte", "tarifa_semana": 719, "tarifa_finde": 719, "lat": -33.43341, "lng": -70.64671, "radio_deteccion_m": 400 },
+    { "id": "cn-sb", "nombre": "Salida Bellavista", "ruta": "Costanera Norte", "tarifa_semana": 234, "tarifa_finde": 234, "lat": -33.43105, "lng": -70.62550, "radio_deteccion_m": 350 },
+    { "id": "cn-p2.2", "nombre": "Pórtico Centenario", "ruta": "Costanera Norte", "tarifa_semana": 264, "tarifa_finde": 264, "lat": -33.41530, "lng": -70.60760, "radio_deteccion_m": 300 },
+    { "id": "cn-p2.1", "nombre": "Pórtico Gran Vía", "ruta": "Costanera Norte", "tarifa_semana": 426, "tarifa_finde": 426, "lat": -33.39479, "lng": -70.60356, "radio_deteccion_m": 350 },
+    { "id": "cn-p1", "nombre": "Pórtico San Francisco", "ruta": "Costanera Norte", "tarifa_semana": 449, "tarifa_finde": 449, "lat": -33.37725, "lng": -70.56801, "radio_deteccion_m": 350 },
     { "id": "cn-p0", "nombre": "Pórtico Padre Arteaga", "ruta": "Costanera Norte", "tarifa_semana": 150, "tarifa_finde": 150, "lat": -33.37171, "lng": -70.52466, "radio_deteccion_m": 300 },
-    { "id": "cn-p7", "nombre": "Pórtico Estoril (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 250, "tarifa_finde": 250, "lat": -33.39782, "lng": -70.57071, "radio_deteccion_m": 300 },
-    { "id": "cn-p8", "nombre": "Pórtico Las Tranqueras (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 584, "tarifa_finde": 584, "lat": -33.38401, "lng": -70.55344, "radio_deteccion_m": 300 },
+    { "id": "cn-p7", "nombre": "Pórtico Estoril (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 250, "tarifa_finde": 250, "lat": -33.39890, "lng": -70.57350, "radio_deteccion_m": 300 },
+    { "id": "cn-p8", "nombre": "Pórtico Las Tranqueras (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 584, "tarifa_finde": 584, "lat": -33.38401, "lng": -70.55344, "radio_deteccion_m": 350 },
 
     { "id": "ac-pa26", "nombre": "Pórtico PA26 (Compañía)", "ruta": "Autopista Central", "tarifa_semana": 500, "tarifa_finde": 500, "lat": -33.44202, "lng": -70.69179, "radio_deteccion_m": 300 },
     { "id": "ac-pa13", "nombre": "Pórtico PA13 (Viel)", "ruta": "Autopista Central", "tarifa_semana": 500, "tarifa_finde": 500, "lat": -33.46894, "lng": -70.65589, "radio_deteccion_m": 300 },
@@ -40,9 +40,7 @@
     { "id": "r78-melipilla", "nombre": "Peaje Variante Melipilla", "ruta": "Ruta 78 (Autopista del Sol)", "tarifa_semana": 1200, "tarifa_finde": 1800, "lat": -33.67340, "lng": -71.16762, "radio_deteccion_m": 250 },
 
     { "id": "nororiente-chicureo", "nombre": "Peaje Chicureo", "ruta": "Autopista Nororiente", "tarifa_semana": 1500, "tarifa_finde": 1500, "lat": -33.31189, "lng": -70.63530, "radio_deteccion_m": 250 },
-
     { "id": "tunel-sc", "nombre": "Túnel San Cristóbal", "ruta": "Túnel San Cristóbal", "tarifa_semana": 1200, "tarifa_finde": 1200, "lat": -33.41327, "lng": -70.61097, "radio_deteccion_m": 300 },
-
     { "id": "avo-recoleta", "nombre": "Pórtico AVO (Recoleta)", "ruta": "Vespucio Oriente (AVO)", "tarifa_semana": 500, "tarifa_finde": 500, "lat": -33.39559, "lng": -70.62423, "radio_deteccion_m": 250 }
   ]
 }
