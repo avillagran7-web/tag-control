@@ -191,8 +191,7 @@ export default function History() {
               )}
             </button>
           );
-        })
-        ))}
+        })}
       </div>
 
       {/* Borrar */}
