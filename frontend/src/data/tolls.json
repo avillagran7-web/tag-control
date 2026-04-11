@@ -1,138 +1,84 @@
 {
   "tolls": [
     {
-      "id": "ruta68-el-abrazo",
-      "nombre": "El Abrazo (Casablanca)",
+      "id": "ruta68-zapata",
+      "nombre": "Peaje Troncal Zapata",
       "ruta": "Ruta 68",
       "tarifa_semana": 1800,
       "tarifa_finde": 2700,
-      "lat": -33.3167,
-      "lng": -71.4097,
-      "radio_deteccion_m": 200
-    },
-    {
-      "id": "ruta68-la-polvora",
-      "nombre": "La Pólvora (Curacaví)",
-      "ruta": "Ruta 68",
-      "tarifa_semana": 1600,
-      "tarifa_finde": 2400,
-      "lat": -33.3945,
-      "lng": -71.1378,
-      "radio_deteccion_m": 200
+      "lat": -33.371068,
+      "lng": -71.299739,
+      "radio_deteccion_m": 250
     },
     {
       "id": "ruta68-lo-prado",
-      "nombre": "Lo Prado",
+      "nombre": "Peaje Troncal Lo Prado",
       "ruta": "Ruta 68",
       "tarifa_semana": 2100,
       "tarifa_finde": 3200,
-      "lat": -33.4442,
-      "lng": -70.9012,
-      "radio_deteccion_m": 300,
-      "_nota": "Túnel Lo Prado - radio amplio por pérdida GPS"
+      "lat": -33.456658,
+      "lng": -70.898203,
+      "radio_deteccion_m": 250
     },
     {
-      "id": "ruta68-pudahuel",
-      "nombre": "Pudahuel",
-      "ruta": "Ruta 68",
-      "tarifa_semana": 1500,
-      "tarifa_finde": 2300,
-      "lat": -33.4389,
-      "lng": -70.8129,
-      "radio_deteccion_m": 200
-    },
-    {
-      "id": "costanera-acceso-autopista",
-      "nombre": "Acceso Autopista (entrada)",
-      "ruta": "Costanera Norte",
-      "tarifa_semana": 2300,
-      "tarifa_finde": 2300,
-      "lat": -33.4195,
-      "lng": -70.6152,
-      "radio_deteccion_m": 350,
-      "_nota": "Zona de túneles - radio amplio"
-    },
-    {
-      "id": "costanera-los-leones",
-      "nombre": "Acceso Los Leones",
+      "id": "costanera-lo-saldes",
+      "nombre": "Pórtico Lo Saldes",
       "ruta": "Costanera Norte",
       "tarifa_semana": 1900,
       "tarifa_finde": 1900,
-      "lat": -33.4178,
-      "lng": -70.5989,
-      "radio_deteccion_m": 350,
-      "_nota": "Zona de túneles - radio amplio"
+      "lat": -33.399559,
+      "lng": -70.605765,
+      "radio_deteccion_m": 300
     },
     {
-      "id": "costanera-einstein",
-      "nombre": "Acceso Einstein / Kennedy",
+      "id": "costanera-vitacura",
+      "nombre": "Pórtico Vitacura",
       "ruta": "Costanera Norte",
       "tarifa_semana": 1600,
       "tarifa_finde": 1600,
-      "lat": -33.4012,
-      "lng": -70.5734,
-      "radio_deteccion_m": 350,
-      "_nota": "Zona de túneles - radio amplio"
+      "lat": -33.381834,
+      "lng": -70.588337,
+      "radio_deteccion_m": 300
     },
     {
-      "id": "vespucio-norte-pio-nono",
-      "nombre": "Acceso Pío Nono",
-      "ruta": "Vespucio Norte Express",
-      "tarifa_semana": 1200,
-      "tarifa_finde": 1200,
-      "lat": -33.4056,
-      "lng": -70.6456,
-      "radio_deteccion_m": 200
+      "id": "costanera-kennedy",
+      "nombre": "Pórtico Kennedy",
+      "ruta": "Costanera Norte",
+      "tarifa_semana": 2300,
+      "tarifa_finde": 2300,
+      "lat": -33.402187,
+      "lng": -70.578672,
+      "radio_deteccion_m": 400
     },
     {
       "id": "vespucio-norte-independencia",
-      "nombre": "Acceso Independencia",
+      "nombre": "Pórtico Independencia",
       "ruta": "Vespucio Norte Express",
       "tarifa_semana": 1400,
       "tarifa_finde": 1400,
-      "lat": -33.3978,
-      "lng": -70.6634,
-      "radio_deteccion_m": 200
-    },
-    {
-      "id": "vespucio-norte-el-salto",
-      "nombre": "Acceso El Salto",
-      "ruta": "Vespucio Norte Express",
-      "tarifa_semana": 1300,
-      "tarifa_finde": 1300,
-      "lat": -33.3889,
-      "lng": -70.6312,
-      "radio_deteccion_m": 200
-    },
-    {
-      "id": "vespucio-sur-miraflores",
-      "nombre": "Acceso Miraflores",
-      "ruta": "Vespucio Sur",
-      "tarifa_semana": 1500,
-      "tarifa_finde": 1500,
-      "lat": -33.4712,
-      "lng": -70.6178,
-      "radio_deteccion_m": 200
+      "lat": -33.366221,
+      "lng": -70.678476,
+      "radio_deteccion_m": 250
     },
     {
       "id": "vespucio-sur-la-florida",
-      "nombre": "Acceso La Florida",
+      "nombre": "Pórtico La Florida",
       "ruta": "Vespucio Sur",
       "tarifa_semana": 1300,
       "tarifa_finde": 1300,
-      "lat": -33.5134,
-      "lng": -70.6023,
-      "radio_deteccion_m": 200
+      "lat": -33.498885,
+      "lng": -70.587044,
+      "radio_deteccion_m": 250
     },
     {
       "id": "vespucio-sur-departamental",
-      "nombre": "Acceso Departamental",
+      "nombre": "Pórtico Departamental",
       "ruta": "Vespucio Sur",
       "tarifa_semana": 1200,
       "tarifa_finde": 1200,
-      "lat": -33.4867,
-      "lng": -70.6089,
-      "radio_deteccion_m": 200
+      "lat": -33.502492,
+      "lng": -70.654640,
+      "radio_deteccion_m": 250
     }
   ]
 }
