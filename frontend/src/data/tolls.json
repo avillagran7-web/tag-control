@@ -6,9 +6,9 @@
       "ruta": "Ruta 68",
       "tarifa_semana": 1800,
       "tarifa_finde": 2700,
-      "lat": -33.3156,
-      "lng": -71.4187,
-      "radio_deteccion_m": 150
+      "lat": -33.3167,
+      "lng": -71.4097,
+      "radio_deteccion_m": 200
     },
     {
       "id": "ruta68-la-polvora",
@@ -16,9 +16,9 @@
       "ruta": "Ruta 68",
       "tarifa_semana": 1600,
       "tarifa_finde": 2400,
-      "lat": -33.3891,
-      "lng": -71.1423,
-      "radio_deteccion_m": 150
+      "lat": -33.3945,
+      "lng": -71.1378,
+      "radio_deteccion_m": 200
     },
     {
       "id": "ruta68-lo-prado",
@@ -26,9 +26,10 @@
       "ruta": "Ruta 68",
       "tarifa_semana": 2100,
       "tarifa_finde": 3200,
-      "lat": -33.4612,
-      "lng": -70.8734,
-      "radio_deteccion_m": 150
+      "lat": -33.4442,
+      "lng": -70.9012,
+      "radio_deteccion_m": 300,
+      "_nota": "Túnel Lo Prado - radio amplio por pérdida GPS"
     },
     {
       "id": "ruta68-pudahuel",
@@ -36,9 +37,9 @@
       "ruta": "Ruta 68",
       "tarifa_semana": 1500,
       "tarifa_finde": 2300,
-      "lat": -33.4401,
-      "lng": -70.7891,
-      "radio_deteccion_m": 150
+      "lat": -33.4389,
+      "lng": -70.8129,
+      "radio_deteccion_m": 200
     },
     {
       "id": "costanera-acceso-autopista",
@@ -46,9 +47,10 @@
       "ruta": "Costanera Norte",
       "tarifa_semana": 2300,
       "tarifa_finde": 2300,
-      "lat": -33.4123,
-      "lng": -70.6234,
-      "radio_deteccion_m": 150
+      "lat": -33.4195,
+      "lng": -70.6152,
+      "radio_deteccion_m": 350,
+      "_nota": "Zona de túneles - radio amplio"
     },
     {
       "id": "costanera-los-leones",
@@ -56,9 +58,10 @@
       "ruta": "Costanera Norte",
       "tarifa_semana": 1900,
       "tarifa_finde": 1900,
-      "lat": -33.4198,
-      "lng": -70.5912,
-      "radio_deteccion_m": 150
+      "lat": -33.4178,
+      "lng": -70.5989,
+      "radio_deteccion_m": 350,
+      "_nota": "Zona de túneles - radio amplio"
     },
     {
       "id": "costanera-einstein",
@@ -66,9 +69,10 @@
       "ruta": "Costanera Norte",
       "tarifa_semana": 1600,
       "tarifa_finde": 1600,
-      "lat": -33.3987,
-      "lng": -70.5687,
-      "radio_deteccion_m": 150
+      "lat": -33.4012,
+      "lng": -70.5734,
+      "radio_deteccion_m": 350,
+      "_nota": "Zona de túneles - radio amplio"
     },
     {
       "id": "vespucio-norte-pio-nono",
@@ -76,9 +80,9 @@
       "ruta": "Vespucio Norte Express",
       "tarifa_semana": 1200,
       "tarifa_finde": 1200,
-      "lat": -33.4234,
-      "lng": -70.6512,
-      "radio_deteccion_m": 150
+      "lat": -33.4056,
+      "lng": -70.6456,
+      "radio_deteccion_m": 200
     },
     {
       "id": "vespucio-norte-independencia",
@@ -86,9 +90,9 @@
       "ruta": "Vespucio Norte Express",
       "tarifa_semana": 1400,
       "tarifa_finde": 1400,
-      "lat": -33.4056,
-      "lng": -70.6789,
-      "radio_deteccion_m": 150
+      "lat": -33.3978,
+      "lng": -70.6634,
+      "radio_deteccion_m": 200
     },
     {
       "id": "vespucio-norte-el-salto",
@@ -96,9 +100,9 @@
       "ruta": "Vespucio Norte Express",
       "tarifa_semana": 1300,
       "tarifa_finde": 1300,
-      "lat": -33.3845,
-      "lng": -70.6234,
-      "radio_deteccion_m": 150
+      "lat": -33.3889,
+      "lng": -70.6312,
+      "radio_deteccion_m": 200
     },
     {
       "id": "vespucio-sur-miraflores",
@@ -106,9 +110,9 @@
       "ruta": "Vespucio Sur",
       "tarifa_semana": 1500,
       "tarifa_finde": 1500,
-      "lat": -33.4678,
-      "lng": -70.6234,
-      "radio_deteccion_m": 150
+      "lat": -33.4712,
+      "lng": -70.6178,
+      "radio_deteccion_m": 200
     },
     {
       "id": "vespucio-sur-la-florida",
@@ -116,9 +120,9 @@
       "ruta": "Vespucio Sur",
       "tarifa_semana": 1300,
       "tarifa_finde": 1300,
-      "lat": -33.5012,
-      "lng": -70.5987,
-      "radio_deteccion_m": 150
+      "lat": -33.5134,
+      "lng": -70.6023,
+      "radio_deteccion_m": 200
     },
     {
       "id": "vespucio-sur-departamental",
@@ -126,9 +130,9 @@
       "ruta": "Vespucio Sur",
       "tarifa_semana": 1200,
       "tarifa_finde": 1200,
-      "lat": -33.4823,
-      "lng": -70.6012,
-      "radio_deteccion_m": 150
+      "lat": -33.4867,
+      "lng": -70.6089,
+      "radio_deteccion_m": 200
     }
   ]
 }

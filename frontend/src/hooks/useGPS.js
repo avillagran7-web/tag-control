@@ -14,21 +14,43 @@ export function useGPS({ onTollCrossed } = {}) {
   const [permissionState, setPermissionState] = useState('prompt');
 
   const watchIdRef = useRef(null);
-  const cooldownsRef = useRef({}); // { tollId: lastCrossedTimestamp }
+  const cooldownsRef = useRef({});
   const onTollCrossedRef = useRef(onTollCrossed);
+  const lastPositionRef = useRef(null); // Para calcular velocidad manualmente
 
   useEffect(() => {
     onTollCrossedRef.current = onTollCrossed;
   }, [onTollCrossed]);
 
-  // Verificar estado del permiso de ubicación
   useEffect(() => {
     if ('permissions' in navigator) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         setPermissionState(result.state);
         result.addEventListener('change', () => setPermissionState(result.state));
-      });
+      }).catch(() => {});
     }
+  }, []);
+
+  /**
+   * Calcula velocidad manualmente cuando el GPS no la reporta (Safari iOS).
+   * Usa la distancia entre la posición actual y la anterior dividida por el tiempo.
+   */
+  const calculateSpeed = useCallback((lat, lng, timestamp) => {
+    const last = lastPositionRef.current;
+    if (!last) return 0;
+
+    const distMeters = haversine(last.lat, last.lng, lat, lng);
+    const timeSec = (timestamp - last.timestamp) / 1000;
+
+    if (timeSec <= 0) return 0;
+
+    // m/s a km/h
+    const speedKmh = (distMeters / timeSec) * 3.6;
+
+    // Filtrar valores absurdos (GPS saltó)
+    if (speedKmh > 200) return last.speed || 0;
+
+    return speedKmh;
   }, []);
 
   const checkTollProximity = useCallback((lat, lng, currentSpeed) => {
@@ -38,24 +60,19 @@ export function useGPS({ onTollCrossed } = {}) {
       const distance = haversine(lat, lng, toll.lat, toll.lng);
       const lastCrossed = cooldownsRef.current[toll.id] || 0;
       const isInCooldown = now - lastCrossed < COOLDOWN_MS;
+      const radius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
 
-      if (
-        distance <= (toll.radio_deteccion_m || DETECTION_RADIUS_M) &&
-        currentSpeed >= MIN_SPEED_KMH &&
-        !isInCooldown
-      ) {
+      if (distance <= radius && currentSpeed >= MIN_SPEED_KMH && !isInCooldown) {
         cooldownsRef.current[toll.id] = now;
 
-        const crossing = {
+        onTollCrossedRef.current?.({
           toll,
           timestamp: now,
           lat,
           lng,
           speed: currentSpeed,
           distance: Math.round(distance),
-        };
-
-        onTollCrossedRef.current?.(crossing);
+        });
       }
     }
   }, []);
@@ -68,11 +85,31 @@ export function useGPS({ onTollCrossed } = {}) {
 
     setError(null);
     setIsTracking(true);
+    lastPositionRef.current = null;
 
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
-        const { latitude, longitude, speed: rawSpeed } = pos.coords;
-        const speedKmh = rawSpeed != null ? msToKmh(rawSpeed) : 0;
+        const { latitude, longitude, speed: rawSpeed, accuracy } = pos.coords;
+        const timestamp = pos.timestamp || Date.now();
+
+        // Ignorar lecturas con precisión muy mala (>100m)
+        if (accuracy > 100) return;
+
+        // Velocidad: usar la del GPS si existe, sino calcular manualmente
+        let speedKmh;
+        if (rawSpeed != null && rawSpeed >= 0) {
+          speedKmh = msToKmh(rawSpeed);
+        } else {
+          speedKmh = calculateSpeed(latitude, longitude, timestamp);
+        }
+
+        // Guardar posición para el cálculo manual de velocidad
+        lastPositionRef.current = {
+          lat: latitude,
+          lng: longitude,
+          timestamp,
+          speed: speedKmh,
+        };
 
         setPosition({ lat: latitude, lng: longitude });
         setSpeed(speedKmh);
@@ -90,20 +127,20 @@ export function useGPS({ onTollCrossed } = {}) {
             setError('No se pudo obtener tu ubicación. Verifica que el GPS esté activo.');
             break;
           case err.TIMEOUT:
-            setError('La solicitud de ubicación tardó demasiado.');
+            // No marcar como error fatal, reintentar
+            setError('Buscando señal GPS...');
             break;
           default:
-            setError('Error desconocido al obtener ubicación.');
+            setError('Error al obtener ubicación.');
         }
-        setIsTracking(false);
       },
       {
         enableHighAccuracy: true,
-        maximumAge: 3000,
-        timeout: 10000,
+        maximumAge: 2000,
+        timeout: 15000,
       }
     );
-  }, [checkTollProximity]);
+  }, [checkTollProximity, calculateSpeed]);
 
   const stopTracking = useCallback(() => {
     if (watchIdRef.current != null) {
@@ -111,9 +148,9 @@ export function useGPS({ onTollCrossed } = {}) {
       watchIdRef.current = null;
     }
     setIsTracking(false);
+    lastPositionRef.current = null;
   }, []);
 
-  // Cleanup al desmontar
   useEffect(() => {
     return () => {
       if (watchIdRef.current != null) {

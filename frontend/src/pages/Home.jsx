@@ -171,8 +171,9 @@ export default function Home() {
 
       {/* Aviso pantalla */}
       {trip.isActive && (
-        <div className="bg-primary-light rounded-xl p-3 text-xs text-primary text-center">
-          No cierres Safari. La pantalla se mantiene encendida.
+        <div className="bg-primary-light rounded-xl p-4 text-primary">
+          <p className="text-sm font-semibold">Mantén esta pantalla abierta</p>
+          <p className="text-xs mt-1 opacity-80">No cambies de app ni bloquees el celular. Si lo haces, el GPS se detiene y no detectará peajes.</p>
         </div>
       )}
 
