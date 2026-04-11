@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useGPS } from '../hooks/useGPS';
 import { useSimulatedGPS } from '../hooks/useSimulatedGPS';
 import { useTrip } from '../hooks/useTrip';
@@ -7,13 +7,16 @@ import TollChip from '../components/TollChip';
 import TripCard from '../components/TripCard';
 
 export default function Home() {
-  const [simMode, setSimMode] = useState(true);
+  const [simMode, setSimMode] = useState(false); // GPS real por defecto
   const trip = useTrip();
+  const wakeLockRef = useRef(null);
 
   const handleTollCrossed = useCallback(
     (crossing) => {
       if (!trip.isActive) return;
       trip.addCrossing(crossing);
+      // Vibrar al cruzar peaje (si el dispositivo lo soporta)
+      if (navigator.vibrate) navigator.vibrate(200);
     },
     [trip.isActive, trip.addCrossing]
   );
@@ -21,6 +24,30 @@ export default function Home() {
   const realGPS = useGPS({ onTollCrossed: handleTollCrossed });
   const simGPS = useSimulatedGPS({ onTollCrossed: handleTollCrossed });
   const gps = simMode ? simGPS : realGPS;
+
+  // Wake Lock: mantener pantalla encendida durante viaje
+  useEffect(() => {
+    async function toggleWakeLock() {
+      if (trip.isActive && !simMode) {
+        try {
+          if ('wakeLock' in navigator) {
+            wakeLockRef.current = await navigator.wakeLock.request('screen');
+          }
+        } catch {}
+      } else {
+        if (wakeLockRef.current) {
+          wakeLockRef.current.release().catch(() => {});
+          wakeLockRef.current = null;
+        }
+      }
+    }
+    toggleWakeLock();
+    return () => {
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release().catch(() => {});
+      }
+    };
+  }, [trip.isActive, simMode]);
 
   const handleToggleTrip = () => {
     if (trip.isActive) {
@@ -37,15 +64,19 @@ export default function Home() {
       {/* Toggle simulación */}
       <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm">
         <div>
-          <p className="text-sm font-medium text-gray-700">Modo simulación</p>
-          <p className="text-xs text-gray-400">Ruta 68: Algarrobo → Santiago</p>
+          <p className="text-sm font-medium text-gray-700">
+            {simMode ? 'Modo simulación' : 'Modo GPS real'}
+          </p>
+          <p className="text-xs text-gray-400">
+            {simMode ? 'Demo: Algarrobo → Santiago' : 'Detecta peajes automáticamente'}
+          </p>
         </div>
         <button
           onClick={() => {
             if (!trip.isActive) setSimMode(!simMode);
           }}
           className={`relative w-12 h-7 rounded-full transition-colors ${
-            simMode ? 'bg-primary' : 'bg-gray-300'
+            simMode ? 'bg-orange-400' : 'bg-primary'
           } ${trip.isActive ? 'opacity-50' : ''}`}
         >
           <span
@@ -77,6 +108,13 @@ export default function Home() {
             ? 'Simular viaje Algarrobo → Santiago'
             : 'Iniciar viaje'}
       </button>
+
+      {/* Aviso pantalla encendida */}
+      {trip.isActive && !simMode && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-700">
+          Pantalla activa para mantener el GPS. No cierres Safari durante el viaje.
+        </div>
+      )}
 
       {/* Error GPS */}
       {gps.error && (
@@ -137,7 +175,11 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <p className="text-sm">Presiona el botón para simular un viaje por Ruta 68</p>
+          <p className="text-sm">
+            {simMode
+              ? 'Presiona el botón para simular un viaje por Ruta 68'
+              : 'Presiona "Iniciar viaje" antes de salir a la carretera'}
+          </p>
         </div>
       )}
     </div>
