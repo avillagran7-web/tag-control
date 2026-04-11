@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useGPS } from '../hooks/useGPS';
 import { useTrip } from '../hooks/useTrip';
 import { getTarifaLabel } from '../lib/pricing';
@@ -6,7 +6,28 @@ import { formatCLP } from '../lib/format';
 import { playTollSound, initAudio } from '../lib/sound';
 import TollChip from '../components/TollChip';
 
+const DRIVER_KEY = 'tagcontrol_driver';
+const DRIVERS_KEY = 'tagcontrol_drivers';
+
+function getSavedDrivers() {
+  try { return JSON.parse(localStorage.getItem(DRIVERS_KEY) || '[]'); } catch { return []; }
+}
+function saveDriver(name) {
+  const drivers = getSavedDrivers();
+  if (!drivers.includes(name)) {
+    drivers.push(name);
+    localStorage.setItem(DRIVERS_KEY, JSON.stringify(drivers));
+  }
+  localStorage.setItem(DRIVER_KEY, name);
+}
+function getLastDriver() {
+  return localStorage.getItem(DRIVER_KEY) || '';
+}
+
 export default function Home() {
+  const [driver, setDriver] = useState(getLastDriver);
+  const [newDriver, setNewDriver] = useState('');
+  const [drivers] = useState(getSavedDrivers);
   const trip = useTrip();
   const wakeLockRef = useRef(null);
 
@@ -21,7 +42,6 @@ export default function Home() {
 
   const gps = useGPS({ onTollCrossed: handleTollCrossed });
 
-  // Wake Lock + re-acquire on visibility change
   useEffect(() => {
     async function acquireWakeLock() {
       try {
@@ -30,13 +50,9 @@ export default function Home() {
         }
       } catch {}
     }
-
     function handleVisibilityChange() {
-      if (trip.isActive && document.visibilityState === 'visible') {
-        acquireWakeLock();
-      }
+      if (trip.isActive && document.visibilityState === 'visible') acquireWakeLock();
     }
-
     if (trip.isActive) {
       acquireWakeLock();
       document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -46,7 +62,6 @@ export default function Home() {
         wakeLockRef.current = null;
       }
     }
-
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {});
@@ -58,8 +73,14 @@ export default function Home() {
       gps.stopTracking();
       trip.endTrip();
     } else {
+      const name = newDriver.trim() || driver;
+      if (name) {
+        saveDriver(name);
+        setDriver(name);
+        setNewDriver('');
+      }
       initAudio();
-      trip.startTrip();
+      trip.startTrip(name || 'Sin nombre');
       gps.startTracking();
     }
   };
@@ -77,6 +98,35 @@ export default function Home() {
               ? 'Tarifa de fin de semana activa'
               : 'Tarifa de día de semana activa'}
           </p>
+        </div>
+
+        {/* Selector de conductor */}
+        <div className="bg-cream-dark rounded-xl p-4">
+          <p className="text-xs font-medium text-tierra mb-2">¿Quién viaja?</p>
+          {drivers.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {drivers.map((d) => (
+                <button
+                  key={d}
+                  onClick={() => { setDriver(d); setNewDriver(''); }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    driver === d && !newDriver
+                      ? 'bg-negro text-cream'
+                      : 'bg-cream text-tierra active:bg-negro/10'
+                  }`}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+          )}
+          <input
+            type="text"
+            value={newDriver}
+            onChange={(e) => { setNewDriver(e.target.value); setDriver(''); }}
+            placeholder={drivers.length > 0 ? 'O escribe otro nombre...' : 'Escribe tu nombre'}
+            className="w-full bg-cream border border-cream rounded-xl px-3 py-2.5 text-sm text-negro placeholder-hongo focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
         </div>
 
         <div className="bg-primary rounded-2xl p-6 text-cream text-center">
@@ -128,6 +178,7 @@ export default function Home() {
         <div className="flex items-center justify-between mb-1">
           <span className="text-sm text-tierra">
             {trip.isActive ? 'Viaje en curso' : 'Viaje terminado'}
+            {trip.driver && <span className="text-cream/60"> &middot; {trip.driver}</span>}
           </span>
           {trip.isActive && (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-primary/30 text-primary-light">

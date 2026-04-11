@@ -3,8 +3,24 @@ import { getSavedTrips, clearTrips } from '../lib/storage';
 import { formatCLP, formatDate, formatTime } from '../lib/format';
 
 export default function History() {
-  const [trips, setTrips] = useState(getSavedTrips);
+  const [allTrips, setAllTrips] = useState(getSavedTrips);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
+  const [filterDriver, setFilterDriver] = useState('todos');
+
+  // Obtener lista de conductores
+  const driverList = useMemo(() => {
+    const names = new Set();
+    for (const t of allTrips) {
+      if (t.driver) names.add(t.driver);
+    }
+    return [...names].sort();
+  }, [allTrips]);
+
+  // Filtrar viajes
+  const trips = useMemo(() => {
+    if (filterDriver === 'todos') return allTrips;
+    return allTrips.filter((t) => t.driver === filterDriver);
+  }, [allTrips, filterDriver]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -40,11 +56,11 @@ export default function History() {
 
   const handleClear = () => {
     clearTrips();
-    setTrips([]);
+    setAllTrips([]);
     setShowConfirmClear(false);
   };
 
-  if (trips.length === 0) {
+  if (allTrips.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8">
         <svg className="w-16 h-16 mb-3 text-tierra opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
@@ -62,8 +78,35 @@ export default function History() {
     <div className="flex flex-col gap-4 p-4 pb-24">
       <h1 className="text-lg font-bold text-negro">Historial</h1>
 
+      {/* Filtro por conductor */}
+      {driverList.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto">
+          <button
+            onClick={() => setFilterDriver('todos')}
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              filterDriver === 'todos' ? 'bg-negro text-cream' : 'bg-cream-dark text-tierra'
+            }`}
+          >
+            Todos
+          </button>
+          {driverList.map((d) => (
+            <button
+              key={d}
+              onClick={() => setFilterDriver(d)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                filterDriver === d ? 'bg-negro text-cream' : 'bg-cream-dark text-tierra'
+              }`}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="bg-negro rounded-2xl p-5 text-cream">
-        <p className="text-sm text-tierra mb-1">Total acumulado</p>
+        <p className="text-sm text-tierra mb-1">
+          {filterDriver === 'todos' ? 'Total acumulado' : `Total de ${filterDriver}`}
+        </p>
         <p className="text-4xl font-bold tracking-tight">{formatCLP(stats.totalGastado)}</p>
         <div className="grid grid-cols-3 gap-3 mt-4">
           <div>
@@ -116,6 +159,7 @@ export default function History() {
                   {(trip.routes || []).join(' → ') || 'Viaje'}
                 </p>
                 <p className="text-xs text-tierra mt-0.5">
+                  {trip.driver && <span className="font-medium">{trip.driver} &middot; </span>}
                   {formatDate(trip.startTime)} &middot; {formatTime(trip.startTime)} – {formatTime(trip.endTime)}
                 </p>
               </div>

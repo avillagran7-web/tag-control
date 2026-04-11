@@ -6,17 +6,18 @@ export function useTrip() {
   const [isActive, setIsActive] = useState(false);
   const [crossings, setCrossings] = useState([]);
   const [startTime, setStartTime] = useState(null);
+  const [driver, setDriver] = useState(null);
   const crossingsRef = useRef([]);
 
-  // Mantener ref sincronizado
   useEffect(() => {
     crossingsRef.current = crossings;
   }, [crossings]);
 
-  const startTrip = useCallback(() => {
+  const startTrip = useCallback((driverName) => {
     setIsActive(true);
     setCrossings([]);
     setStartTime(Date.now());
+    setDriver(driverName || null);
   }, []);
 
   const endTrip = useCallback(() => {
@@ -26,6 +27,7 @@ export function useTrip() {
       const routes = [...new Set(prev.map((c) => c.toll.ruta))];
       saveTrip({
         id: Date.now().toString(),
+        driver: driver || 'Sin nombre',
         startTime: startTime || prev[0].timestamp,
         endTime: Date.now(),
         crossings: prev.map((c) => ({
@@ -43,7 +45,8 @@ export function useTrip() {
     setIsActive(false);
     setCrossings([]);
     setStartTime(null);
-  }, [startTime]);
+    setDriver(null);
+  }, [startTime, driver]);
 
   const addCrossing = useCallback((crossing) => {
     setCrossings((prev) => [...prev, crossing]);
@@ -56,6 +59,7 @@ export function useTrip() {
     isActive,
     crossings,
     startTime,
+    driver,
     totalCost,
     tollCount,
     startTrip,
