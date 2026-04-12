@@ -171,200 +171,160 @@ export default function Home() {
   // ─── PANTALLA ANTES DE INICIAR ───
   if (!trip.isActive && trip.crossings.length === 0) {
     return (
-      <div className="flex flex-col gap-5 p-5 pb-24">
-        <div className="text-center pt-8 pb-4">
-          <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
-            <svg viewBox="0 0 512 512" className="w-12 h-12">
-              <path d="M256 80c-70 0-126 56-126 126 0 90 126 210 126 210s126-120 126-210c0-70-56-126-126-126z" fill="#fff" opacity="0.95"/>
-              <circle cx="256" cy="206" r="56" fill="#2D6A4F"/>
-              <path d="M232 210 L250 228 L284 188" fill="none" stroke="#A7F3D0" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+      <div className="flex flex-col justify-between p-5 pb-2" style={{ minHeight: 'calc(100vh - 56px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 52px)' }}>
+        <div>
+          <div className="text-center pt-4 pb-3">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
+              <svg viewBox="0 0 512 512" className="w-10 h-10">
+                <path d="M256 80c-70 0-126 56-126 126 0 90 126 210 126 210s126-120 126-210c0-70-56-126-126-126z" fill="#fff" opacity="0.95"/>
+                <circle cx="256" cy="206" r="56" fill="#2D6A4F"/>
+                <path d="M232 210 L250 228 L284 188" fill="none" stroke="#A7F3D0" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <h1 className="text-[20px] font-bold text-text tracking-tight">Registra tus peajes</h1>
+            <p className="text-[14px] text-text-secondary mt-0.5">
+              Detecta automáticamente cada peaje que cruzas
+            </p>
           </div>
-          <h1 className="text-[22px] font-bold text-text tracking-tight">Registra tus peajes</h1>
-          <p className="text-[15px] text-text-secondary mt-1">
-            Detecta automáticamente cada peaje que cruzas
-          </p>
+
+          {/* Meta de gasto mensual */}
+          {budget && (
+            <div className="bg-surface-secondary rounded-2xl p-4 mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <p className="text-[12px] font-semibold text-text-secondary uppercase tracking-wide">Peajes este mes</p>
+                <button
+                  onClick={() => { setEditingBudget(!editingBudget); setBudgetInput(budget.monthly_limit > 0 ? String(budget.monthly_limit) : ''); }}
+                  className="text-[12px] text-primary font-medium"
+                >
+                  {budget.monthly_limit > 0 ? 'Editar meta' : 'Fijar meta'}
+                </button>
+              </div>
+              <p className="text-[26px] font-bold text-text tracking-tight">{formatCLP(budget.spent)}</p>
+              {budget.monthly_limit > 0 && (
+                <>
+                  <div className="flex justify-between text-[11px] text-text-tertiary mt-1.5 mb-1">
+                    <span>{Math.round((budget.spent / budget.monthly_limit) * 100)}% usado</span>
+                    <span>Meta: {formatCLP(budget.monthly_limit)}</span>
+                  </div>
+                  <div className="w-full bg-surface-tertiary rounded-full h-1.5">
+                    <div
+                      className={`h-1.5 rounded-full transition-all ${budget.spent > budget.monthly_limit ? 'bg-danger' : budget.spent > budget.monthly_limit * 0.8 ? 'bg-yellow-500' : 'bg-primary'}`}
+                      style={{ width: `${Math.min((budget.spent / budget.monthly_limit) * 100, 100)}%` }}
+                    />
+                  </div>
+                  {budget.spent > budget.monthly_limit && (
+                    <p className="text-[11px] text-danger mt-1">Excediste tu meta por {formatCLP(budget.spent - budget.monthly_limit)}</p>
+                  )}
+                </>
+              )}
+              {editingBudget && (
+                <div className="mt-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={budgetInput}
+                      onChange={(e) => setBudgetInput(e.target.value)}
+                      placeholder="Ej: 50000"
+                      className="flex-1 bg-surface rounded-xl px-3 py-2.5 text-[16px] text-text border border-surface-tertiary focus:outline-none focus:border-primary"
+                    />
+                    <button onClick={saveBudget} className="px-4 py-2.5 bg-primary text-white rounded-xl text-[14px] font-semibold">OK</button>
+                    <button onClick={() => setEditingBudget(false)} className="px-3 py-2.5 bg-surface-secondary text-text-tertiary rounded-xl text-[14px]">X</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Meta de gasto mensual */}
-        {budget && (
-          <div className="bg-surface-secondary rounded-2xl p-5">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-[13px] font-semibold text-text-secondary uppercase tracking-wide">Gasto en peajes este mes</p>
-              <button
-                onClick={() => { setEditingBudget(!editingBudget); setBudgetInput(budget.monthly_limit > 0 ? String(budget.monthly_limit) : ''); }}
-                className="text-[12px] text-primary font-medium"
-              >
-                {budget.monthly_limit > 0 ? 'Editar meta' : 'Fijar meta'}
-              </button>
-            </div>
-            <p className="text-[28px] font-bold text-text tracking-tight">{formatCLP(budget.spent)}</p>
-            {budget.monthly_limit > 0 && (
-              <>
-                <div className="flex justify-between text-[12px] text-text-tertiary mt-2 mb-1">
-                  <span>{Math.round((budget.spent / budget.monthly_limit) * 100)}% usado</span>
-                  <span>Meta: {formatCLP(budget.monthly_limit)}</span>
-                </div>
-                <div className="w-full bg-surface-tertiary rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${budget.spent > budget.monthly_limit ? 'bg-danger' : budget.spent > budget.monthly_limit * 0.8 ? 'bg-yellow-500' : 'bg-primary'}`}
-                    style={{ width: `${Math.min((budget.spent / budget.monthly_limit) * 100, 100)}%` }}
-                  />
-                </div>
-                {budget.spent > budget.monthly_limit && (
-                  <p className="text-[12px] text-danger mt-1">Excediste tu meta por {formatCLP(budget.spent - budget.monthly_limit)}</p>
-                )}
-              </>
-            )}
-            {editingBudget && (
-              <div className="mt-3">
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={budgetInput}
-                    onChange={(e) => setBudgetInput(e.target.value)}
-                    placeholder="Ej: 50000"
-                    className="flex-1 bg-surface rounded-xl px-3 py-3 text-[16px] text-text border border-surface-tertiary focus:outline-none focus:border-primary"
-                  />
-                  <button onClick={saveBudget} className="px-5 py-3 bg-primary text-white rounded-xl text-[14px] font-semibold">OK</button>
-                  <button onClick={() => setEditingBudget(false)} className="px-3 py-3 bg-surface-secondary text-text-tertiary rounded-xl text-[14px]">X</button>
-                </div>
-                <p className="text-[12px] text-text-tertiary mt-1">Meta mensual en pesos (ej: $50.000)</p>
-              </div>
-            )}
-          </div>
-        )}
+        <div>
+          <button
+            onClick={handleToggleTrip}
+            className="w-full py-[16px] rounded-2xl font-semibold text-[17px] text-white bg-primary active:bg-primary-dark transition-all shadow-sm mb-3"
+          >
+            Comenzar viaje
+          </button>
 
-        <button
-          onClick={handleToggleTrip}
-          className="w-full py-[18px] rounded-2xl font-semibold text-[17px] text-white bg-primary active:bg-primary-dark transition-all shadow-sm"
-        >
-          Comenzar viaje
-        </button>
-
-        <div className="bg-surface-secondary rounded-2xl p-5">
-          <p className="text-[15px] font-semibold text-text mb-4">¿Cómo funciona?</p>
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-4 gap-2 mb-3">
             {[
-              ['Comenzar viaje', 'Presiona el botón antes de salir'],
-              ['Permiso GPS', 'Acepta la ubicación si te lo pide'],
-              ['Alerta sonora', 'Suena cada vez que cruzas un peaje'],
-              ['Detener viaje', 'Al llegar, para ver el resumen'],
-            ].map(([title, desc], i) => (
-              <div key={i} className="flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[12px] font-bold text-primary">{i + 1}</span>
-                </span>
-                <div>
-                  <p className="text-[14px] font-medium text-text">{title}</p>
-                  <p className="text-[13px] text-text-secondary">{desc}</p>
-                </div>
+              ['📍', 'Iniciar viaje'],
+              ['📡', 'GPS detecta'],
+              ['🔔', 'Suena alerta'],
+              ['✅', 'Ver resumen'],
+            ].map(([icon, label], i) => (
+              <div key={i} className="bg-surface-secondary rounded-xl py-2.5 px-1 text-center">
+                <span className="text-[18px]">{icon}</span>
+                <p className="text-[10px] text-text-secondary mt-0.5 leading-tight">{label}</p>
               </div>
             ))}
           </div>
-        </div>
 
-        <p className="text-[12px] text-text-tertiary text-center">
-          Mantén Safari abierto durante el viaje &middot; Tarifa {tarifaLabel.toLowerCase()}
-        </p>
+          <p className="text-[11px] text-text-tertiary text-center pb-1">
+            Mantén Safari abierto durante el viaje &middot; Tarifa {tarifaLabel.toLowerCase()}
+          </p>
+        </div>
       </div>
     );
   }
 
   // ─── PANTALLA DURANTE / DESPUÉS DEL VIAJE ───
   return (
-    <div className="flex flex-col gap-4 p-5 pb-24">
+    <div className="flex flex-col gap-3 p-5 pb-2" style={{ minHeight: 'calc(100vh - 56px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 52px)' }}>
       {/* Hero total */}
-      <div className="bg-primary rounded-3xl p-6 text-white shadow-lg">
-        <div className="flex items-center justify-between mb-3">
+      <div className="bg-primary rounded-2xl p-5 text-white shadow-lg">
+        <div className="flex items-center justify-between mb-2">
           <span className="text-[13px] font-medium text-white/70">
             {trip.isActive ? 'Viaje en curso' : 'Viaje terminado'}
           </span>
-          {trip.isActive && (
-            <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1 rounded-full bg-white/20">
-              <span className="w-2 h-2 rounded-full bg-green-300 animate-pulse" />
-              GPS activo
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {gps.isTracking && gps.position && (
+              <span className="text-[13px] text-white/50">{Math.round(gps.speed || 0)} km/h</span>
+            )}
+            {trip.isActive && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                GPS
+              </span>
+            )}
+          </div>
         </div>
-        <p className="text-[44px] font-bold tracking-tight leading-none">{formatCLP(trip.totalCost)}</p>
-        <p className="text-[14px] text-white/60 mt-2">
+        <p className="text-[40px] font-bold tracking-tight leading-none">{formatCLP(trip.totalCost)}</p>
+        <p className="text-[13px] text-white/60 mt-1.5">
           {trip.tollCount === 0
             ? 'Esperando peajes...'
             : `${trip.tollCount} peaje${trip.tollCount > 1 ? 's' : ''}`}
-          {' '}&middot; Tarifa {tarifaLabel.toLowerCase()}
+          {' '}&middot; {tarifaLabel}
         </p>
       </div>
 
-      {/* Botones */}
-      {trip.isActive ? (
-        <button
-          onClick={() => {
-            if (window.confirm('¿Seguro que quieres detener el viaje?')) handleToggleTrip();
-          }}
-          className="w-full py-[16px] rounded-2xl font-semibold text-[17px] bg-danger text-white active:opacity-80 transition-all"
-        >
-          Detener viaje
-        </button>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {trip.crossings.length > 0 && (
-            <button
-              onClick={handleResumeTrip}
-              className="w-full py-[16px] rounded-2xl font-semibold text-[17px] bg-primary text-white active:opacity-80 transition-all"
-            >
-              Reanudar viaje
-            </button>
-          )}
-          <button
-            onClick={handleToggleTrip}
-            className="w-full py-[14px] rounded-2xl font-semibold text-[15px] bg-surface-secondary text-text-secondary active:opacity-80 transition-all"
-          >
-            Nuevo viaje
-          </button>
-        </div>
-      )}
-
-      {/* Aviso prominente */}
+      {/* Aviso compacto */}
       {trip.isActive && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
-          <span className="text-[20px] mt-0.5">⚠️</span>
-          <div>
-            <p className="text-[14px] font-semibold text-yellow-800">No cierres esta pantalla</p>
-            <p className="text-[13px] text-yellow-700 mt-0.5">Si cambias de app o bloqueas el celular, los peajes no se detectarán</p>
-          </div>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
+          <span className="text-[14px]">⚠️</span>
+          <p className="text-[12px] text-yellow-800"><strong>No cierres esta pantalla</strong> — los peajes no se detectarán</p>
         </div>
       )}
 
       {/* Error GPS */}
       {gps.error && (
-        <div className="bg-danger/10 rounded-2xl p-4">
-          <p className="text-[14px] font-medium text-danger">Problema con el GPS</p>
-          <p className="text-[13px] text-danger/80 mt-0.5">{gps.error}</p>
-        </div>
-      )}
-
-      {/* Velocidad (sin coordenadas crudas) */}
-      {gps.isTracking && gps.position && (
-        <div className="flex justify-center px-1">
-          <span className="text-[14px] text-text-tertiary">{Math.round(gps.speed || 0)} km/h</span>
+        <div className="bg-danger/10 rounded-xl px-4 py-2.5">
+          <p className="text-[13px] font-medium text-danger">{gps.error}</p>
         </div>
       )}
 
       {/* Esperando peajes */}
       {trip.isActive && trip.crossings.length === 0 && (
-        <div className="text-center py-8">
-          <div className="w-10 h-10 mx-auto border-[3px] border-surface-tertiary border-t-primary rounded-full animate-spin" />
-          <p className="text-[15px] text-text mt-4">Conduciendo...</p>
-          <p className="text-[13px] text-text-tertiary mt-1">Te avisamos con un sonido cuando cruces un peaje</p>
+        <div className="text-center py-6 flex-1 flex flex-col items-center justify-center">
+          <div className="w-9 h-9 mx-auto border-[3px] border-surface-tertiary border-t-primary rounded-full animate-spin" />
+          <p className="text-[14px] text-text mt-3">Conduciendo...</p>
+          <p className="text-[12px] text-text-tertiary mt-0.5">Suena una alerta en cada peaje</p>
         </div>
       )}
 
       {/* Peajes cruzados */}
       {trip.crossings.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <h2 className="text-[13px] font-semibold text-text-secondary px-1 uppercase tracking-wide">Peajes</h2>
+        <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 340px)' }}>
+          <h2 className="text-[12px] font-semibold text-text-secondary px-1 uppercase tracking-wide">Peajes</h2>
           {[...trip.crossings].reverse().map((crossing) => (
             <TollChip key={`${crossing.toll.id}-${crossing.timestamp}`} crossing={crossing} />
           ))}
@@ -373,14 +333,44 @@ export default function Home() {
 
       {/* Ida y vuelta */}
       {!trip.isActive && trip.crossings.length > 0 && (
-        <div className="bg-surface-secondary rounded-2xl p-4">
+        <div className="bg-surface-secondary rounded-xl px-4 py-3">
           <div className="flex justify-between items-center">
-            <span className="text-[14px] text-text-secondary">Ida y vuelta (estimado)</span>
-            <span className="text-[17px] font-bold text-text">{formatCLP(trip.totalCost * 2)}</span>
+            <span className="text-[13px] text-text-secondary">Ida y vuelta (est.)</span>
+            <span className="text-[16px] font-bold text-text">{formatCLP(trip.totalCost * 2)}</span>
           </div>
-          <p className="text-[11px] text-text-tertiary mt-1">La tarifa de vuelta puede variar según el horario</p>
         </div>
       )}
+
+      {/* Botones */}
+      <div className="mt-auto pt-2">
+        {trip.isActive ? (
+          <button
+            onClick={() => {
+              if (window.confirm('¿Seguro que quieres detener el viaje?')) handleToggleTrip();
+            }}
+            className="w-full py-[14px] rounded-2xl font-semibold text-[16px] bg-danger text-white active:opacity-80 transition-all"
+          >
+            Detener viaje
+          </button>
+        ) : (
+          <div className="flex gap-2">
+            {trip.crossings.length > 0 && (
+              <button
+                onClick={handleResumeTrip}
+                className="flex-1 py-[14px] rounded-2xl font-semibold text-[15px] bg-primary text-white active:opacity-80 transition-all"
+              >
+                Reanudar
+              </button>
+            )}
+            <button
+              onClick={handleToggleTrip}
+              className={`${trip.crossings.length > 0 ? 'flex-1' : 'w-full'} py-[14px] rounded-2xl font-semibold text-[15px] bg-surface-secondary text-text-secondary active:opacity-80 transition-all`}
+            >
+              Nuevo viaje
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
