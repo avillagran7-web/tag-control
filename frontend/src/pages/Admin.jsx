@@ -584,14 +584,12 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                         <p className="text-[13px] font-bold" style={{ color: chart.color }}>
                           {chart.key.includes('asto') ? formatCLP(latest) : latest}
                         </p>
-                        <div className="flex items-end gap-[2px] h-12 mt-1">
+                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 48, marginTop: 4 }}>
                           {sliced.map((day) => {
                             const val = day[chart.key] || 0;
                             const hPx = Math.max(Math.round((val / max) * 48), 2);
                             return (
-                              <div key={day.date} className="flex-1 flex items-end h-full">
-                                <div className="w-full rounded-sm" style={{ height: `${hPx}px`, background: chart.color }} />
-                              </div>
+                              <div key={day.date} style={{ flex: 1, height: hPx, background: chart.color, borderRadius: 2 }} />
                             );
                           })}
                         </div>
