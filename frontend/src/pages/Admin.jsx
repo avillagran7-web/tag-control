@@ -584,10 +584,10 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                         <p className="text-[13px] font-bold" style={{ color: chart.color }}>
                           {chart.key.includes('asto') ? formatCLP(latest) : latest}
                         </p>
-                        <div style={{ position: 'relative', height: 48, marginTop: 4 }}>
+                        <div style={{ position: 'relative', height: 60, marginTop: 4 }}>
                           {sliced.map((day, idx) => {
                             const val = day[chart.key] || 0;
-                            const hPx = Math.max(Math.round((val / max) * 48), 2);
+                            const hPx = Math.max(Math.round((val / max) * 46), 2);
                             const barWidth = 100 / sliced.length;
                             return (
                               <div key={day.date} style={{
@@ -595,10 +595,17 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                                 bottom: 0,
                                 left: `${idx * barWidth}%`,
                                 width: `${barWidth - 1}%`,
-                                height: hPx,
-                                background: chart.color,
-                                borderRadius: 2,
-                              }} />
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                              }}>
+                                {val > 0 && (
+                                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginBottom: 2 }}>
+                                    {chart.key.includes('asto') ? `${Math.round(val/1000)}k` : val}
+                                  </span>
+                                )}
+                                <div style={{ width: '100%', height: hPx, background: chart.color, borderRadius: 2 }} />
+                              </div>
                             );
                           })}
                         </div>
