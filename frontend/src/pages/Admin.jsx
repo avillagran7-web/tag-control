@@ -274,23 +274,23 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
   // Calcular datos de growth por día
   const growthData = useMemo(() => {
     const days = {};
+    const toKey = (d) => d.toISOString().slice(0, 10); // YYYY-MM-DD for sorting
+    const toLabel = (d) => d.toLocaleDateString('es-CL'); // display
     for (const u of users) {
-      const day = new Date(u.created_at).toLocaleDateString('es-CL');
-      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
-      days[day].newUsers++;
+      const d = new Date(u.created_at);
+      const key = toKey(d);
+      if (!days[key]) days[key] = { date: toLabel(d), sortKey: key, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
+      days[key].newUsers++;
     }
     for (const t of completedTrips) {
-      const day = new Date(t.start_time).toLocaleDateString('es-CL');
-      if (!days[day]) days[day] = { date: day, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
-      days[day].trips++;
-      days[day].gasto += t.total_cost || 0;
-      days[day].tolls += t.toll_count || 0;
+      const d = new Date(t.start_time);
+      const key = toKey(d);
+      if (!days[key]) days[key] = { date: toLabel(d), sortKey: key, newUsers: 0, trips: 0, gasto: 0, tolls: 0 };
+      days[key].trips++;
+      days[key].gasto += t.total_cost || 0;
+      days[key].tolls += t.toll_count || 0;
     }
-    return Object.values(days).sort((a, b) => {
-      const da = a.date.split('-').reverse().join('-');
-      const db = b.date.split('-').reverse().join('-');
-      return da.localeCompare(db);
-    });
+    return Object.values(days).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
   }, [users, completedTrips]);
 
   // Datos acumulados
@@ -583,7 +583,7 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                             const val = day[chart.key] || 0;
                             const h = Math.max((val / max) * 100, 3);
                             return (
-                              <div key={day.date} className="flex-1">
+                              <div key={day.date} className="flex-1 h-full flex items-end">
                                 <div className="w-full rounded-sm" style={{ height: `${h}%`, background: chart.color, minHeight: 2 }} />
                               </div>
                             );
