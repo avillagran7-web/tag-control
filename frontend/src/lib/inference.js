@@ -4,10 +4,25 @@ import { getTarifa } from './pricing';
 // Orden de pórticos por ruta (poniente → oriente)
 const ROUTE_SEQUENCES = {
   'Costanera Norte (eje)': [
-    'cn-p9', 'cn-p6.2', 'cn-p6.1', 'cn-p5', 'cn-ev', 'cn-ep', 'cn-p3', 'cn-sb', 'cn-p2.2', 'cn-p2.1', 'cn-p1', 'cn-p0'
+    'cn-p9', 'cn-p6.2', 'cn-p6.1', 'cn-p5', 'cn-ev', 'cn-p4', 'cn-ep', 'cn-p3', 'cn-sb', 'cn-p2.2', 'cn-p2.1', 'cn-p1', 'cn-p0'
   ],
   'Costanera Norte (Kennedy)': [
     'cn-p2.2', 'cn-p2.1', 'cn-p7', 'cn-p8'
+  ],
+  'Autopista Central (NS)': [
+    'ac-ns-guindos', 'ac-ns-capilla', 'ac-sb', 'ac-ns-acacias', 'ac-ruta5', 'ac-ns-departamental', 'ac-ns-valdovinos', 'ac-ns-alameda', 'ac-pa13', 'ac-ns-fama', 'ac-norte'
+  ],
+  'Autopista Central (GV)': [
+    'ac-gv-ruta5sur', 'ac-gv-vespucio', 'ac-gv-valdovinos', 'ac-pa26', 'ac-gv-mapocho', 'ac-gv-ruta5norte'
+  ],
+  'Vespucio Norte Express': [
+    'vn-salto', 'vn-recoleta', 'vn-independencia', 'vn-fontova', 'vn-ruta5', 'vn-ce', 'vn-condell', 'vn-costanera', 'vn-ruta68', 'vn-oficina', 'vn-p16', 'vn-losmares', 'vn-ruta78'
+  ],
+  'Vespucio Sur': [
+    'vs-grecia', 'vs-quilin', 'vs-lastorres', 'vs-florida', 'vs-mackenna', 'vs-santajulia', 'vs-departamental', 'vs-santarosa', 'vs-granavenida', 'vs-ruta5', 'vs-cisterna', 'vs-velasquez', 'vs-melipilla', 'vs-ruta78'
+  ],
+  'Vespucio Oriente (AVO)': [
+    'avo-elsalto', 'avo-cdempresarial', 'avo-piramide', 'avo-kennedy', 'avo-tobalaba', 'avo-eliodoro', 'avo-bilbao', 'avo-princesa'
   ],
 };
 
