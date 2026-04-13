@@ -171,8 +171,7 @@ export default function Home() {
   // ─── PANTALLA ANTES DE INICIAR ───
   if (!trip.isActive && trip.crossings.length === 0) {
     return (
-      <div className="flex flex-col justify-between p-5 pb-2" style={{ minHeight: 'calc(100vh - 56px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 52px)' }}>
-        <div>
+      <div className="flex flex-col gap-4 p-5 pb-2">
           <div className="text-center pt-4 pb-3">
             <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
               <svg viewBox="0 0 512 512" className="w-10 h-10">
@@ -235,9 +234,7 @@ export default function Home() {
               )}
             </div>
           )}
-        </div>
 
-        <div>
           <button
             onClick={handleToggleTrip}
             className="w-full py-[16px] rounded-2xl font-semibold text-[17px] text-white bg-primary active:bg-primary-dark transition-all shadow-sm mb-3"
@@ -267,7 +264,6 @@ export default function Home() {
           <p className="text-center text-[11px] text-text-tertiary pt-4 pb-2">
             powered by <a href="https://weareblooming.co" target="_blank" rel="noopener noreferrer" className="hover:text-text-secondary transition-colors">Blooming</a>
           </p>
-        </div>
       </div>
     );
   }
