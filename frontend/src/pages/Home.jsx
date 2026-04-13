@@ -80,8 +80,10 @@ export default function Home() {
   );
 
   const gps = useGPS({ onTollCrossed: handleTollCrossed });
+  const stoppedSinceRef = useRef(null);
 
   // Enviar posición a Supabase cada 30 segundos + guardar breadcrumb GPS
+  // + auto-cerrar viaje si el auto lleva 15 min detenido
   useEffect(() => {
     if (!trip.isActive || !gps.position || !tripIdRef.current) return;
     const sendPosition = () => {
@@ -98,16 +100,33 @@ export default function Home() {
         lastToll: trip.crossings.length > 0 ? trip.crossings[trip.crossings.length - 1].toll.nombre : null,
       };
       upsertLiveTrip(payload).catch(() => {});
-      // Guardar breadcrumb de posición para historial de ruta
       insertPosition({
         tripId: tripIdRef.current,
         lat: gps.position.lat,
         lng: gps.position.lng,
         speed: gps.speed,
       }).catch(() => {});
+
+      // Auto-cierre: si velocidad < 5 km/h por 15 minutos, cerrar viaje
+      if (gps.speed < 5) {
+        if (!stoppedSinceRef.current) stoppedSinceRef.current = Date.now();
+        const stoppedMin = (Date.now() - stoppedSinceRef.current) / 60000;
+        if (stoppedMin >= 15) {
+          gps.stopTracking();
+          stopBackgroundKeepAlive();
+          trip.endTrip();
+          if (tripIdRef.current) {
+            endLiveTrip(tripIdRef.current).catch(() => {});
+            tripIdRef.current = null;
+          }
+          stoppedSinceRef.current = null;
+        }
+      } else {
+        stoppedSinceRef.current = null;
+      }
     };
     const interval = setInterval(sendPosition, 30000);
-    sendPosition(); // Enviar inmediatamente
+    sendPosition();
     return () => clearInterval(interval);
   }, [trip.isActive, gps.position?.lat, gps.position?.lng, trip.totalCost]);
 
