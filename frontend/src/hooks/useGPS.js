@@ -5,7 +5,7 @@ import tollsData from '../data/tolls.json';
 const DETECTION_RADIUS_M = 150;
 const MIN_SPEED_KMH = 20;
 const COOLDOWN_MS = 120000;
-const THROTTLE_MS = 5000; // Procesar GPS máximo cada 5 segundos (ahorra batería)
+const THROTTLE_MS = 3000; // Procesar GPS máximo cada 3 segundos
 
 export function useGPS({ onTollCrossed } = {}) {
   const [position, setPosition] = useState(null);
@@ -106,13 +106,11 @@ export function useGPS({ onTollCrossed } = {}) {
         }
       },
       {
-        // OPTIMIZACIÓN BATERÍA:
-        // enableHighAccuracy false usa WiFi/cell en vez de chip GPS cuando es suficiente
-        // maximumAge 5000 reutiliza lecturas de hasta 5s (menos wake del chip GPS)
-        // timeout 20000 da más tiempo antes de error
-        enableHighAccuracy: false,
-        maximumAge: 5000,
-        timeout: 20000,
+        // GPS real necesario para detectar pórticos a 80+ km/h
+        // Con WiFi/cell el GPS se congela y pierde peajes
+        enableHighAccuracy: true,
+        maximumAge: 2000,
+        timeout: 10000,
       }
     );
   }, [checkTollProximity, calculateSpeed]);

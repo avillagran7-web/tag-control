@@ -16,7 +16,7 @@
     { "id": "cn-p2.1", "nombre": "Pórtico Gran Vía", "ruta": "Costanera Norte", "tarifa_semana": 426, "tarifa_punta": 820, "tarifa_saturacion": 1242, "lat": -33.39479, "lng": -70.60356, "radio_deteccion_m": 350 },
     { "id": "cn-p1", "nombre": "Pórtico San Francisco", "ruta": "Costanera Norte", "tarifa_semana": 449, "tarifa_punta": 865, "tarifa_saturacion": 1310, "lat": -33.37725, "lng": -70.56801, "radio_deteccion_m": 350 },
     { "id": "cn-p0", "nombre": "Pórtico Padre Arteaga", "ruta": "Costanera Norte", "tarifa_semana": 150, "tarifa_punta": 288, "tarifa_saturacion": 437, "lat": -33.37171, "lng": -70.52466, "radio_deteccion_m": 300 },
-    { "id": "cn-p7", "nombre": "Pórtico Estoril (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 250, "tarifa_punta": 482, "tarifa_saturacion": 730, "lat": -33.39890, "lng": -70.57350, "radio_deteccion_m": 300 },
+    { "id": "cn-p7", "nombre": "Pórtico Tabancura (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 250, "tarifa_punta": 482, "tarifa_saturacion": 730, "lat": -33.39890, "lng": -70.57350, "radio_deteccion_m": 300 },
     { "id": "cn-p8", "nombre": "Pórtico Las Tranqueras (Kennedy)", "ruta": "Costanera Norte - Kennedy", "tarifa_semana": 584, "tarifa_punta": 1124, "tarifa_saturacion": 1702, "lat": -33.38401, "lng": -70.55344, "radio_deteccion_m": 350 },
 
     { "id": "ac-ns-guindos", "nombre": "Pórtico Los Guindos", "ruta": "Autopista Central", "tarifa_semana": 800, "tarifa_punta": 1600, "tarifa_saturacion": 2400, "lat": -33.62500, "lng": -70.71800, "radio_deteccion_m": 300 },
