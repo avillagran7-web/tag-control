@@ -262,6 +262,11 @@ export default function Home() {
           <p className="text-[11px] text-text-tertiary text-center pb-1">
             Mantén Safari abierto durante el viaje &middot; Tarifa {tarifaLabel.toLowerCase()}
           </p>
+
+          {/* Powered by */}
+          <p className="text-center text-[11px] text-text-tertiary pt-4 pb-2">
+            powered by <a href="https://weareblooming.co" target="_blank" rel="noopener noreferrer" className="hover:text-text-secondary transition-colors">Blooming</a>
+          </p>
         </div>
       </div>
     );
