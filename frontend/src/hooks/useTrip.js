@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { getTarifa } from '../lib/pricing';
 import { saveTrip } from '../lib/storage';
 import { supabase } from '../lib/supabase';
+import { inferPostTrip } from '../lib/inference';
 
 export function useTrip() {
   const [isActive, setIsActive] = useState(false);
@@ -24,22 +25,27 @@ export function useTrip() {
   const endTrip = useCallback(() => {
     const prev = crossingsRef.current;
     if (prev.length > 0) {
-      const totalCost = prev.reduce((sum, c) => sum + getTarifa(c.toll, new Date(c.timestamp)), 0);
-      const routes = [...new Set(prev.map((c) => c.toll.ruta))];
+      // Inferencia post-viaje: rellenar peajes faltantes entre los detectados
+      const inferred = inferPostTrip(prev);
+      const allCrossings = [...prev, ...inferred].sort((a, b) => a.timestamp - b.timestamp);
+
+      const totalCost = allCrossings.reduce((sum, c) => sum + getTarifa(c.toll, new Date(c.timestamp)), 0);
+      const routes = [...new Set(allCrossings.map((c) => c.toll.ruta))];
       const tripData = {
         id: Date.now().toString(),
         driver: driver || 'Sin nombre',
-        startTime: startTime || prev[0].timestamp,
+        startTime: startTime || allCrossings[0].timestamp,
         endTime: Date.now(),
-        crossings: prev.map((c) => ({
+        crossings: allCrossings.map((c) => ({
           tollId: c.toll.id,
           tollNombre: c.toll.nombre,
           tollRuta: c.toll.ruta,
           tarifa: getTarifa(c.toll, new Date(c.timestamp)),
           timestamp: c.timestamp,
+          inferred: c.inferred || false,
         })),
         totalCost,
-        tollCount: prev.length,
+        tollCount: allCrossings.length,
         routes,
       };
 

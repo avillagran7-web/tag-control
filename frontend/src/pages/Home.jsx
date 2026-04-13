@@ -5,7 +5,7 @@ import { getTarifaLabel, getTarifa } from '../lib/pricing';
 import { formatCLP } from '../lib/format';
 import { playTollSound, initAudio, startBackgroundKeepAlive, stopBackgroundKeepAlive } from '../lib/sound';
 import { upsertLiveTrip, insertLiveCrossing, endLiveTrip, insertPosition, cleanupOldPositions, closeOrphanedTrips } from '../lib/liveTracking';
-import { inferMissingTolls } from '../lib/inference';
+import { inferMissingTolls, inferPostTrip } from '../lib/inference';
 import { supabase } from '../lib/supabase';
 import TollChip from '../components/TollChip';
 import { useUser } from '../App';
@@ -164,6 +164,23 @@ export default function Home() {
     if (trip.isActive) {
       gps.stopTracking();
       stopBackgroundKeepAlive();
+
+      // Inferencia post-viaje: enviar peajes inferidos a Supabase antes de cerrar
+      if (tripIdRef.current && trip.crossings.length > 0) {
+        const inferred = inferPostTrip(trip.crossings);
+        for (const inf of inferred) {
+          insertLiveCrossing({
+            tripId: tripIdRef.current,
+            tollId: inf.toll.id,
+            tollNombre: inf.toll.nombre,
+            tollRuta: inf.toll.ruta,
+            tarifa: getTarifa(inf.toll, new Date(inf.timestamp)),
+            lat: inf.toll.lat,
+            lng: inf.toll.lng,
+          }).catch(() => {});
+        }
+      }
+
       trip.endTrip();
       if (tripIdRef.current) {
         endLiveTrip(tripIdRef.current).catch(() => {});

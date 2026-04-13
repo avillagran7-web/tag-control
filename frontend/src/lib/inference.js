@@ -98,3 +98,18 @@ export function inferMissingTolls(crossings) {
 
   return inferred;
 }
+
+/**
+ * Inferencia post-viaje: analiza TODOS los crossings de un viaje terminado
+ * y rellena gaps completos. Más agresivo que la inferencia en tiempo real
+ * porque tiene la ruta completa para analizar.
+ */
+export function inferPostTrip(crossings) {
+  if (crossings.length < 2) return [];
+
+  const inferred = inferMissingTolls(crossings);
+
+  // Filtrar los que ya existen
+  const crossedIds = new Set(crossings.map(c => c.toll?.id || c.tollId));
+  return inferred.filter(inf => !crossedIds.has(inf.toll.id));
+}
