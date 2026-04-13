@@ -4,7 +4,7 @@ import { useTrip } from '../hooks/useTrip';
 import { getTarifaLabel, getTarifa } from '../lib/pricing';
 import { formatCLP } from '../lib/format';
 import { playTollSound, initAudio, startBackgroundKeepAlive, stopBackgroundKeepAlive } from '../lib/sound';
-import { upsertLiveTrip, insertLiveCrossing, endLiveTrip, insertPosition, cleanupOldPositions } from '../lib/liveTracking';
+import { upsertLiveTrip, insertLiveCrossing, endLiveTrip, insertPosition, cleanupOldPositions, closeOrphanedTrips } from '../lib/liveTracking';
 import { inferMissingTolls } from '../lib/inference';
 import { supabase } from '../lib/supabase';
 import TollChip from '../components/TollChip';
@@ -151,7 +151,8 @@ export default function Home() {
       tripIdRef.current = id;
       initAudio();
       startBackgroundKeepAlive();
-      cleanupOldPositions().catch(() => {}); // Limpiar posiciones viejas (>24h)
+      cleanupOldPositions().catch(() => {});
+      closeOrphanedTrips(user.name, id).catch(() => {}); // Cerrar viajes huérfanos
       trip.startTrip(user.name);
       gps.startTracking();
     }

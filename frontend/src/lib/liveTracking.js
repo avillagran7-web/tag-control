@@ -77,6 +77,17 @@ export async function endLiveTrip(id) {
 }
 
 /**
+ * Cierra todos los viajes activos anteriores de un conductor.
+ * Llamar al iniciar un viaje nuevo para evitar viajes huérfanos.
+ */
+export async function closeOrphanedTrips(driver, currentTripId) {
+  await supabase.from('live_trips').update({
+    is_active: false,
+    updated_at: new Date().toISOString(),
+  }).eq('driver', driver).eq('is_active', true).neq('id', currentTripId);
+}
+
+/**
  * Obtiene todos los viajes activos.
  */
 export async function getActiveTrips() {
