@@ -12,8 +12,13 @@ export async function getStoredUser() {
   }
 }
 
-export async function login(name, pin) {
-  // Check if user exists
+/**
+ * Login: existing user (name + pin) or register new user (name + pin + email).
+ * For existing users without email, returns { needsEmail: true, user } so the
+ * UI can ask for it.
+ */
+export async function login(name, pin, email) {
+  // Check if user exists with this name + pin
   const { data: existing } = await supabase
     .from('users')
     .select('*')
@@ -22,29 +27,53 @@ export async function login(name, pin) {
     .single();
 
   if (existing) {
+    // Existing user — update email if provided and missing
+    if (email && !existing.email) {
+      await supabase.from('users').update({ email }).eq('name', name);
+      existing.email = email;
+    }
     await SecureStore.setItemAsync(USER_KEY, JSON.stringify(existing));
-    return existing;
+    // If still no email, flag it
+    if (!existing.email && !email) {
+      return { needsEmail: true, user: existing };
+    }
+    return { user: existing };
   }
 
-  // Try to register
+  // Check if name exists (wrong PIN)
   const { data: byName } = await supabase
     .from('users')
     .select('name')
     .eq('name', name)
     .single();
 
-  if (byName) return null; // Name exists but wrong PIN
+  if (byName) return { error: 'PIN incorrecto' };
+
+  // Register new user — email required
+  if (!email) return { error: 'Ingresa tu email para registrarte' };
 
   const { data: newUser, error } = await supabase
     .from('users')
-    .insert({ name, pin })
+    .insert({ name, pin, email })
     .select()
     .single();
 
-  if (error) return null;
+  if (error) return { error: 'Error al registrar' };
 
   await SecureStore.setItemAsync(USER_KEY, JSON.stringify(newUser));
-  return newUser;
+  return { user: newUser };
+}
+
+export async function updateEmail(name, email) {
+  await supabase.from('users').update({ email }).eq('name', name);
+  // Update stored user
+  const raw = await SecureStore.getItemAsync(USER_KEY);
+  if (raw) {
+    const user = JSON.parse(raw);
+    user.email = email;
+    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
+    return user;
+  }
 }
 
 export async function logout() {

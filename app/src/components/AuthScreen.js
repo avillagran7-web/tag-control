@@ -5,16 +5,36 @@ const PRIMARY = '#0F6E56';
 
 export default function AuthScreen({ onLogin }) {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [needsEmail, setNeedsEmail] = useState(false);
+  const [pendingUser, setPendingUser] = useState(null);
+
+  const canSubmit = name.trim() && pin.length === 4 && (!needsEmail || email.trim());
 
   const handleSubmit = async () => {
-    if (!name.trim() || pin.length !== 4) return;
+    if (!canSubmit) return;
     setLoading(true);
     setError('');
-    const ok = await onLogin(name.trim(), pin);
-    if (!ok) setError('PIN incorrecto');
+
+    if (needsEmail && pendingUser) {
+      // Existing user adding email
+      const ok = await onLogin(pendingUser.name, pin, email.trim());
+      if (!ok) setError('Error al guardar email');
+      setLoading(false);
+      return;
+    }
+
+    const result = await onLogin(name.trim(), pin, email.trim() || undefined);
+    if (result === 'needsEmail') {
+      setNeedsEmail(true);
+      setPendingUser({ name: name.trim() });
+      setError('');
+    } else if (!result) {
+      setError('PIN incorrecto');
+    }
     setLoading(false);
   };
 
@@ -27,35 +47,68 @@ export default function AuthScreen({ onLogin }) {
         <Text style={s.title}>TAGcontrol</Text>
         <Text style={s.subtitle}>Tu peaje, bajo control</Text>
 
-        <TextInput
-          style={s.input}
-          placeholder="Tu nombre"
-          placeholderTextColor="#999"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="words"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={s.input}
-          placeholder="PIN (4 digitos)"
-          placeholderTextColor="#999"
-          value={pin}
-          onChangeText={(t) => setPin(t.replace(/\D/g, '').slice(0, 4))}
-          keyboardType="number-pad"
-          secureTextEntry
-          maxLength={4}
-        />
+        {needsEmail ? (
+          <>
+            <Text style={s.emailPrompt}>Hola {pendingUser?.name}, agrega tu email para continuar</Text>
+            <TextInput
+              style={s.input}
+              placeholder="tu@email.com"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoFocus
+            />
+          </>
+        ) : (
+          <>
+            <TextInput
+              style={s.input}
+              placeholder="Tu nombre"
+              placeholderTextColor="#999"
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="words"
+              autoCorrect={false}
+            />
+            <TextInput
+              style={s.input}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TextInput
+              style={s.input}
+              placeholder="PIN (4 digitos)"
+              placeholderTextColor="#999"
+              value={pin}
+              onChangeText={(t) => setPin(t.replace(/\D/g, '').slice(0, 4))}
+              keyboardType="number-pad"
+              secureTextEntry
+              maxLength={4}
+            />
+          </>
+        )}
 
         {error ? <Text style={s.error}>{error}</Text> : null}
 
         <TouchableOpacity
-          style={[s.button, (!name.trim() || pin.length !== 4) && s.buttonDisabled]}
+          style={[s.button, !canSubmit && s.buttonDisabled]}
           onPress={handleSubmit}
-          disabled={loading || !name.trim() || pin.length !== 4}
+          disabled={loading || !canSubmit}
         >
           <Text style={s.buttonText}>{loading ? 'Entrando...' : 'Entrar'}</Text>
         </TouchableOpacity>
+
+        <Text style={s.hint}>
+          {needsEmail ? 'Solo lo usamos para tu cuenta' : 'Si es tu primera vez, se crea tu cuenta'}
+        </Text>
       </View>
     </KeyboardAvoidingView>
   );
@@ -68,9 +121,11 @@ const s = StyleSheet.create({
   iconText: { color: '#fff', fontWeight: '800', fontSize: 22 },
   title: { fontSize: 24, fontWeight: '700', color: '#1a1a1a', marginBottom: 4 },
   subtitle: { fontSize: 14, color: '#888', marginBottom: 32 },
+  emailPrompt: { fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 16, lineHeight: 20 },
   input: { width: '100%', backgroundColor: '#f5f5f5', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, color: '#1a1a1a', marginBottom: 12 },
   error: { color: '#e53935', fontSize: 13, marginBottom: 8 },
   button: { width: '100%', backgroundColor: PRIMARY, borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 8 },
   buttonDisabled: { opacity: 0.5 },
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  hint: { fontSize: 12, color: '#aaa', marginTop: 12, textAlign: 'center' },
 });
