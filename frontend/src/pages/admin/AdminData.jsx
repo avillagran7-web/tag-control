@@ -1,8 +1,15 @@
 import { formatCLP, formatDate, formatTime } from '../../lib/format';
 
-export default function AdminData({ stats, allCrossings, allTrips, completedTrips = [], onReconstructTrip, reconstructing }) {
-  // Trips at risk: closed with 0 tolls (likely detection failure) OR with positions but missing tolls
+export default function AdminData({ stats, allCrossings, allTrips, completedTrips = [], onReconstructTrip, reconstructing, reconstructResults }) {
   const atRisk = completedTrips.filter(t => (t.toll_count || 0) === 0);
+
+  // Map last reconstruct result by tripId for inline feedback
+  const resultByTrip = {};
+  if (reconstructResults) {
+    for (const r of reconstructResults) {
+      if (r.tripId) resultByTrip[r.tripId] = r;
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -19,15 +26,26 @@ export default function AdminData({ stats, allCrossings, allTrips, completedTrip
                   <span className="font-medium">{t.driver}</span>
                   <span className="text-gray-400 ml-2">{formatDate(t.start_time)} {formatTime(t.start_time)}</span>
                 </div>
-                {onReconstructTrip && (
-                  <button
-                    onClick={() => onReconstructTrip(t.id)}
-                    disabled={reconstructing}
-                    className="text-[10px] text-yellow-300 font-medium px-2 py-1 bg-yellow-500/20 rounded disabled:opacity-50"
-                  >
-                    Reconstruir
-                  </button>
-                )}
+                {onReconstructTrip && (() => {
+                  const res = resultByTrip[t.id];
+                  if (res?.error) return (
+                    <span className="text-[10px] text-red-400 px-2">Error</span>
+                  );
+                  if (res) return (
+                    <span className="text-[10px] text-green-400 px-2">
+                      {res.newTolls > 0 ? `+${res.newTolls} peajes` : 'Sin datos GPS'}
+                    </span>
+                  );
+                  return (
+                    <button
+                      onClick={() => onReconstructTrip(t.id)}
+                      disabled={reconstructing}
+                      className="text-[10px] text-yellow-300 font-medium px-2 py-1 bg-yellow-500/20 rounded disabled:opacity-50"
+                    >
+                      {reconstructing ? '...' : 'Reconstruir'}
+                    </button>
+                  );
+                })()}
               </div>
             ))}
           </div>

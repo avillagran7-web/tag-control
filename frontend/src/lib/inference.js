@@ -1,5 +1,10 @@
 import tollsData from '../data/tolls.json';
 import { getTarifa } from './pricing';
+import { haversine } from './geoUtils';
+
+// Speed assumption for timestamp estimation when real GPS is unavailable.
+// Chilean urban highways: 80-100 km/h. 90 km/h is a reasonable middle ground.
+const AVG_HIGHWAY_SPEED_KMH = 90;
 
 // Orden de pórticos por ruta (poniente → oriente)
 const ROUTE_SEQUENCES = {
@@ -143,19 +148,25 @@ function inferFromSingleToll(crossing, crossedIds) {
     // Esto cubre el caso típico: usuario entra a autopista, GPS en background,
     // detecta un peaje del medio, se perdieron los de entrada
     if (idx > 0) {
+      const detectedToll = tollMap[tollId];
       for (let j = 0; j < idx; j++) {
         const inferredId = sequence[j];
         if (crossedIds.has(inferredId)) continue;
         const toll = tollMap[inferredId];
         if (!toll) continue;
         const ts = crossing.timestamp || new Date(crossing.crossed_at).getTime();
-        // Timestamp estimado: proporcional a la posición en la secuencia
-        const ratio = (idx - j) / idx;
-        const inferredTs = ts - ratio * 120000; // ~2 min antes por cada peaje
+
+        // Estimate travel time from haversine distance between toll positions.
+        // Much more accurate than the old hardcoded "2 min per toll" constant,
+        // which was too short for long gaps (e.g., Costanera end-to-end ~15 km).
+        const distM = detectedToll
+          ? haversine(toll.lat, toll.lng, detectedToll.lat, detectedToll.lng)
+          : (idx - j) * 4000; // fallback: ~4 km per sequential toll if coords missing
+        const travelMs = (distM / 1000 / AVG_HIGHWAY_SPEED_KMH) * 3600 * 1000;
 
         inferred.push({
           toll,
-          timestamp: Math.round(inferredTs),
+          timestamp: Math.round(ts - travelMs),
           lat: toll.lat,
           lng: toll.lng,
           speed: 0,

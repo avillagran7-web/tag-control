@@ -439,6 +439,7 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
             completedTrips={completedTrips}
             onReconstructTrip={handleReconstructTrip}
             reconstructing={reconstructing}
+            reconstructResults={reconstructResults}
           />
         )}
 
