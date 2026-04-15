@@ -142,102 +142,110 @@ function SystemArch() {
 
 // ── Agent Architecture ────────────────────────────────────────────────────────
 
+const AGENTS = [
+  {
+    emoji: '🔍',
+    name: 'QA Agent',
+    status: 'planned',
+    trigger: 'Supabase RT · cada 10 min',
+    detail: 'Viajes 0 peajes · live_trips >2h · positions huérfanas',
+    output: '⚠ Alerta en Admin',
+    outputDetail: '"Viajes en riesgo"',
+  },
+  {
+    emoji: '📍',
+    name: 'GPS Calibration',
+    status: 'planned',
+    trigger: 'Nuevo viaje completado',
+    detail: 'Foot-of-perpendicular por peaje · ≥3 pasadas → propone radio',
+    output: '🔀 PR automático',
+    outputDetail: 'Coordenadas calibradas en tolls.json',
+  },
+  {
+    emoji: '🛡',
+    name: 'Code Review',
+    status: 'planned',
+    trigger: 'Pre-commit · PR creation',
+    detail: 'Drift frontend↔app · .catch() faltantes · queries sin límite',
+    output: '🚫 Bloquea o ✅ aprueba',
+    outputDetail: 'Comenta en PR si hay issues',
+  },
+  {
+    emoji: '📦',
+    name: 'Release Agent',
+    status: 'planned',
+    trigger: 'Merge a main',
+    detail: 'eas build --profile preview · espera APK listo',
+    output: '📲 APK distribuido',
+    outputDetail: 'Link por WhatsApp al grupo',
+  },
+  {
+    emoji: '📊',
+    name: 'Analytics Agent',
+    status: 'planned',
+    trigger: 'Cron 08:00 Santiago',
+    detail: 'Usuarios activos · CLP total · anomalías de detección',
+    output: '💬 Resumen diario',
+    outputDetail: 'WhatsApp · formato CEO',
+  },
+];
+
 function AgentArch() {
-  const agents = [
-    {
-      name: 'QA Agent',
-      status: 'planned',
-      trigger: 'Supabase realtime · cada 10 min',
-      does: 'Detecta viajes con 0 peajes, positions huérfanas, live_trips abiertas >2h, anomalías de costo',
-      output: 'Alerta en Admin "Viajes en riesgo" + notificación a Andrés',
-      priority: 1,
-    },
-    {
-      name: 'GPS Calibration Agent',
-      status: 'planned',
-      trigger: 'Trigger: nuevo viaje completado con positions',
-      does: 'Corre foot-of-perpendicular por peaje. Si ≥3 pasadas, propone actualizar radio_deteccion_m en tolls.json',
-      output: 'PR automático con nuevas coordenadas calibradas',
-      priority: 2,
-    },
-    {
-      name: 'Code Review Agent',
-      status: 'planned',
-      trigger: 'Pre-commit hook + PR creation',
-      does: 'Verifica drift frontend↔app, detecta .then(()=>{}) sin catch, queries sin límite, patrones inseguros',
-      output: 'Bloquea commit si hay drift. Comenta en PR si hay issues.',
-      priority: 3,
-    },
-    {
-      name: 'Release Agent',
-      status: 'planned',
-      trigger: 'Merge a main en GitHub',
-      does: 'Corre eas build --profile preview, espera APK, lo distribuye al grupo interno',
-      output: 'Link de descarga APK por WhatsApp al grupo familiar + early users',
-      priority: 4,
-    },
-    {
-      name: 'Analytics Agent',
-      status: 'planned',
-      trigger: 'Cron diario 08:00 Santiago',
-      does: 'Usuarios activos ayer, viajes, CLP total, anomalías (usuario sin viajes, 0 peajes en 3 viajes seguidos)',
-      output: 'Resumen diario en formato WhatsApp/Slack',
-      priority: 5,
-    },
-  ];
-
   return (
-    <div className="flex flex-col gap-3">
-      <Card className="border border-yellow-500/20">
-        <p className="text-[10px] text-yellow-400 font-semibold mb-1">Estado actual</p>
-        <p className="text-[10px] text-gray-400">
-          Todos los agents están <span className="text-yellow-400">planificados</span> — la arquitectura está diseñada,
-          la implementación arranca próxima sesión. El QA Agent tiene prioridad 1 por impacto directo en confiabilidad.
-        </p>
-      </Card>
+    <div className="flex flex-col gap-2">
 
-      {agents.map(a => (
-        <Card key={a.name}>
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-gray-600 font-mono">{a.priority}</span>
-              <p className="text-sm font-semibold">{a.name}</p>
-            </div>
-            <Badge label={a.status} color={a.status} />
+      {/* Header columns */}
+      <div className="grid gap-2 mb-1" style={{ gridTemplateColumns: '1fr 16px 1fr 16px 1fr' }}>
+        {['TRIGGER', '', 'AGENT', '', 'OUTPUT'].map((h, i) => (
+          <p key={i} className={`text-[9px] font-semibold tracking-widest uppercase ${h ? 'text-gray-500' : ''}`}>{h}</p>
+        ))}
+      </div>
+
+      {/* Agent rows */}
+      {AGENTS.map((a, i) => (
+        <div key={a.name} className="grid items-center gap-2" style={{ gridTemplateColumns: '1fr 16px 1fr 16px 1fr' }}>
+
+          {/* Trigger */}
+          <div className="bg-white/5 rounded-lg p-2.5">
+            <p className="text-[11px] font-medium text-gray-300">{a.trigger}</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">{a.detail}</p>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <div className="flex gap-2">
-              <span className="text-[9px] text-gray-600 w-12 shrink-0 pt-0.5 uppercase tracking-wide">Trigger</span>
-              <span className="text-[10px] text-gray-400">{a.trigger}</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[9px] text-gray-600 w-12 shrink-0 pt-0.5 uppercase tracking-wide">Hace</span>
-              <span className="text-[10px] text-gray-400">{a.does}</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[9px] text-gray-600 w-12 shrink-0 pt-0.5 uppercase tracking-wide">Output</span>
-              <span className="text-[10px] text-primary">{a.output}</span>
+
+          {/* Arrow */}
+          <p className="text-gray-600 text-center text-xs">→</p>
+
+          {/* Agent */}
+          <div className="bg-white/5 rounded-lg p-2.5 border border-primary/25">
+            <div className="flex items-center justify-between mb-0.5">
+              <p className="text-[11px] font-semibold">{a.emoji} {a.name}</p>
+              <Badge label={`#${i + 1}`} color="planned" />
             </div>
           </div>
-        </Card>
+
+          {/* Arrow */}
+          <p className="text-gray-600 text-center text-xs">→</p>
+
+          {/* Output */}
+          <div className="bg-white/5 rounded-lg p-2.5">
+            <p className="text-[11px] font-medium text-primary">{a.output}</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">{a.outputDetail}</p>
+          </div>
+        </div>
       ))}
 
-      <Card className="border border-primary/20">
-        <p className="text-[10px] text-gray-400 font-semibold mb-1">Infraestructura de agents</p>
-        <div className="flex flex-col gap-1">
-          {[
-            ['Runtime',   'Claude Code SDK (claude-sonnet-4-6 por defecto)'],
-            ['Triggers',  'Supabase webhooks · GitHub Actions · cron en Vercel'],
-            ['Auth',      'SUPABASE_SERVICE_ROLE_KEY · GITHUB_TOKEN · EAS_TOKEN'],
-            ['Logs',      'Admin tab "Agents" (próximo) + output en terminal'],
-          ].map(([k, v]) => (
-            <div key={k} className="flex gap-2">
-              <span className="text-[9px] text-gray-600 w-14 shrink-0 pt-0.5 uppercase tracking-wide">{k}</span>
-              <span className="text-[10px] text-gray-400">{v}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+      {/* Infra footer */}
+      <div className="mt-2 bg-white/5 rounded-xl p-3 flex flex-wrap gap-x-5 gap-y-1">
+        {[
+          ['Runtime', 'Claude SDK · claude-sonnet-4-6'],
+          ['Infra',   'Supabase webhooks · GitHub Actions · Vercel cron'],
+          ['Keys',    'SERVICE_ROLE_KEY · GITHUB_TOKEN · EAS_TOKEN'],
+        ].map(([k, v]) => (
+          <div key={k} className="flex items-baseline gap-1.5">
+            <span className="text-[9px] font-semibold text-gray-600 uppercase tracking-wide">{k}</span>
+            <span className="text-[10px] text-gray-400">{v}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
