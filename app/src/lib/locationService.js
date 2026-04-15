@@ -8,8 +8,20 @@
 
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import * as Notifications from 'expo-notifications';
 import { haversine, msToKmh, pointToSegmentDistance } from './geoUtils';
+import { getTarifa } from './pricing';
+import { formatCLP } from './format';
 import tollsData from '../data/tolls.json';
+
+// Show notifications immediately while app is in foreground too
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const BACKGROUND_LOCATION_TASK = 'TAGCONTROL_BACKGROUND_LOCATION';
 const DETECTION_RADIUS_M = 150;
@@ -25,6 +37,7 @@ let _onPositionUpdate = null;
 let _cooldowns = {};
 let _lastPosition = null;
 let _isTracking = false;
+let _watchSubscription = null; // foreground watch — must call .remove() on stop
 
 function processLocation(location) {
   const { latitude, longitude, speed: rawSpeed, accuracy } = location.coords;
@@ -70,14 +83,25 @@ function processLocation(location) {
 
     if (distance <= radius && speedOk) {
       _cooldowns[toll.id] = now;
-      _onTollCrossed?.({
+      const crossing = {
         toll,
         timestamp: now,
         lat: latitude,
         lng: longitude,
         speed: speedKmh,
         distance: Math.round(distance),
-      });
+      };
+      _onTollCrossed?.(crossing);
+
+      // Local notification — works in background and foreground
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: '¡Peaje detectado!',
+          body: `${toll.nombre}  ·  ${formatCLP(getTarifa(toll, new Date(now)))}`,
+          sound: true,
+        },
+        trigger: null, // fire immediately
+      }).catch(() => {});
     }
   }
 }
@@ -100,7 +124,11 @@ export async function requestLocationPermissions() {
   if (foreground !== 'granted') return false;
 
   const { status: background } = await Location.requestBackgroundPermissionsAsync();
-  return background === 'granted';
+  if (background !== 'granted') return false;
+
+  // Request notification permission alongside location — needed for toll alerts
+  await Notifications.requestPermissionsAsync();
+  return true;
 }
 
 /**
@@ -115,12 +143,12 @@ export async function startTracking({ onTollCrossed, onPositionUpdate }) {
   _lastPosition = null;
   _isTracking = true;
 
-  // Start foreground location for immediate updates
-  await Location.watchPositionAsync(
+  // Start foreground location — save subscription so we can remove it on stop
+  _watchSubscription = await Location.watchPositionAsync(
     {
       accuracy: Location.Accuracy.BestForNavigation,
-      distanceInterval: 20, // Update every 20 meters
-      timeInterval: 3000, // Or every 3 seconds
+      distanceInterval: 20,
+      timeInterval: 3000,
     },
     processLocation
   );
@@ -148,6 +176,10 @@ export async function stopTracking() {
   _isTracking = false;
   _onTollCrossed = null;
   _onPositionUpdate = null;
+
+  // Remove foreground watch subscription — prevents ghost callbacks post-trip
+  _watchSubscription?.remove();
+  _watchSubscription = null;
 
   const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_LOCATION_TASK);
   if (isRegistered) {

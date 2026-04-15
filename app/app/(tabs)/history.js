@@ -1,35 +1,51 @@
-import { useState, useEffect, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
 import { useUser } from '../_layout';
 import { supabase } from '../../src/lib/supabase';
 import { formatCLP, formatDate, formatTime } from '../../src/lib/format';
 
 const PRIMARY = '#0F6E56';
+const PAGE_SIZE = 30;
+
+function mapTrip(t) {
+  return {
+    id: t.id, driver: t.driver,
+    startTime: new Date(t.start_time).getTime(),
+    endTime: new Date(t.end_time).getTime(),
+    totalCost: t.total_cost, tollCount: t.toll_count,
+    routes: t.routes || [], crossings: t.crossings || [],
+  };
+}
 
 export default function HistoryScreen() {
   const { user } = useUser();
   const [allTrips, setAllTrips] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [expandedTrip, setExpandedTrip] = useState(null);
 
-  useEffect(() => {
-    async function load() {
-      const { data } = await supabase
-        .from('trips')
-        .select('*')
-        .eq('driver', user.name)
-        .order('created_at', { ascending: false });
+  const load = useCallback(async (replace = true) => {
+    const offset = replace ? 0 : allTrips.length;
+    const { data } = await supabase
+      .from('trips')
+      .select('*')
+      .eq('driver', user.name)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1);
 
-      setAllTrips((data || []).map(t => ({
-        id: t.id, driver: t.driver,
-        startTime: new Date(t.start_time).getTime(),
-        endTime: new Date(t.end_time).getTime(),
-        totalCost: t.total_cost, tollCount: t.toll_count,
-        routes: t.routes || [], crossings: t.crossings || [],
-      })));
-      setLoading(false);
-    }
-    load();
+    const mapped = (data || []).map(mapTrip);
+    setAllTrips(prev => replace ? mapped : [...prev, ...mapped]);
+    setHasMore((data || []).length === PAGE_SIZE);
+    setLoading(false);
+    setRefreshing(false);
+  }, [user.name, allTrips.length]);
+
+  useEffect(() => { load(true); }, [user.name]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    load(true);
   }, [user.name]);
 
   const stats = useMemo(() => {
@@ -60,7 +76,11 @@ export default function HistoryScreen() {
   }
 
   return (
-    <ScrollView style={s.container} contentContainerStyle={s.content}>
+    <ScrollView
+      style={s.container}
+      contentContainerStyle={s.content}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={PRIMARY} />}
+    >
       {/* Total card */}
       <View style={s.totalCard}>
         <Text style={s.totalLabel}>Total acumulado</Text>
@@ -132,6 +152,11 @@ export default function HistoryScreen() {
           </TouchableOpacity>
         );
       })}
+      {hasMore && (
+        <TouchableOpacity style={s.loadMore} onPress={() => load(false)}>
+          <Text style={s.loadMoreText}>Cargar más</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
@@ -166,4 +191,6 @@ const s = StyleSheet.create({
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
   detailName: { fontSize: 13, color: '#666' },
   detailCost: { fontSize: 13, fontWeight: '600', color: PRIMARY },
+  loadMore: { alignItems: 'center', paddingVertical: 16 },
+  loadMoreText: { fontSize: 14, color: PRIMARY, fontWeight: '600' },
 });
