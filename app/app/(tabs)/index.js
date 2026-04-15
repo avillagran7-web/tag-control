@@ -150,10 +150,13 @@ export default function HomeScreen() {
           const cost = allCrossings.reduce((sum, c) => sum + getTarifa(c.toll, new Date(c.timestamp)), 0);
           const routes = [...new Set(allCrossings.map(c => c.toll.ruta))];
 
-          if (allCrossings.length > 0 && currentId) {
+          // Siempre grabamos el trip aunque tenga 0 peajes — las posiciones GPS
+          // siguen vivas 24h y el Admin las puede reconstruir. Tirar el trip
+          // silenciosamente esconde fallas de detección (bug Francisco 2026-04-15).
+          if (currentId) {
             supabase.from('trips').insert({
               id: currentId, driver: user.name,
-              start_time: new Date(startTime || allCrossings[0].timestamp).toISOString(),
+              start_time: new Date(startTime || allCrossings[0]?.timestamp || Date.now()).toISOString(),
               end_time: new Date().toISOString(),
               total_cost: cost, toll_count: allCrossings.length, routes,
               platform: Platform.OS,

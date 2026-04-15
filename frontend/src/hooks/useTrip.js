@@ -94,28 +94,29 @@ export function useTrip() {
         }).catch(() => {});
       });
     } else if (liveTripId) {
-      // No se detectaron peajes en real-time, pero hay posiciones GPS
-      // Intentar reconstruir el viaje completo desde posiciones
+      // No crossings en real-time. Intentar reconstruir desde GPS, pero
+      // SIEMPRE grabar el trip (aunque reconstrucción también falle) para que
+      // el Admin pueda verlo en "Viajes en riesgo" y accionar manualmente.
       reconstructTrip(liveTripId, []).then((result) => {
-        if (!result || result.tollCount === 0) return;
+        const rec = result && result.tollCount > 0 ? result : null;
         const tripData = {
           id: liveTripId,
           driver: driver || 'Sin nombre',
           startTime: startTime || Date.now(),
           endTime: Date.now(),
-          crossings: result.crossings.map(c => ({
+          crossings: rec ? rec.crossings.map(c => ({
             tollId: c.toll.id,
             tollNombre: c.toll.nombre,
             tollRuta: c.toll.ruta,
             tarifa: getTarifa(c.toll, new Date(c.timestamp)),
             timestamp: c.timestamp,
             inferred: true,
-          })),
-          totalCost: result.totalCost,
-          tollCount: result.tollCount,
-          routes: [...new Set(result.crossings.map(c => c.toll.ruta))],
+          })) : [],
+          totalCost: rec ? rec.totalCost : 0,
+          tollCount: rec ? rec.tollCount : 0,
+          routes: rec ? [...new Set(rec.crossings.map(c => c.toll.ruta))] : [],
         };
-        saveTrip(tripData);
+        if (rec) saveTrip(tripData);
         supabase.from('trips').insert({
           id: tripData.id,
           driver: tripData.driver,
@@ -125,6 +126,7 @@ export function useTrip() {
           toll_count: tripData.tollCount,
           routes: tripData.routes,
           crossings: tripData.crossings,
+          platform: 'web',
         }).then(() => {});
       }).catch(() => {});
     }
