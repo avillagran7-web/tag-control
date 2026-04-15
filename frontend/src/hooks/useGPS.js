@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { haversine, msToKmh } from '../lib/geoUtils';
+import { haversine, msToKmh, pointToSegmentDistance } from '../lib/geoUtils';
 import tollsData from '../data/tolls.json';
 
 const DETECTION_RADIUS_M = 150;
@@ -8,6 +8,7 @@ const COOLDOWN_MS = 120000;
 const THROTTLE_MS = 3000; // Procesar GPS máximo cada 3 segundos
 const MAX_ACCURACY_M = 300; // Aceptar lecturas hasta 300m (iOS post-background da ~200m)
 const TOLL_CHECK_ACCURACY_M = 1000; // Para chequeo de peajes, aceptar incluso en túneles
+const MAX_SEGMENT_M = 500; // Gap máximo entre samples para tratarlos como segmento continuo
 
 export function useGPS({ onTollCrossed } = {}) {
   const [position, setPosition] = useState(null);
@@ -19,6 +20,7 @@ export function useGPS({ onTollCrossed } = {}) {
   const cooldownsRef = useRef({});
   const onTollCrossedRef = useRef(onTollCrossed);
   const lastPositionRef = useRef(null);
+  const prevSampleRef = useRef(null); // Sample anterior sin throttle, para detección por segmento
   const lastProcessedRef = useRef(0); // Throttle timestamp
 
   useEffect(() => {
@@ -38,8 +40,18 @@ export function useGPS({ onTollCrossed } = {}) {
 
   const checkTollProximity = useCallback((lat, lng, currentSpeed, accuracy) => {
     const now = Date.now();
+    // Detección por segmento: a 80 km/h con sample cada 5s los puntos GPS están a
+    // ~110m, y un check punto-a-punto puede saltar por encima del radio sin que
+    // ningún sample caiga adentro. Medimos distancia del peaje al segmento entre
+    // sample anterior y actual cuando ambos están razonablemente cerca.
+    const prev = prevSampleRef.current;
+    const useSegment =
+      prev != null &&
+      haversine(prev.lat, prev.lng, lat, lng) <= MAX_SEGMENT_M;
     for (const toll of tollsData.tolls) {
-      const distance = haversine(lat, lng, toll.lat, toll.lng);
+      const distance = useSegment
+        ? pointToSegmentDistance(toll.lat, toll.lng, prev.lat, prev.lng, lat, lng)
+        : haversine(lat, lng, toll.lat, toll.lng);
       const lastCrossed = cooldownsRef.current[toll.id] || 0;
       const isInCooldown = now - lastCrossed < COOLDOWN_MS;
       const baseRadius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
@@ -77,6 +89,7 @@ export function useGPS({ onTollCrossed } = {}) {
           if (timeSec > 0) speedKmh = (dist / timeSec) * 3.6;
         }
         checkTollProximity(latitude, longitude, speedKmh, accuracy);
+        prevSampleRef.current = { lat: latitude, lng: longitude };
         lastPositionRef.current = { lat: latitude, lng: longitude, timestamp: Date.now(), speed: speedKmh };
         setPosition({ lat: latitude, lng: longitude });
         setSpeed(speedKmh);
@@ -95,6 +108,7 @@ export function useGPS({ onTollCrossed } = {}) {
     setError(null);
     setIsTracking(true);
     lastPositionRef.current = null;
+    prevSampleRef.current = null;
     lastProcessedRef.current = 0;
 
     watchIdRef.current = navigator.geolocation.watchPosition(
@@ -117,6 +131,9 @@ export function useGPS({ onTollCrossed } = {}) {
 
         // Chequear peajes ANTES del throttle — no perder un cruce por timing
         checkTollProximity(latitude, longitude, speedKmh, accuracy);
+        // prevSample se actualiza CADA sample (no throttled) para que la
+        // detección por segmento siempre use el sample inmediatamente anterior
+        prevSampleRef.current = { lat: latitude, lng: longitude };
 
         // Throttle para UI updates y posiciones (no para detección de peajes)
         const now = Date.now();
@@ -161,6 +178,7 @@ export function useGPS({ onTollCrossed } = {}) {
     }
     setIsTracking(false);
     lastPositionRef.current = null;
+    prevSampleRef.current = null;
   }, []);
 
   // Cuando la app vuelve al foreground (iOS), forzar lectura GPS inmediata

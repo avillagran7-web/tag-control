@@ -167,6 +167,24 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
       costByDriver[t.driver] = (costByDriver[t.driver] || 0) + (t.total_cost || 0);
     }
 
+    // Platform breakdown — trips (cTrips + liveData both have platform) and users
+    const normPlat = p => p === 'ios' ? 'ios' : p === 'android' ? 'android' : p === 'web' ? 'web' : 'unknown';
+    const tripsByPlatform = { ios: 0, android: 0, web: 0, unknown: 0 };
+    const platformByDriver = {}; // driver -> { ios, android, web, unknown }
+    for (const t of [...cTrips, ...liveData]) {
+      const p = normPlat(t.platform);
+      tripsByPlatform[p]++;
+      const d = t.driver;
+      if (!platformByDriver[d]) platformByDriver[d] = { ios: 0, android: 0, web: 0, unknown: 0 };
+      platformByDriver[d][p]++;
+    }
+    const usersByPlatform = { ios: 0, android: 0, web: 0, unknown: 0 };
+    for (const d of allDrivers) {
+      const pd = platformByDriver[d] || { unknown: 1 };
+      const dominant = Object.entries(pd).sort((a, b) => b[1] - a[1])[0][0];
+      usersByPlatform[dominant]++;
+    }
+
     setStats({
       totalTrips: allCombined.length,
       activeTrips: liveData.length,
@@ -179,6 +197,9 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
       avgTollsPerTrip,
       tripsByDriver,
       costByDriver,
+      tripsByPlatform,
+      usersByPlatform,
+      platformByDriver,
     });
   }
 
@@ -653,6 +674,54 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
                 <p className="text-lg font-bold">{formatCLP(stats?.avgCostPerTrip || 0)}</p>
               </div>
             </div>
+
+            {/* Platform breakdown */}
+            {stats && (() => {
+              const tp = stats.tripsByPlatform || { ios: 0, android: 0, web: 0, unknown: 0 };
+              const up = stats.usersByPlatform || { ios: 0, android: 0, web: 0, unknown: 0 };
+              const PLATS = [
+                { k: 'ios', label: 'iOS', color: '#3b82f6' },
+                { k: 'android', label: 'Android', color: '#22c55e' },
+                { k: 'web', label: 'Web', color: '#a855f7' },
+                { k: 'unknown', label: '?', color: '#6b7280' },
+              ];
+              const tripTotal = Object.values(tp).reduce((a, b) => a + b, 0) || 1;
+              const userTotal = Object.values(up).reduce((a, b) => a + b, 0) || 1;
+              return (
+                <div className="bg-white/5 rounded-lg p-3 space-y-3">
+                  <p className="text-[10px] text-gray-400">Plataformas</p>
+                  {[{ label: 'Viajes', data: tp, total: tripTotal }, { label: 'Usuarios', data: up, total: userTotal }].map(row => (
+                    <div key={row.label}>
+                      <div className="flex justify-between text-[11px] mb-1">
+                        <span className="text-gray-300">{row.label}</span>
+                        <span className="text-gray-500">{row.total}</span>
+                      </div>
+                      <div className="flex h-3 rounded overflow-hidden bg-white/5">
+                        {PLATS.map(p => {
+                          const val = row.data[p.k] || 0;
+                          if (!val) return null;
+                          const pct = (val / row.total) * 100;
+                          return <div key={p.k} style={{ width: `${pct}%`, background: p.color }} title={`${p.label}: ${val}`} />;
+                        })}
+                      </div>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1.5">
+                        {PLATS.map(p => {
+                          const val = row.data[p.k] || 0;
+                          if (!val) return null;
+                          return (
+                            <div key={p.k} className="flex items-center gap-1 text-[10px]">
+                              <span style={{ width: 8, height: 8, background: p.color, borderRadius: 2, display: 'inline-block' }} />
+                              <span className="text-gray-300">{p.label}</span>
+                              <span className="text-gray-500">{val}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* 3 gráficos */}
             {growthData.length > 0 && (() => {

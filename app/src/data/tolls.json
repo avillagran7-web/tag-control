@@ -130,7 +130,7 @@
       "tarifa_saturacion": 771,
       "lat": -33.4153,
       "lng": -70.6077,
-      "radio_deteccion_m": 300
+      "radio_deteccion_m": 450
     },
     {
       "id": "cn-p2.1",
@@ -284,7 +284,7 @@
       "tarifa_saturacion": 1275,
       "lat": -33.4489,
       "lng": -70.6596,
-      "radio_deteccion_m": 300
+      "radio_deteccion_m": 450
     },
     {
       "id": "ac-ns-fama",
@@ -790,7 +790,7 @@
       "tarifa_saturacion": 880,
       "lat": -33.415,
       "lng": -70.608,
-      "radio_deteccion_m": 250
+      "radio_deteccion_m": 450
     },
     {
       "id": "avo-kennedy",
@@ -801,7 +801,7 @@
       "tarifa_saturacion": 735,
       "lat": -33.422,
       "lng": -70.603,
-      "radio_deteccion_m": 250
+      "radio_deteccion_m": 450
     },
     {
       "id": "avo-tobalaba",

@@ -11,13 +11,14 @@
  */
 
 import { supabase } from './supabase';
-import { haversine } from './geoUtils';
+import { haversine, pointToSegmentDistance } from './geoUtils';
 import { getTarifa } from './pricing';
 import tollsData from '../data/tolls.json';
 
 const DETECTION_RADIUS_M = 150;
 const COOLDOWN_MS = 60000; // 60s cooldown entre mismo peaje (más bajo que real-time porque positions están cada 30s)
 const MIN_SPEED_KMH = 10; // Más permisivo que real-time (10 vs 20 km/h)
+const MAX_SEGMENT_M = 2000; // Gap máximo entre positions consecutivas para usar detección por segmento
 
 /**
  * Reconstruye peajes cruzados a partir de un array de posiciones GPS.
@@ -44,8 +45,17 @@ export function reconstructFromPositions(positions) {
       if (timeSec > 0) speed = (dist / timeSec) * 3.6;
     }
 
+    // Detección por segmento: con positions cada 30s a 100 km/h hay 800m entre
+    // muestras, fácil saltarse un peaje. Medimos al segmento entre posiciones.
+    const prev = i > 0 ? positions[i - 1] : null;
+    const useSegment =
+      prev != null &&
+      haversine(prev.lat, prev.lng, pos.lat, pos.lng) <= MAX_SEGMENT_M;
+
     for (const toll of tollsData.tolls) {
-      const distance = haversine(pos.lat, pos.lng, toll.lat, toll.lng);
+      const distance = useSegment
+        ? pointToSegmentDistance(toll.lat, toll.lng, prev.lat, prev.lng, pos.lat, pos.lng)
+        : haversine(pos.lat, pos.lng, toll.lat, toll.lng);
       const radius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
       const lastCrossed = cooldowns[toll.id] || 0;
       const inCooldown = ts - lastCrossed < COOLDOWN_MS;

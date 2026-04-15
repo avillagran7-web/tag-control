@@ -8,14 +8,16 @@
 
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { haversine, msToKmh } from './geoUtils';
-import { getTarifa } from './pricing';
+import { haversine, msToKmh, pointToSegmentDistance } from './geoUtils';
 import tollsData from '../data/tolls.json';
 
 const BACKGROUND_LOCATION_TASK = 'TAGCONTROL_BACKGROUND_LOCATION';
 const DETECTION_RADIUS_M = 150;
 const MIN_SPEED_KMH = 15;
 const COOLDOWN_MS = 120000;
+// Max gap between consecutive GPS samples to treat them as a continuous segment.
+// Longer gaps (signal loss, app suspended) shouldn't draw a phantom straight line.
+const MAX_SEGMENT_M = 500;
 
 // In-memory state for background task
 let _onTollCrossed = null;
@@ -24,61 +26,69 @@ let _cooldowns = {};
 let _lastPosition = null;
 let _isTracking = false;
 
+function processLocation(location) {
+  const { latitude, longitude, speed: rawSpeed, accuracy } = location.coords;
+  const timestamp = location.timestamp || Date.now();
+
+  if (accuracy > 1000) return;
+
+  let speedKmh = 0;
+  if (rawSpeed != null && rawSpeed >= 0) {
+    speedKmh = msToKmh(rawSpeed);
+  } else if (_lastPosition) {
+    const dist = haversine(_lastPosition.lat, _lastPosition.lng, latitude, longitude);
+    const timeSec = (timestamp - _lastPosition.timestamp) / 1000;
+    if (timeSec > 0) speedKmh = (dist / timeSec) * 3.6;
+  }
+  if (speedKmh > 200) speedKmh = _lastPosition?.speed || 0;
+
+  const prev = _lastPosition;
+  _lastPosition = { lat: latitude, lng: longitude, timestamp, speed: speedKmh };
+
+  _onPositionUpdate?.({ lat: latitude, lng: longitude, speed: speedKmh, accuracy, timestamp });
+
+  // Segment-based proximity: at highway speed a single GPS point can fly past
+  // the radius without ever landing inside, so we measure the distance from
+  // each toll to the line segment between the previous and current sample.
+  const useSegment =
+    prev != null &&
+    haversine(prev.lat, prev.lng, latitude, longitude) <= MAX_SEGMENT_M;
+
+  const now = Date.now();
+  for (const toll of tollsData.tolls) {
+    const lastCrossed = _cooldowns[toll.id] || 0;
+    if (now - lastCrossed < COOLDOWN_MS) continue;
+
+    const radius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
+    const distance = useSegment
+      ? pointToSegmentDistance(toll.lat, toll.lng, prev.lat, prev.lng, latitude, longitude)
+      : haversine(latitude, longitude, toll.lat, toll.lng);
+
+    const speedOk =
+      speedKmh >= MIN_SPEED_KMH ||
+      (speedKmh === 0 && distance <= radius);
+
+    if (distance <= radius && speedOk) {
+      _cooldowns[toll.id] = now;
+      _onTollCrossed?.({
+        toll,
+        timestamp: now,
+        lat: latitude,
+        lng: longitude,
+        speed: speedKmh,
+        distance: Math.round(distance),
+      });
+    }
+  }
+}
+
 /**
  * Register the background task. Must be called at module level (top of app).
  */
 TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
   if (error) return;
   if (!data?.locations?.length) return;
-
-  for (const location of data.locations) {
-    const { latitude, longitude, speed: rawSpeed, accuracy } = location.coords;
-    const timestamp = location.timestamp || Date.now();
-
-    // Reject extremely bad accuracy
-    if (accuracy > 1000) continue;
-
-    // Calculate speed
-    let speedKmh = 0;
-    if (rawSpeed != null && rawSpeed >= 0) {
-      speedKmh = msToKmh(rawSpeed);
-    } else if (_lastPosition) {
-      const dist = haversine(_lastPosition.lat, _lastPosition.lng, latitude, longitude);
-      const timeSec = (timestamp - _lastPosition.timestamp) / 1000;
-      if (timeSec > 0) speedKmh = (dist / timeSec) * 3.6;
-    }
-
-    // Sanity check speed
-    if (speedKmh > 200) speedKmh = _lastPosition?.speed || 0;
-
-    _lastPosition = { lat: latitude, lng: longitude, timestamp, speed: speedKmh };
-
-    // Notify position update (for live tracking / UI)
-    _onPositionUpdate?.({ lat: latitude, lng: longitude, speed: speedKmh, accuracy, timestamp });
-
-    // Check toll proximity
-    const now = Date.now();
-    for (const toll of tollsData.tolls) {
-      const distance = haversine(latitude, longitude, toll.lat, toll.lng);
-      const baseRadius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
-      const lastCrossed = _cooldowns[toll.id] || 0;
-      if (now - lastCrossed < COOLDOWN_MS) continue;
-
-      const speedOk = speedKmh >= MIN_SPEED_KMH || (speedKmh === 0 && distance <= baseRadius);
-
-      if (distance <= baseRadius && speedOk) {
-        _cooldowns[toll.id] = now;
-        _onTollCrossed?.({
-          toll,
-          timestamp: now,
-          lat: latitude,
-          lng: longitude,
-          speed: speedKmh,
-          distance: Math.round(distance),
-        });
-      }
-    }
-  }
+  for (const location of data.locations) processLocation(location);
 });
 
 /**
@@ -112,44 +122,7 @@ export async function startTracking({ onTollCrossed, onPositionUpdate }) {
       distanceInterval: 20, // Update every 20 meters
       timeInterval: 3000, // Or every 3 seconds
     },
-    (location) => {
-      // Process via same logic as background task
-      const fakeData = { locations: [location] };
-      const task = TaskManager.getTaskAsync(BACKGROUND_LOCATION_TASK);
-      // Process inline for foreground
-      const { latitude, longitude, speed: rawSpeed, accuracy } = location.coords;
-      const timestamp = location.timestamp || Date.now();
-      if (accuracy > 1000) return;
-
-      let speedKmh = 0;
-      if (rawSpeed != null && rawSpeed >= 0) {
-        speedKmh = msToKmh(rawSpeed);
-      } else if (_lastPosition) {
-        const dist = haversine(_lastPosition.lat, _lastPosition.lng, latitude, longitude);
-        const timeSec = (timestamp - _lastPosition.timestamp) / 1000;
-        if (timeSec > 0) speedKmh = (dist / timeSec) * 3.6;
-      }
-      if (speedKmh > 200) speedKmh = _lastPosition?.speed || 0;
-
-      _lastPosition = { lat: latitude, lng: longitude, timestamp, speed: speedKmh };
-      _onPositionUpdate?.({ lat: latitude, lng: longitude, speed: speedKmh, accuracy, timestamp });
-
-      const now = Date.now();
-      for (const toll of tollsData.tolls) {
-        const distance = haversine(latitude, longitude, toll.lat, toll.lng);
-        const baseRadius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
-        const lastCrossed = _cooldowns[toll.id] || 0;
-        if (now - lastCrossed < COOLDOWN_MS) continue;
-        const speedOk = speedKmh >= MIN_SPEED_KMH || (speedKmh === 0 && distance <= baseRadius);
-        if (distance <= baseRadius && speedOk) {
-          _cooldowns[toll.id] = now;
-          _onTollCrossed?.({
-            toll, timestamp: now, lat: latitude, lng: longitude,
-            speed: speedKmh, distance: Math.round(distance),
-          });
-        }
-      }
-    }
+    processLocation
   );
 
   // Start background location (runs even when app is backgrounded/locked)
