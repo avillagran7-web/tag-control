@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAGcontrol — Brand Identity A</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --carbon:  #0D0D0D;
+    --dark:    #1A1A1A;
+    --volt:    #C8FF00;
+    --white:   #FFFFFF;
+    --gray:    #888888;
+    --gray2:   #333333;
+  }
+
+  body {
+    background: var(--carbon);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 960px; margin: 0 auto; padding: 64px 32px; }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--gray2);
+    padding-bottom: 32px;
+    margin-bottom: 64px;
+  }
+  .label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+  .header-meta { text-align: right; }
+  .header-meta .label + .label { margin-top: 4px; }
+
+  /* ── Logo ── */
+  .logo-hero {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 64px;
+  }
+  .logo-hero .tag { color: var(--white); }
+  .logo-hero .ctrl { color: var(--volt); }
+
+  .tagline {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-top: -48px;
+    margin-bottom: 72px;
+  }
+
+  /* ── Section ── */
+  .section { margin-bottom: 72px; }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--volt);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  /* ── Colors ── */
+  .colors { display: flex; gap: 16px; flex-wrap: wrap; }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .swatch-block {
+    height: 100px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .swatch-name { font-size: 14px; font-weight: 600; }
+  .swatch-hex  { font-size: 12px; color: var(--gray); font-weight: 400; }
+  .swatch-desc { font-size: 11px; color: var(--gray); line-height: 1.5; margin-top: 2px; }
+
+  /* ── Type ── */
+  .type-specimen {
+    background: var(--dark);
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .type-name { font-size: 11px; letter-spacing: 0.15em; color: var(--gray); text-transform: uppercase; margin-bottom: 20px; }
+  .type-display { font-size: 56px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; color: var(--white); }
+  .type-display span { color: var(--volt); }
+  .type-sizes { margin-top: 24px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--gray2); padding-top: 20px; }
+  .type-row { display: flex; align-items: baseline; gap: 16px; }
+  .type-row .sz { font-size: 11px; color: var(--gray); width: 40px; flex-shrink: 0; }
+  .type-row .wt { font-size: 11px; color: var(--gray); width: 60px; flex-shrink: 0; }
+  .t-h1 { font-size: 32px; font-weight: 700; }
+  .t-h2 { font-size: 22px; font-weight: 600; }
+  .t-body { font-size: 16px; font-weight: 400; }
+  .t-small { font-size: 12px; font-weight: 500; color: var(--gray); letter-spacing: 0.05em; }
+
+  /* ── Mockups ── */
+  .mockups {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .mockup-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .mockup-caption { font-size: 11px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .phone {
+    width: 200px;
+    height: 400px;
+    background: #111111;
+    border-radius: 36px;
+    border: 5px solid #2a2a2a;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: #2a2a2a;
+    border-radius: 3px;
+    z-index: 10;
+  }
+  .phone-screen { width: 100%; height: 100%; padding: 28px 14px 16px; display: flex; flex-direction: column; }
+
+  /* Screen 1 — Home idle */
+  .s1-icon {
+    width: 44px; height: 44px;
+    background: var(--volt);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    align-self: center;
+    margin-top: 8px; margin-bottom: 8px;
+  }
+  .s1-icon-text { font-size: 14px; font-weight: 800; color: var(--carbon); }
+  .s1-title { font-size: 13px; font-weight: 700; text-align: center; color: var(--white); }
+  .s1-sub { font-size: 9px; color: var(--gray); text-align: center; margin-top: 2px; margin-bottom: 12px; }
+  .s1-budget {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #2a2a2a;
+  }
+  .s1-budget-label { font-size: 8px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; }
+  .s1-budget-amt { font-size: 18px; font-weight: 700; color: var(--white); margin-top: 2px; }
+  .s1-budget-bar { height: 3px; background: #333; border-radius: 2px; margin-top: 6px; }
+  .s1-budget-fill { height: 3px; width: 45%; background: var(--volt); border-radius: 2px; }
+  .s1-btn {
+    background: var(--volt);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .s1-btn-text { font-size: 12px; font-weight: 700; color: var(--carbon); }
+  .s1-hint { font-size: 8px; color: var(--gray); text-align: center; margin-top: 6px; }
+
+  /* Screen 2 — Active */
+  .s2-card {
+    background: var(--volt);
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+  .s2-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .s2-card-label { font-size: 9px; color: rgba(0,0,0,0.5); font-weight: 600; }
+  .s2-badge {
+    background: rgba(0,0,0,0.15);
+    border-radius: 6px;
+    padding: 2px 6px;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .s2-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--carbon); }
+  .s2-badge-text { font-size: 8px; font-weight: 600; color: var(--carbon); }
+  .s2-amount { font-size: 28px; font-weight: 800; color: var(--carbon); line-height: 1; }
+  .s2-sub { font-size: 9px; color: rgba(0,0,0,0.5); margin-top: 2px; }
+  .s2-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .s2-item {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #2a2a2a;
+  }
+  .s2-item-name { font-size: 9px; font-weight: 600; color: var(--white); }
+  .s2-item-route { font-size: 7.5px; color: var(--gray); margin-top: 1px; }
+  .s2-item-cost { font-size: 10px; font-weight: 700; color: var(--volt); }
+  .s2-stop { background: #e53935; border-radius: 10px; padding: 10px; text-align: center; margin-top: 8px; }
+  .s2-stop-text { font-size: 11px; font-weight: 700; color: var(--white); }
+
+  /* Screen 3 — Notification */
+  .s3-bg { background: var(--carbon); flex: 1; display: flex; flex-direction: column; padding: 8px 0; }
+  .s3-blur {
+    background: rgba(30,30,30,0.95);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 16px;
+  }
+  .s3-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .s3-app-icon { width: 18px; height: 18px; background: var(--volt); border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+  .s3-app-icon-t { font-size: 8px; font-weight: 800; color: var(--carbon); }
+  .s3-app-name { font-size: 9px; color: var(--gray); font-weight: 500; }
+  .s3-app-time { font-size: 9px; color: var(--gray); margin-left: auto; }
+  .s3-notif-title { font-size: 11px; font-weight: 700; color: var(--white); }
+  .s3-notif-body { font-size: 10px; color: var(--gray); margin-top: 1px; }
+  .s3-pulse {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--volt);
+    display: flex; align-items: center; justify-content: center;
+    align-self: center;
+    margin: 20px auto 8px;
+    box-shadow: 0 0 0 12px rgba(200,255,0,0.1), 0 0 0 24px rgba(200,255,0,0.05);
+  }
+  .s3-pulse-text { font-size: 22px; font-weight: 800; color: var(--carbon); }
+  .s3-detected { font-size: 11px; font-weight: 700; color: var(--white); text-align: center; }
+  .s3-toll-name { font-size: 9px; color: var(--volt); text-align: center; margin-top: 2px; }
+  .s3-cost { font-size: 22px; font-weight: 800; color: var(--volt); text-align: center; margin-top: 8px; }
+  .s3-trip { font-size: 8px; color: var(--gray); text-align: center; margin-top: 2px; }
+
+  /* ── Icon ── */
+  .icon-row { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .icon-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .icon-bg { display: flex; align-items: center; justify-content: center; border-radius: 22%; }
+  .icon-label { font-size: 10px; color: var(--gray); }
+  .icon-text { font-weight: 800; color: var(--carbon); letter-spacing: -0.03em; }
+  .icon-text span { color: var(--volt); }
+
+  /* ── Voice ── */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .voice-card { background: var(--dark); border-radius: 12px; padding: 20px; }
+  .voice-card-label { font-size: 10px; color: var(--volt); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; font-weight: 600; }
+  .voice-card-text { font-size: 14px; color: var(--white); line-height: 1.6; }
+  .voice-card-muted { font-size: 12px; color: var(--gray); margin-top: 6px; line-height: 1.5; }
+
+  /* ── Rules ── */
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rule-card { border-radius: 12px; padding: 20px; }
+  .rule-do { background: rgba(200, 255, 0, 0.06); border: 1px solid rgba(200,255,0,0.15); }
+  .rule-dont { background: rgba(255, 50, 50, 0.05); border: 1px solid rgba(255,50,50,0.1); }
+  .rule-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+  .rule-do .rule-label { color: var(--volt); }
+  .rule-dont .rule-label { color: #ff6b6b; }
+  .rule-item { font-size: 12px; color: var(--gray); margin-bottom: 6px; padding-left: 12px; position: relative; line-height: 1.5; }
+  .rule-item::before { content: '—'; position: absolute; left: 0; color: inherit; opacity: 0.5; }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid var(--gray2);
+    padding-top: 32px;
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo { font-size: 18px; font-weight: 800; }
+  .footer-logo span { color: var(--volt); }
+  .footer-copy { font-size: 11px; color: var(--gray); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="label">Propuesta A · Carbon + Volt</span>
+    <div class="header-meta">
+      <div class="label">Brand Identity One-Pager</div>
+      <div class="label">TAGcontrol · 2026</div>
+    </div>
+  </div>
+
+  <!-- Logo hero -->
+  <div class="logo-hero">
+    <span class="tag">TAG</span><span class="ctrl">control</span>
+  </div>
+  <div class="tagline">Etiqueta · Rastrea · Controla</div>
+
+  <!-- Colors -->
+  <div class="section">
+    <div class="section-label">Paleta de color</div>
+    <div class="colors">
+      <div class="swatch">
+        <div class="swatch-block" style="background:#0D0D0D; border-color:#333;"></div>
+        <div class="swatch-name">Carbon</div>
+        <div class="swatch-hex">#0D0D0D</div>
+        <div class="swatch-desc">Fondo primario. Máximo contraste, mínimo ruido visual.</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#C8FF00;"></div>
+        <div class="swatch-name" style="color:#C8FF00">Volt</div>
+        <div class="swatch-hex">#C8FF00</div>
+        <div class="swatch-desc">Acento principal. Acción, alerta, energía. Solo en momentos clave.</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#1A1A1A; border-color:#333;"></div>
+        <div class="swatch-name" style="color:#888">Dark</div>
+        <div class="swatch-hex">#1A1A1A</div>
+        <div class="swatch-desc">Fondo de tarjetas y componentes elevados.</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#FFFFFF;"></div>
+        <div class="swatch-name" style="color:#fff">White</div>
+        <div class="swatch-hex">#FFFFFF</div>
+        <div class="swatch-desc">Texto principal. Contraste máximo sobre Carbon.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <div class="section-label">Tipografía</div>
+    <div class="type-specimen">
+      <div class="type-name">Space Grotesk — Condensada · Industrial · Técnica</div>
+      <div class="type-display">TAG<span>ctrl</span></div>
+      <div class="type-sizes">
+        <div class="type-row"><span class="sz">32px</span><span class="wt">Bold 700</span><span class="t-h1">Peajes detectados</span></div>
+        <div class="type-row"><span class="sz">22px</span><span class="wt">Semi 600</span><span class="t-h2">Vespucio Norte Express</span></div>
+        <div class="type-row"><span class="sz">16px</span><span class="wt">Regular 400</span><span class="t-body">Tu viaje en tiempo real</span></div>
+        <div class="type-row"><span class="sz">12px</span><span class="wt">Med 500</span><span class="t-small">TARIFA PUNTA · $1.560</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mockups -->
+  <div class="section">
+    <div class="section-label">Mockups — App nativa</div>
+    <div class="mockups">
+
+      <!-- Phone 1: Home -->
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="s1-icon"><div class="s1-icon-text">TC</div></div>
+            <div class="s1-title">Registra tus peajes</div>
+            <div class="s1-sub">Detecta automáticamente cada peaje</div>
+            <div style="height:12px"></div>
+            <div class="s1-budget">
+              <div class="s1-budget-label">Peajes este mes</div>
+              <div class="s1-budget-amt">$43.200</div>
+              <div class="s1-budget-bar"><div class="s1-budget-fill"></div></div>
+            </div>
+            <div class="s1-btn"><div class="s1-btn-text">Iniciar viaje</div></div>
+            <div class="s1-hint">Tarifa punta activa</div>
+          </div>
+        </div>
+        <div class="mockup-caption">Home</div>
+      </div>
+
+      <!-- Phone 2: Active trip -->
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="s2-card">
+              <div class="s2-card-header">
+                <div class="s2-card-label">Viaje en curso</div>
+                <div class="s2-badge"><div class="s2-dot"></div><div class="s2-badge-text">87 km/h</div></div>
+              </div>
+              <div class="s2-amount">$4.230</div>
+              <div class="s2-sub">3 peajes · tarifa punta</div>
+            </div>
+            <div class="s2-list">
+              <div class="s2-item">
+                <div>
+                  <div class="s2-item-name">Pórtico Vespucio</div>
+                  <div class="s2-item-route">Vespucio Norte · 09:14</div>
+                </div>
+                <div class="s2-item-cost">$1.540</div>
+              </div>
+              <div class="s2-item">
+                <div>
+                  <div class="s2-item-name">Pórtico Ruta 5</div>
+                  <div class="s2-item-route">Vespucio Norte · 09:19</div>
+                </div>
+                <div class="s2-item-cost">$890</div>
+              </div>
+              <div class="s2-item">
+                <div>
+                  <div class="s2-item-name">Pórtico Carrascal</div>
+                  <div class="s2-item-route">Costanera Norte · 09:26</div>
+                </div>
+                <div class="s2-item-cost">$1.800</div>
+              </div>
+            </div>
+            <div class="s2-stop"><div class="s2-stop-text">Detener viaje</div></div>
+          </div>
+        </div>
+        <div class="mockup-caption">Viaje activo</div>
+      </div>
+
+      <!-- Phone 3: Notification / Detection moment -->
+      <div class="mockup-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="s3-bg">
+              <div class="s3-blur">
+                <div class="s3-header">
+                  <div class="s3-app-icon"><div class="s3-app-icon-t">TC</div></div>
+                  <div class="s3-app-name">TAGcontrol</div>
+                  <div class="s3-app-time">ahora</div>
+                </div>
+                <div class="s3-notif-title">¡Peaje detectado!</div>
+                <div class="s3-notif-body">Pórtico Carrascal · $1.800</div>
+              </div>
+              <div class="s3-pulse">
+                <div class="s3-pulse-text">✓</div>
+              </div>
+              <div class="s3-detected">Peaje cruzado</div>
+              <div class="s3-toll-name">Pórtico Carrascal — Costanera Norte</div>
+              <div class="s3-cost">$1.800</div>
+              <div class="s3-trip">Total viaje: $4.230 · 3 peajes</div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-caption">Detección</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Icon -->
+  <div class="section">
+    <div class="section-label">Ícono de app</div>
+    <div class="icon-row">
+      <div class="icon-block">
+        <div class="icon-bg" style="width:96px;height:96px;background:#C8FF00;">
+          <div class="icon-text" style="font-size:32px;color:#0D0D0D">TC</div>
+        </div>
+        <div class="icon-label">96 × 96</div>
+      </div>
+      <div class="icon-block">
+        <div class="icon-bg" style="width:64px;height:64px;background:#C8FF00;border-radius:18px;">
+          <div class="icon-text" style="font-size:22px;color:#0D0D0D">TC</div>
+        </div>
+        <div class="icon-label">64 × 64</div>
+      </div>
+      <div class="icon-block">
+        <div class="icon-bg" style="width:48px;height:48px;background:#C8FF00;border-radius:14px;">
+          <div class="icon-text" style="font-size:16px;color:#0D0D0D">TC</div>
+        </div>
+        <div class="icon-label">48 × 48</div>
+      </div>
+      <div class="icon-block">
+        <div class="icon-bg" style="width:32px;height:32px;background:#C8FF00;border-radius:9px;">
+          <div class="icon-text" style="font-size:11px;color:#0D0D0D">TC</div>
+        </div>
+        <div class="icon-label">32 × 32</div>
+      </div>
+      <div style="margin-left:24px;">
+        <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:8px;">Variante oscura</div>
+        <div class="icon-block">
+          <div class="icon-bg" style="width:96px;height:96px;background:#0D0D0D;border:2px solid #C8FF00;">
+            <div style="font-size:32px;font-weight:800;letter-spacing:-0.03em;color:#fff;">T<span style="color:#C8FF00">C</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice -->
+  <div class="section">
+    <div class="section-label">Voz de marca</div>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <div class="voice-card-label">Personalidad</div>
+        <div class="voice-card-text">Directo · Técnico · Confiable · Rápido</div>
+        <div class="voice-card-muted">TAGcontrol no es amistoso, es preciso. Habla como el dashboard de un auto de carreras: datos limpios, sin ruido.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-card-label">Copy ejemplo</div>
+        <div class="voice-card-text">"Peaje cruzado. $1.800."<br>"Viaje terminado. Total: $8.430."<br>"3 peajes detectados."</div>
+        <div class="voice-card-muted">Sin exclamaciones innecesarias. Sin explicaciones. El conductor ya sabe lo que pasó.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-card-label">Tagline</div>
+        <div class="voice-card-text" style="font-size:18px;font-weight:700;">Etiqueta. Rastrea. Controla.</div>
+        <div class="voice-card-muted">Tres verbos. Tres momentos del producto. Orden que no se discute.</div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-card-label">Posicionamiento</div>
+        <div class="voice-card-text">La app que sabe más de tus peajes que la concesionaria.</div>
+        <div class="voice-card-muted">Postura de control y conocimiento. El usuario tiene poder sobre el sistema.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div class="section">
+    <div class="section-label">Reglas de uso</div>
+    <div class="rules">
+      <div class="rule-card rule-do">
+        <div class="rule-label">Hacer</div>
+        <div class="rule-item">TAGcontrol (una palabra, T y C en mayúscula)</div>
+        <div class="rule-item">Volt solo en momentos de acción o alerta</div>
+        <div class="rule-item">Tipografía Space Grotesk en toda la app</div>
+        <div class="rule-item">Dark mode nativo como pantalla principal</div>
+        <div class="rule-item">Números precisos, sin redondeos innecesarios</div>
+      </div>
+      <div class="rule-card rule-dont">
+        <div class="rule-label">No hacer</div>
+        <div class="rule-item">TAGControl, Tagcontrol, tag control</div>
+        <div class="rule-item">Volt como color de fondo en pantallas completas</div>
+        <div class="rule-item">Más de 2 colores acento en la misma pantalla</div>
+        <div class="rule-item">Texto de más de 2 líneas en notificaciones</div>
+        <div class="rule-item">Animaciones de más de 300ms en acciones críticas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-logo">TAG<span>control</span></div>
+    <div class="footer-copy">Propuesta A · Carbon + Volt · Space Grotesk · 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
