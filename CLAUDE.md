@@ -16,6 +16,21 @@ Hacer esto en orden al abrir cada conversación:
 **Nunca contradecir decisiones de sesiones anteriores sin confirmación explícita.**
 **Antes de dar credenciales, URLs, o datos fijos — buscar en memoria primero.**
 
+## Sistema de mejora continua
+
+Cada cierta cantidad de sesiones (o cuando el usuario lo pida) correr:
+
+```sh
+node scripts/multi-perspective-audit.mjs              # 5 perspectivas: Tech, PM, UX, Growth, CEO
+node scripts/multi-perspective-audit.mjs --focus=ux   # solo una perspectiva
+node scripts/multi-perspective-audit.mjs --format=whatsapp  # formato para compartir
+```
+
+El audit trae voces que un solo CTO no tiene. Los hallazgos críticos van al ROADMAP.md.
+
+**Cadencia sugerida:** Correr el audit completo cada 10 sesiones de trabajo significativo,
+o antes de cualquier decisión arquitectónica importante.
+
 ## Stack
 - **PWA (`frontend/`):** React 19 + Vite + Tailwind 4 + Supabase. Deploy en Vercel.
 - **App nativa (`app/`):** React Native + Expo SDK 54 + expo-location background. Build via EAS.

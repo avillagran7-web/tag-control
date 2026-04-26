@@ -28,6 +28,13 @@ No hay fechas. Construimos en bloques de valor. Un día de trabajo intenso vale 
 
 ## 📋 Por construir — en orden de prioridad
 
+### Bloque 0 — Insight crítico del audit hackathon
+> El botón "Iniciar viaje" es el mayor problema de producto. Un conductor no-técnico
+> lo va a olvidar. La app tiene que ser más inteligente que el usuario.
+- [ ] Auto-detección de viaje — speed ≥60 km/h + geofence de entrada a autopista → trip start automático
+- [ ] Conectar cuenta TAG en onboarding → scraper activo desde el primer día (no fase 2, es día 1)
+- [ ] "Atrapé un error de cobro" → momento viral primario del producto
+
 ### Bloque 1 — Base sólida
 - [x] README top-level en GitHub
 - [x] ROADMAP.md vivo
