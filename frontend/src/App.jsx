@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import PlanRoute from './pages/PlanRoute';
 import History from './pages/History';
 import Privacy from './pages/Privacy';
+import Brand from './pages/Brand';
 import AuthGate from './components/AuthGate';
 
 const Admin = lazy(() => import('./pages/Admin'));
@@ -128,6 +129,10 @@ function RouterRoot() {
   const location = useLocation();
   if (location.pathname === '/privacy') {
     return <Privacy />;
+  }
+
+  if (location.pathname === '/brand') {
+    return <Brand />;
   }
 
   if (location.pathname === '/admin') {
