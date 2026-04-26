@@ -2,11 +2,25 @@ import tollsData from '../data/tolls.json';
 import { getTarifa } from './pricing';
 import { haversine } from './geoUtils';
 
-// Speed assumption for timestamp estimation when real GPS is unavailable.
-// Chilean urban highways: 80-100 km/h. 90 km/h is a reasonable middle ground.
+// Default speed for timestamp estimation. Urban Santiago routes run ~70 km/h;
+// intercity routes (Ruta 68, Ruta 78) run ~100 km/h.
 const AVG_HIGHWAY_SPEED_KMH = 90;
 
-// Orden de pórticos por ruta (poniente → oriente)
+// Per-route speed overrides for accurate timestamp inference.
+const ROUTE_SPEEDS_KMH = {
+  'Ruta 68':                    100,
+  'Ruta 78 (Autopista del Sol)': 100,
+  'Autopista Nororiente':        80,
+  'Costanera Norte (eje)':       70,
+  'Costanera Norte (Kennedy)':   70,
+  'Autopista Central (NS)':      70,
+  'Autopista Central (GV)':      70,
+  'Vespucio Norte Express':      70,
+  'Vespucio Sur':                70,
+  'Vespucio Oriente (AVO)':      70,
+};
+
+// Orden de pórticos por ruta (poniente → oriente / sur → norte)
 const ROUTE_SEQUENCES = {
   'Costanera Norte (eje)': [
     'cn-p9', 'cn-p6.2', 'cn-p6.1', 'cn-p5', 'cn-ev', 'cn-p4', 'cn-ep', 'cn-p3', 'cn-sb', 'cn-p2.2', 'cn-p2.1', 'cn-p1', 'cn-p0'
@@ -28,6 +42,17 @@ const ROUTE_SEQUENCES = {
   ],
   'Vespucio Oriente (AVO)': [
     'avo-elsalto', 'avo-cdempresarial', 'avo-piramide', 'avo-kennedy', 'avo-tobalaba', 'avo-eliodoro', 'avo-bilbao', 'avo-princesa'
+  ],
+  // Intercity routes — single-direction, no branching
+  'Ruta 68': [
+    'ruta68-lo-prado', 'ruta68-zapata'
+  ],
+  'Ruta 78 (Autopista del Sol)': [
+    'r78-vespucio', 'r78-rinconada', 'r78-padrehurtado', 'r78-malloco', 'r78-talagante', 'r78-elpaico', 'r78-pomaire', 'r78-puangue'
+  ],
+  // Autopista Nororiente: south (city entry, Llano Subercaseaux) → north (Chicureo)
+  'Autopista Nororiente': [
+    'nororiente-llano', 'nororiente-chicureo', 'nororiente-poniente'
   ],
 };
 
@@ -58,10 +83,7 @@ export function inferMissingTolls(crossings) {
 
     if (crossedInSequence.length < 2) continue;
 
-    // Determinar dirección (poniente→oriente o oriente→poniente)
-    const first = crossedInSequence[0].seqIdx;
-    const last = crossedInSequence[crossedInSequence.length - 1].seqIdx;
-    const forward = last > first;
+    // Direction is determined implicitly by Math.min/max below — no variable needed.
 
     // Revisar pares consecutivos de cruzados
     for (let i = 0; i < crossedInSequence.length - 1; i++) {
@@ -143,37 +165,38 @@ function inferFromSingleToll(crossing, crossedIds) {
     const idx = sequence.indexOf(tollId);
     if (idx === -1) continue;
 
-    // Si el peaje detectado NO es el primero ni el último de la secuencia,
-    // inferir los anteriores hasta el inicio (entrada a la ruta)
-    // Esto cubre el caso típico: usuario entra a autopista, GPS en background,
-    // detecta un peaje del medio, se perdieron los de entrada
-    if (idx > 0) {
-      const detectedToll = tollMap[tollId];
-      for (let j = 0; j < idx; j++) {
-        const inferredId = sequence[j];
-        if (crossedIds.has(inferredId)) continue;
-        const toll = tollMap[inferredId];
-        if (!toll) continue;
-        const ts = crossing.timestamp || new Date(crossing.crossed_at).getTime();
+    // Infer entry tolls the driver crossed before the detected one.
+    // Typical case: user enters autopista, background GPS drops,
+    // first detected toll is mid-sequence. We don't infer forward
+    // (post-detection) because the trip may have ended before reaching them.
+    if (idx === 0) continue;
 
-        // Estimate travel time from haversine distance between toll positions.
-        // Much more accurate than the old hardcoded "2 min per toll" constant,
-        // which was too short for long gaps (e.g., Costanera end-to-end ~15 km).
-        const distM = detectedToll
-          ? haversine(toll.lat, toll.lng, detectedToll.lat, detectedToll.lng)
-          : (idx - j) * 4000; // fallback: ~4 km per sequential toll if coords missing
-        const travelMs = (distM / 1000 / AVG_HIGHWAY_SPEED_KMH) * 3600 * 1000;
+    const detectedToll = tollMap[tollId];
+    const routeSpeed = ROUTE_SPEEDS_KMH[routeName] || AVG_HIGHWAY_SPEED_KMH;
 
-        inferred.push({
-          toll,
-          timestamp: Math.round(ts - travelMs),
-          lat: toll.lat,
-          lng: toll.lng,
-          speed: 0,
-          distance: 0,
-          inferred: true,
-        });
-      }
+    for (let j = 0; j < idx; j++) {
+      const inferredId = sequence[j];
+      if (crossedIds.has(inferredId)) continue;
+      const toll = tollMap[inferredId];
+      if (!toll) continue;
+      const ts = crossing.timestamp || new Date(crossing.crossed_at).getTime();
+
+      // Estimate travel time from haversine distance between toll positions.
+      // Much more accurate than a hardcoded constant — Costanera end-to-end is ~15 km.
+      const distM = detectedToll
+        ? haversine(toll.lat, toll.lng, detectedToll.lat, detectedToll.lng)
+        : (idx - j) * 4000; // fallback: ~4 km per toll if coords missing
+      const travelMs = (distM / 1000 / routeSpeed) * 3600 * 1000;
+
+      inferred.push({
+        toll,
+        timestamp: Math.round(ts - travelMs),
+        lat: toll.lat,
+        lng: toll.lng,
+        speed: 0,
+        distance: 0,
+        inferred: true,
+      });
     }
   }
 

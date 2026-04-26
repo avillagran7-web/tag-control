@@ -27,11 +27,22 @@ const BACKGROUND_LOCATION_TASK = 'TAGCONTROL_BACKGROUND_LOCATION';
 const DETECTION_RADIUS_M = 150;
 const MIN_SPEED_KMH = 15;
 const COOLDOWN_MS = 120000;
-const MAX_SEGMENT_M = 500;
-// Urban tolls in Santiago (Costanera Norte, Vespucio, Autopista Central) are
-// crossed at 2–5 km/h in traffic. Track last time we were at highway speed;
-// if within 3 minutes, accept the crossing even at crawling speed.
-const MOVING_BUFFER_MS = 3 * 60 * 1000;
+// 1200m bridges a ~48s GPS gap at 90 km/h — covers most tunnel blackouts.
+const MAX_SEGMENT_M = 1200;
+// 5 minutes: Santiago toll queues can hold a car stationary for 1–4 minutes
+// before the actual crossing, so 3 min was sometimes too short.
+const MOVING_BUFFER_MS = 5 * 60 * 1000;
+
+// Toll pairs <250m apart share a single cooldown so only one crossing fires.
+const TOLL_GROUPS = [
+  ['vs-florida', 'vs-cisterna'],   // 22m — same Vespucio Sur portal, both directions
+  ['vn-ruta5',   'vn-ce'],         // 52m — same Vespucio Norte portal
+  ['vn-salto',   'vn-recoleta'],   // 189m — adjacent Vespucio Norte gantries
+];
+const TOLL_GROUP_KEY = {};
+for (const group of TOLL_GROUPS) {
+  for (const id of group) TOLL_GROUP_KEY[id] = group[0];
+}
 
 // In-memory state for background task
 let _onTollCrossed = null;
@@ -45,6 +56,10 @@ let _watchSubscription = null;
 function processLocation(location) {
   const { latitude, longitude, speed: rawSpeed, accuracy } = location.coords;
   const timestamp = location.timestamp || Date.now();
+
+  // iOS delivers stale cached coordinates after tunnel exit. Discard them
+  // so a ghost position doesn't falsely trigger a crossing.
+  if (Date.now() - timestamp > 15000) return;
 
   if (accuracy > 1000) return;
 
@@ -74,7 +89,8 @@ function processLocation(location) {
     haversine(prev.lat, prev.lng, latitude, longitude) <= MAX_SEGMENT_M;
 
   for (const toll of tollsData.tolls) {
-    const lastCrossed = _cooldowns[toll.id] || 0;
+    const groupKey = TOLL_GROUP_KEY[toll.id] || toll.id;
+    const lastCrossed = _cooldowns[groupKey] || 0;
     if (now - lastCrossed < COOLDOWN_MS) continue;
 
     const radius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
@@ -89,7 +105,7 @@ function processLocation(location) {
     const speedOk = wasRecentlyMoving || (speedKmh === 0 && distance <= radius);
 
     if (distance <= radius && speedOk) {
-      _cooldowns[toll.id] = now;
+      _cooldowns[groupKey] = now;
       const crossing = {
         toll,
         timestamp: now,
@@ -166,6 +182,9 @@ export async function startTracking({ onTollCrossed, onPositionUpdate, backgroun
       distanceInterval: 50,
       timeInterval: 5000,
       showsBackgroundLocationIndicator: true,
+      // Prevent iOS from pausing GPS when the device appears stationary —
+      // toll queues look stationary to the OS but we still need position updates.
+      pausesUpdatesAutomatically: false,
       foregroundService: {
         notificationTitle: 'TAGcontrol',
         notificationBody: 'Detectando peajes en tu viaje...',

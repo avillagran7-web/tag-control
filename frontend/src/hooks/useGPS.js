@@ -9,11 +9,21 @@ const THROTTLE_MS = 3000;
 const MAX_ACCURACY_M = 300;
 const TOLL_CHECK_ACCURACY_M = 1000;
 const MAX_SEGMENT_M = 500;
-// Santiago urban tolls (Costanera Norte, Vespucio, etc.) can be crossed at
-// 2–5 km/h in traffic. We track the last time the vehicle moved at highway
-// speed; if that was within 3 minutes, we accept the crossing regardless of
-// current speed. This is the urban-traffic fix.
-const MOVING_BUFFER_MS = 3 * 60 * 1000;
+// 5 minutes: Santiago toll queues can hold a car stationary for 1–4 minutes
+// before the actual crossing, so 3 min was sometimes too short.
+const MOVING_BUFFER_MS = 5 * 60 * 1000;
+
+// Toll pairs <250m apart share a single cooldown so only one crossing fires.
+// These exist because bidirectional tolls on the same portal have two entries.
+const TOLL_GROUPS = [
+  ['vs-florida', 'vs-cisterna'],   // 22m — same Vespucio Sur portal, both directions
+  ['vn-ruta5',   'vn-ce'],         // 52m — same Vespucio Norte portal
+  ['vn-salto',   'vn-recoleta'],   // 189m — adjacent Vespucio Norte gantries
+];
+const TOLL_GROUP_KEY = {};
+for (const group of TOLL_GROUPS) {
+  for (const id of group) TOLL_GROUP_KEY[id] = group[0];
+}
 
 export function useGPS({ onTollCrossed } = {}) {
   const [position, setPosition] = useState(null);
@@ -59,7 +69,8 @@ export function useGPS({ onTollCrossed } = {}) {
       const distance = useSegment
         ? pointToSegmentDistance(toll.lat, toll.lng, prev.lat, prev.lng, lat, lng)
         : haversine(lat, lng, toll.lat, toll.lng);
-      const lastCrossed = cooldownsRef.current[toll.id] || 0;
+      const groupKey = TOLL_GROUP_KEY[toll.id] || toll.id;
+      const lastCrossed = cooldownsRef.current[groupKey] || 0;
       const isInCooldown = now - lastCrossed < COOLDOWN_MS;
       const baseRadius = toll.radio_deteccion_m || DETECTION_RADIUS_M;
       const accuracyBonus = accuracy > MAX_ACCURACY_M ? Math.min(accuracy * 0.3, baseRadius) : 0;
@@ -71,7 +82,7 @@ export function useGPS({ onTollCrossed } = {}) {
       const speedOk = wasRecentlyMoving || (currentSpeed === 0 && distance <= radius);
 
       if (distance <= radius && speedOk && !isInCooldown) {
-        cooldownsRef.current[toll.id] = now;
+        cooldownsRef.current[groupKey] = now;
         onTollCrossedRef.current?.({
           toll, timestamp: now, lat, lng, speed: currentSpeed, distance: Math.round(distance),
         });
