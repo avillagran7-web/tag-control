@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAGcontrol — Brand Identity</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -54,10 +54,186 @@
   }
   #btnA.on { background: #C8FF00; color: #0D0D0D; }
   #btnB.on { background: #0A6E50; color: #fff; }
+  #btnC.on { background: #D90429; color: #fff; }
 
   /* ── Proposals ── */
-  #propA, #propB { display: none; }
-  #propA.visible, #propB.visible { display: block; }
+  #propA, #propB, #propC { display: none; }
+  #propA.visible, #propB.visible, #propC.visible { display: block; }
+
+  /* ══════════════════════════════════
+     PROPUESTA C — Rojo Chile
+  ══════════════════════════════════ */
+  #propC {
+    background: #FAFAFA;
+    color: #0A0A0A;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .c-page { max-width: 960px; margin: 0 auto; padding: 72px 24px; }
+
+  .c-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 80px;
+  }
+  .c-header-label { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; color: #999; text-transform: uppercase; }
+  .c-header-badge {
+    font-size: 10px; font-weight: 700; color: #D90429;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border: 1.5px solid #D90429; padding: 4px 12px; border-radius: 4px;
+  }
+
+  /* Logo — TYPE AS HERO */
+  .c-logo-block { margin-bottom: 32px; }
+  .c-logo {
+    font-size: clamp(64px, 14vw, 120px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: #0A0A0A;
+  }
+  .c-logo em { font-style: normal; color: #D90429; }
+  .c-hero-line {
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 400;
+    color: #888;
+    margin-top: 24px;
+    letter-spacing: -0.01em;
+    max-width: 520px;
+    line-height: 1.4;
+  }
+  .c-hero-line strong { color: #0A0A0A; font-weight: 600; }
+
+  .c-divider { height: 1px; background: #E5E5E5; margin: 64px 0; }
+
+  .c-section { margin-bottom: 72px; }
+  .c-section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    color: #D90429; text-transform: uppercase; margin-bottom: 24px;
+  }
+
+  /* Colors */
+  .c-colors { display: flex; gap: 12px; flex-wrap: wrap; }
+  .c-swatch { flex: 1; min-width: 100px; display: flex; flex-direction: column; gap: 10px; }
+  .c-swatch-block { height: 80px; border-radius: 8px; }
+  .c-swatch-name { font-size: 13px; font-weight: 700; color: #0A0A0A; }
+  .c-swatch-hex { font-size: 11px; color: #999; font-family: monospace; }
+  .c-swatch-role { font-size: 11px; color: #666; line-height: 1.5; }
+
+  /* Type */
+  .c-type-box { background: #fff; border: 1px solid #E5E5E5; border-radius: 12px; padding: 40px; }
+  .c-type-note { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: #999; text-transform: uppercase; margin-bottom: 20px; }
+  .c-type-hero { font-size: clamp(48px, 10vw, 80px); font-weight: 900; letter-spacing: -0.04em; line-height: 0.95; color: #0A0A0A; }
+  .c-type-hero em { font-style: normal; color: #D90429; }
+  .c-type-scale { margin-top: 28px; display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #E5E5E5; padding-top: 24px; }
+  .c-type-row { display: flex; align-items: baseline; gap: 16px; }
+  .c-sz { font-size: 10px; color: #bbb; width: 34px; flex-shrink: 0; font-family: monospace; }
+  .c-wt { font-size: 10px; color: #bbb; width: 60px; flex-shrink: 0; }
+
+  /* Mockups */
+  .c-mockups { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .c-mockup-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .c-caption { font-size: 10px; color: #999; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+  .c-phone {
+    width: 180px; height: 360px;
+    background: #fff;
+    border-radius: 32px;
+    border: 4px solid #E5E5E5;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    overflow: hidden; position: relative; flex-shrink: 0;
+  }
+  .c-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 50px; height: 5px; background: #E5E5E5; border-radius: 3px; z-index: 10; }
+  .c-screen { width: 100%; height: 100%; padding: 26px 12px 14px; display: flex; flex-direction: column; }
+
+  /* Home screen */
+  .ch-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .ch-app { display: flex; align-items: center; gap: 6px; }
+  .ch-app-icon { width: 28px; height: 28px; background: #D90429; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .ch-app-icon-t { font-size: 10px; font-weight: 900; color: #fff; }
+  .ch-app-name { font-size: 13px; font-weight: 700; color: #0A0A0A; }
+  .ch-greeting { font-size: 8px; color: #bbb; }
+  .ch-hero-amt { font-size: 36px; font-weight: 900; letter-spacing: -0.03em; color: #0A0A0A; line-height: 1; }
+  .ch-hero-lbl { font-size: 8px; color: #999; margin-top: 2px; margin-bottom: 16px; }
+  .ch-bar { height: 3px; background: #F0F0F0; border-radius: 2px; margin-bottom: 16px; }
+  .ch-bar-fill { height: 3px; width: 45%; background: #D90429; border-radius: 2px; }
+  .ch-btn { background: #0A0A0A; border-radius: 10px; padding: 12px; text-align: center; }
+  .ch-btn-t { font-size: 11px; font-weight: 700; color: #fff; }
+  .ch-hint { font-size: 8px; color: #bbb; text-align: center; margin-top: 6px; }
+
+  /* Active screen */
+  .ca-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-top: 4px; }
+  .ca-back { font-size: 9px; color: #D90429; font-weight: 600; }
+  .ca-live { display: flex; align-items: center; gap: 3px; }
+  .ca-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #D90429; }
+  .ca-live-t { font-size: 8px; font-weight: 600; color: #D90429; }
+  .ca-big-amt { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; color: #0A0A0A; line-height: 1; }
+  .ca-big-sub { font-size: 9px; color: #999; margin-top: 2px; margin-bottom: 12px; }
+  .ca-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .ca-item { background: #FAFAFA; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #F0F0F0; }
+  .ca-item-name { font-size: 9px; font-weight: 600; color: #0A0A0A; }
+  .ca-item-t { font-size: 7.5px; color: #bbb; margin-top: 1px; }
+  .ca-item-cost { font-size: 10px; font-weight: 700; color: #D90429; }
+  .ca-stop { background: #0A0A0A; border-radius: 10px; padding: 10px; text-align: center; margin-top: 6px; }
+  .ca-stop-t { font-size: 10px; font-weight: 700; color: #fff; }
+
+  /* Detection screen — the hero moment */
+  .cd-screen { background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 0 12px; }
+  .cd-ring {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: #D90429;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 12px rgba(217,4,41,0.08), 0 0 0 24px rgba(217,4,41,0.04);
+  }
+  .cd-check { font-size: 32px; color: #fff; font-weight: 900; line-height: 1; }
+  .cd-label { font-size: 9px; font-weight: 700; color: #bbb; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .cd-toll { font-size: 11px; font-weight: 600; color: #0A0A0A; text-align: center; margin-bottom: 12px; }
+  .cd-amount { font-size: 44px; font-weight: 900; letter-spacing: -0.04em; color: #D90429; line-height: 1; }
+  .cd-trip { font-size: 8px; color: #bbb; margin-top: 6px; }
+
+  /* Icons */
+  .c-icons { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .c-icon-card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .c-icon-lbl { font-size: 9px; color: #999; }
+
+  /* Principles */
+  .c-principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .c-principle { padding: 28px 0; border-top: 2px solid #0A0A0A; }
+  .c-principle-num { font-size: 11px; font-weight: 700; color: #D90429; margin-bottom: 12px; letter-spacing: 0.05em; }
+  .c-principle-title { font-size: 16px; font-weight: 700; color: #0A0A0A; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .c-principle-desc { font-size: 12px; color: #666; line-height: 1.65; }
+
+  /* Tagline */
+  .c-tagline-block { padding: 64px 0; text-align: center; }
+  .c-tagline { font-size: clamp(28px, 6vw, 52px); font-weight: 900; letter-spacing: -0.03em; color: #0A0A0A; line-height: 1.1; }
+  .c-tagline em { font-style: normal; color: #D90429; }
+  .c-tagline-sub { font-size: 16px; color: #888; margin-top: 16px; font-weight: 400; }
+
+  /* Voice */
+  .c-voice { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #E5E5E5; border: 1px solid #E5E5E5; border-radius: 12px; overflow: hidden; }
+  .c-voice-card { background: #fff; padding: 28px; }
+  .c-voice-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: #D90429; text-transform: uppercase; margin-bottom: 10px; }
+  .c-voice-txt { font-size: 14px; color: #0A0A0A; line-height: 1.6; font-weight: 500; }
+  .c-voice-muted { font-size: 12px; color: #999; margin-top: 8px; line-height: 1.55; }
+
+  /* Rules */
+  .c-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .c-rule { padding: 24px; border-radius: 10px; }
+  .c-rule-do { background: #fff; border: 1px solid #E5E5E5; }
+  .c-rule-dont { background: #FFF5F5; border: 1px solid #FFD5D5; }
+  .c-rule-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+  .c-rule-do .c-rule-lbl { color: #0A0A0A; }
+  .c-rule-dont .c-rule-lbl { color: #D90429; }
+  .c-rule-item { font-size: 12px; color: #555; margin-bottom: 6px; padding-left: 12px; position: relative; line-height: 1.5; }
+  .c-rule-item::before { content: '—'; position: absolute; left: 0; color: #bbb; }
+
+  .c-footer { padding-top: 48px; border-top: 1px solid #E5E5E5; display: flex; justify-content: space-between; align-items: center; }
+  .c-footer-logo { font-size: 22px; font-weight: 900; color: #0A0A0A; letter-spacing: -0.03em; }
+  .c-footer-logo em { font-style: normal; color: #D90429; }
+  .c-footer-note { font-size: 11px; color: #999; text-align: right; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .c-principles, .c-voice, .c-rules { grid-template-columns: 1fr; }
+  }
 
   /* ══════════════════════════════════
      PROPUESTA A — Carbon + Volt
@@ -343,6 +519,7 @@
   <div class="pill">
     <button class="pill-btn on" id="btnA" onclick="show('A')">A · Tu elección</button>
     <button class="pill-btn" id="btnB" onclick="show('B')">B · Expertos</button>
+    <button class="pill-btn" id="btnC" onclick="show('C')">C · Rojo Chile</button>
   </div>
 </div>
 
@@ -792,12 +969,265 @@
 </div>
 </div>
 
+<!-- ══ PROPUESTA C ══ -->
+<div id="propC">
+<div class="c-page">
+
+  <div class="c-header">
+    <span class="c-header-label">Propuesta C · Rojo Chile</span>
+    <span class="c-header-badge">World Class · 2026</span>
+  </div>
+
+  <!-- Logo hero — tipo como protagonista -->
+  <div class="c-logo-block">
+    <div class="c-logo">TAG<em>control</em></div>
+    <div class="c-hero-line">
+      La concesionaria sabe cuánto te cobró.<br>
+      <strong>Tú también debes saberlo.</strong>
+    </div>
+  </div>
+
+  <div class="c-divider"></div>
+
+  <!-- Colores -->
+  <div class="c-section">
+    <div class="c-section-label">Paleta de color</div>
+    <div class="c-colors">
+      <div class="c-swatch">
+        <div class="c-swatch-block" style="background:#D90429"></div>
+        <div class="c-swatch-name" style="color:#D90429">Rojo Chile</div>
+        <div class="c-swatch-hex">#D90429</div>
+        <div class="c-swatch-role">El único acento. Señales de carretera, bandera, urgencia. Solo en momentos que importan.</div>
+      </div>
+      <div class="c-swatch">
+        <div class="c-swatch-block" style="background:#0A0A0A"></div>
+        <div class="c-swatch-name">Tinta</div>
+        <div class="c-swatch-hex">#0A0A0A</div>
+        <div class="c-swatch-role">Texto y CTAs. Más cálido que negro puro. Legible en cualquier luz.</div>
+      </div>
+      <div class="c-swatch">
+        <div class="c-swatch-block" style="background:#FAFAFA;border:1px solid #E5E5E5"></div>
+        <div class="c-swatch-name">Blanco Chile</div>
+        <div class="c-swatch-hex">#FAFAFA</div>
+        <div class="c-swatch-role">Fondo. No frío. Respira. Le da protagonismo a la tipografía.</div>
+      </div>
+      <div class="c-swatch">
+        <div class="c-swatch-block" style="background:#888888"></div>
+        <div class="c-swatch-name">Gris</div>
+        <div class="c-swatch-hex">#888888</div>
+        <div class="c-swatch-role">Contexto y metadatos. Nunca protagonista.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipografía -->
+  <div class="c-section">
+    <div class="c-section-label">Tipografía — DM Sans</div>
+    <div class="c-type-box">
+      <div class="c-type-note">Geométrica · Moderna · Sin concesiones</div>
+      <div class="c-type-hero">TAG<em>ctrl</em></div>
+      <div class="c-type-scale">
+        <div class="c-type-row"><span class="c-sz">48px</span><span class="c-wt">Black 900</span><span style="font-size:40px;font-weight:900;letter-spacing:-0.03em;font-family:'DM Sans',sans-serif">$43.200</span></div>
+        <div class="c-type-row"><span class="c-sz">24px</span><span class="c-wt">Bold 700</span><span style="font-size:22px;font-weight:700;font-family:'DM Sans',sans-serif">Peajes detectados hoy</span></div>
+        <div class="c-type-row"><span class="c-sz">16px</span><span class="c-wt">Regular 400</span><span style="font-size:15px;font-family:'DM Sans',sans-serif">Vespucio Norte Express · 09:14</span></div>
+        <div class="c-type-row"><span class="c-sz">11px</span><span class="c-wt">Med 500</span><span style="font-size:11px;color:#999;letter-spacing:0.08em;font-family:'DM Sans',sans-serif">TARIFA PUNTA · $1.560</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mockups -->
+  <div class="c-section">
+    <div class="c-section-label">Mockups — App</div>
+    <div class="c-mockups">
+
+      <!-- Home -->
+      <div class="c-mockup-wrap">
+        <div class="c-phone">
+          <div class="c-notch"></div>
+          <div class="c-screen" style="background:#FAFAFA">
+            <div class="ch-top">
+              <div class="ch-app">
+                <div class="ch-app-icon"><div class="ch-app-icon-t">TC</div></div>
+                <div>
+                  <div class="ch-app-name">TAGcontrol</div>
+                  <div class="ch-greeting">Buen día, Andres</div>
+                </div>
+              </div>
+            </div>
+            <div class="ch-hero-amt">$43.200</div>
+            <div class="ch-hero-lbl">en peajes este mes</div>
+            <div class="ch-bar"><div class="ch-bar-fill"></div></div>
+            <div class="ch-btn"><div class="ch-btn-t">Iniciar viaje</div></div>
+            <div class="ch-hint">Tarifa punta activa · 07:00–09:00</div>
+          </div>
+        </div>
+        <div class="c-caption">Home</div>
+      </div>
+
+      <!-- Active -->
+      <div class="c-mockup-wrap">
+        <div class="c-phone">
+          <div class="c-notch"></div>
+          <div class="c-screen" style="background:#FAFAFA">
+            <div class="ca-header">
+              <div class="ca-back">← Viaje</div>
+              <div class="ca-live"><div class="ca-live-dot"></div><div class="ca-live-t">87 km/h</div></div>
+            </div>
+            <div class="ca-big-amt">$4.230</div>
+            <div class="ca-big-sub">3 peajes · tarifa punta</div>
+            <div class="ca-list">
+              <div class="ca-item"><div><div class="ca-item-name">Pórtico Vespucio</div><div class="ca-item-t">VNE · 09:14</div></div><div class="ca-item-cost">$1.540</div></div>
+              <div class="ca-item"><div><div class="ca-item-name">Pórtico Ruta 5</div><div class="ca-item-t">VNE · 09:19</div></div><div class="ca-item-cost">$890</div></div>
+              <div class="ca-item"><div><div class="ca-item-name">Pórtico Carrascal</div><div class="ca-item-t">Costanera · 09:26</div></div><div class="ca-item-cost">$1.800</div></div>
+            </div>
+            <div class="ca-stop"><div class="ca-stop-t">Detener viaje</div></div>
+          </div>
+        </div>
+        <div class="c-caption">Viaje activo</div>
+      </div>
+
+      <!-- Detection — THE MOMENT -->
+      <div class="c-mockup-wrap">
+        <div class="c-phone">
+          <div class="c-notch"></div>
+          <div class="c-screen">
+            <div class="cd-screen">
+              <div class="cd-ring"><div class="cd-check">✓</div></div>
+              <div class="cd-label">Peaje cruzado</div>
+              <div class="cd-toll">Pórtico Carrascal<br>Costanera Norte</div>
+              <div class="cd-amount">$1.800</div>
+              <div class="cd-trip">Total viaje: $4.230 · 3 peajes</div>
+            </div>
+          </div>
+        </div>
+        <div class="c-caption">Detección</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ícono -->
+  <div class="c-section">
+    <div class="c-section-label">Ícono de app</div>
+    <div class="c-icons">
+      <div class="c-icon-card">
+        <div style="width:96px;height:96px;background:#D90429;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(217,4,41,0.3)">
+          <div style="font-size:36px;font-weight:900;color:#fff;font-family:'DM Sans',sans-serif;letter-spacing:-0.02em">TC</div>
+        </div>
+        <div class="c-icon-lbl">96×96</div>
+      </div>
+      <div class="c-icon-card">
+        <div style="width:64px;height:64px;background:#D90429;border-radius:16px;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:24px;font-weight:900;color:#fff;font-family:'DM Sans',sans-serif">TC</div>
+        </div>
+        <div class="c-icon-lbl">64×64</div>
+      </div>
+      <div class="c-icon-card">
+        <div style="width:48px;height:48px;background:#D90429;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:18px;font-weight:900;color:#fff;font-family:'DM Sans',sans-serif">TC</div>
+        </div>
+        <div class="c-icon-lbl">48×48</div>
+      </div>
+      <div style="margin-left:20px">
+        <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Variante clara</div>
+        <div class="c-icon-card">
+          <div style="width:64px;height:64px;background:#fff;border:1.5px solid #E5E5E5;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.06)">
+            <div style="font-size:24px;font-weight:900;color:#D90429;font-family:'DM Sans',sans-serif">TC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principios -->
+  <div class="c-section">
+    <div class="c-section-label">3 principios</div>
+    <div class="c-principles">
+      <div class="c-principle">
+        <div class="c-principle-num">01 — VERDAD</div>
+        <div class="c-principle-title">Los números no mienten</div>
+        <div class="c-principle-desc">Cada peso que pagaste, registrado. Sin redondeos. Sin estimaciones. TAGcontrol es el único testigo honesto de tu gasto en autopistas.</div>
+      </div>
+      <div class="c-principle">
+        <div class="c-principle-num">02 — FOCO</div>
+        <div class="c-principle-title">Un número por pantalla</div>
+        <div class="c-principle-desc">Al cruzar un peaje a 90 km/h, tienes 2 segundos. El diseño no puede fallar. Lo importante al frente, lo demás fuera.</div>
+      </div>
+      <div class="c-principle">
+        <div class="c-principle-num">03 — CHILE</div>
+        <div class="c-principle-title">Hecho para estas rutas</div>
+        <div class="c-principle-desc">El rojo de TAGcontrol viene de las señales que ves a 120 km/h en la Ruta 5. No es global genérico — es reconociblemente chileno.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tagline -->
+  <div class="c-section">
+    <div class="c-tagline-block">
+      <div class="c-tagline">Cada peaje,<br><em>registrado.</em></div>
+      <div class="c-tagline-sub">No hay excusas. No hay letra chica. Solo la verdad de cuánto pagaste.</div>
+    </div>
+
+    <div class="c-voice">
+      <div class="c-voice-card">
+        <div class="c-voice-lbl">Voz de marca</div>
+        <div class="c-voice-txt">Directa. Sin adornos.<br>Del lado del conductor.</div>
+        <div class="c-voice-muted">No somos una app friendly. Somos la herramienta que el sistema no quiere que tengas.</div>
+      </div>
+      <div class="c-voice-card">
+        <div class="c-voice-lbl">Copy ejemplo</div>
+        <div class="c-voice-txt">"Peaje registrado. $1.800."<br>"$43.200 este mes."<br>"Costanera Norte. 09:26."</div>
+        <div class="c-voice-muted">Nada de exclamaciones. Nada de emoji. Solo hechos que necesitas saber.</div>
+      </div>
+      <div class="c-voice-card">
+        <div class="c-voice-lbl">Posicionamiento</div>
+        <div class="c-voice-txt">El registro oficial que el TAG nunca te dio.</div>
+        <div class="c-voice-muted">Las concesionarias saben exactamente cuánto cobran. Nosotros te ponemos al mismo nivel.</div>
+      </div>
+      <div class="c-voice-card">
+        <div class="c-voice-lbl">Para el conductor chileno</div>
+        <div class="c-voice-txt">"Al final del mes, ¿cuánto gasté en peajes?"</div>
+        <div class="c-voice-muted">Esa pregunta tiene respuesta. Siempre la tuvo. TAGcontrol solo la hace obvia.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reglas -->
+  <div class="c-section">
+    <div class="c-section-label">Reglas de uso</div>
+    <div class="c-rules">
+      <div class="c-rule c-rule-do">
+        <div class="c-rule-lbl">Hacer</div>
+        <div class="c-rule-item">TAGcontrol — exactamente así, siempre</div>
+        <div class="c-rule-item">Rojo SOLO en detección de peaje y números clave</div>
+        <div class="c-rule-item">DM Sans en peso 700–900 para cifras</div>
+        <div class="c-rule-item">Espacio en blanco generoso — no llenar pantallas</div>
+        <div class="c-rule-item">Números grandes, texto secundario pequeño</div>
+      </div>
+      <div class="c-rule c-rule-dont">
+        <div class="c-rule-lbl">No hacer</div>
+        <div class="c-rule-item">Rojo como color de fondo o decorativo</div>
+        <div class="c-rule-item">Más de un acento cromático en la misma pantalla</div>
+        <div class="c-rule-item">Tipografía debajo de 700 en cifras y CTAs</div>
+        <div class="c-rule-item">Ilustraciones, íconos decorativos, gradientes</div>
+        <div class="c-rule-item">Copy de más de 6 palabras en notificaciones</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="c-footer">
+    <div class="c-footer-logo">TAG<em>control</em></div>
+    <div class="c-footer-note">Propuesta C · Rojo Chile · DM Sans · 2026<br>Simple. Directa. Inequívocamente chilena.</div>
+  </div>
+
+</div>
+</div>
+
 <script>
   function show(which) {
-    document.getElementById('propA').className = which === 'A' ? 'visible' : '';
-    document.getElementById('propB').className = which === 'B' ? 'visible' : '';
-    document.getElementById('btnA').className = 'pill-btn' + (which === 'A' ? ' on' : '');
-    document.getElementById('btnB').className = 'pill-btn' + (which === 'B' ? ' on' : '');
+    ['A','B','C'].forEach(p => {
+      document.getElementById('prop'+p).className = which === p ? 'visible' : '';
+      document.getElementById('btn'+p).className = 'pill-btn' + (which === p ? ' on' : '');
+    });
   }
 </script>
 </body>
