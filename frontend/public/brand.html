@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAGcontrol — Brand Identity</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Switcher bar ── */
+  body { background: #0D0D0D; }
+
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    gap: 10px;
+    background: #0D0D0D;
+    border-bottom: 1px solid #1e1e1e;
+  }
+  .bar-label {
+    font-family: -apple-system, system-ui, sans-serif;
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .pill {
+    display: flex;
+    background: #1a1a1a;
+    border-radius: 100px;
+    padding: 4px;
+    gap: 2px;
+    border: 1px solid #2a2a2a;
+  }
+  .pill-btn {
+    padding: 8px 20px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: -apple-system, system-ui, sans-serif;
+    background: transparent;
+    color: #555;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+  }
+  #btnA.on { background: #C8FF00; color: #0D0D0D; }
+  #btnB.on { background: #0A6E50; color: #fff; }
+
+  /* ── Proposals ── */
+  #propA, #propB { display: none; }
+  #propA.visible, #propB.visible { display: block; }
+
+  /* ══════════════════════════════════
+     PROPUESTA A — Carbon + Volt
+  ══════════════════════════════════ */
+  #propA {
+    background: #0D0D0D;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .a-page { max-width: 960px; margin: 0 auto; padding: 64px 24px; }
+
+  .a-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 1px solid #333; padding-bottom: 28px; margin-bottom: 56px;
+  }
+  .a-label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
+
+  .a-logo { font-size: clamp(48px, 10vw, 80px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 56px; }
+  .a-logo .tag { color: #fff; }
+  .a-logo .ctrl { color: #C8FF00; }
+  .a-tagline { font-size: 12px; font-weight: 500; letter-spacing: 0.25em; color: #888; text-transform: uppercase; margin-top: -44px; margin-bottom: 64px; }
+
+  .a-section { margin-bottom: 64px; }
+  .a-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; color: #C8FF00; text-transform: uppercase; margin-bottom: 20px; }
+
+  .a-colors { display: flex; gap: 12px; flex-wrap: wrap; }
+  .a-swatch { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 120px; }
+  .a-swatch-block { height: 80px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+  .a-swatch-name { font-size: 13px; font-weight: 600; }
+  .a-swatch-hex { font-size: 11px; color: #888; }
+  .a-swatch-desc { font-size: 11px; color: #666; line-height: 1.5; }
+
+  .a-type-box { background: #1a1a1a; border-radius: 14px; padding: 28px; }
+  .a-type-note { font-size: 10px; letter-spacing: 0.15em; color: #666; text-transform: uppercase; margin-bottom: 16px; }
+  .a-type-big { font-size: clamp(40px, 8vw, 56px); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+  .a-type-big span { color: #C8FF00; }
+  .a-type-scale { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #333; padding-top: 16px; }
+  .a-type-row { display: flex; align-items: baseline; gap: 12px; }
+  .a-sz { font-size: 10px; color: #666; width: 36px; flex-shrink: 0; }
+  .a-wt { font-size: 10px; color: #666; width: 56px; flex-shrink: 0; }
+
+  /* Phone mockups */
+  .a-mockups { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .a-mockup-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .a-mockup-caption { font-size: 10px; color: #666; letter-spacing: 0.1em; text-transform: uppercase; }
+  .a-phone {
+    width: 180px; height: 360px;
+    background: #111;
+    border-radius: 32px;
+    border: 4px solid #2a2a2a;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .a-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 52px; height: 5px; background: #2a2a2a; border-radius: 3px; z-index: 10; }
+  .a-screen { width: 100%; height: 100%; padding: 24px 12px 14px; display: flex; flex-direction: column; }
+
+  /* Screen 1 — Home */
+  .s1-icon { width: 40px; height: 40px; background: #C8FF00; border-radius: 11px; display: flex; align-items: center; justify-content: center; align-self: center; margin: 6px auto 6px; }
+  .s1-icon-t { font-size: 13px; font-weight: 800; color: #0D0D0D; }
+  .s1-title { font-size: 12px; font-weight: 700; text-align: center; }
+  .s1-sub { font-size: 8px; color: #888; text-align: center; margin-top: 2px; margin-bottom: 10px; }
+  .s1-card { background: #1a1a1a; border-radius: 9px; padding: 9px; margin-bottom: 10px; border: 1px solid #2a2a2a; }
+  .s1-card-lbl { font-size: 7px; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+  .s1-card-amt { font-size: 17px; font-weight: 700; margin-top: 2px; }
+  .s1-bar { height: 2px; background: #333; border-radius: 1px; margin-top: 5px; }
+  .s1-fill { height: 2px; width: 45%; background: #C8FF00; border-radius: 1px; }
+  .s1-btn { background: #C8FF00; border-radius: 9px; padding: 11px; text-align: center; }
+  .s1-btn-t { font-size: 11px; font-weight: 700; color: #0D0D0D; }
+  .s1-hint { font-size: 7px; color: #666; text-align: center; margin-top: 5px; }
+
+  /* Screen 2 — Active */
+  .s2-card { background: #C8FF00; border-radius: 12px; padding: 12px; margin-top: 6px; margin-bottom: 8px; }
+  .s2-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .s2-lbl { font-size: 8px; color: rgba(0,0,0,0.5); font-weight: 600; }
+  .s2-badge { background: rgba(0,0,0,0.12); border-radius: 5px; padding: 2px 5px; font-size: 7px; font-weight: 600; color: #0D0D0D; }
+  .s2-amt { font-size: 26px; font-weight: 800; color: #0D0D0D; line-height: 1; }
+  .s2-sub { font-size: 8px; color: rgba(0,0,0,0.4); margin-top: 1px; }
+  .s2-list { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .s2-item { background: #1a1a1a; border-radius: 7px; padding: 7px 9px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a2a2a; }
+  .s2-item-name { font-size: 8px; font-weight: 600; }
+  .s2-item-route { font-size: 7px; color: #666; margin-top: 1px; }
+  .s2-item-cost { font-size: 9px; font-weight: 700; color: #C8FF00; }
+  .s2-stop { background: #c0392b; border-radius: 9px; padding: 9px; text-align: center; margin-top: 6px; }
+  .s2-stop-t { font-size: 10px; font-weight: 700; }
+
+  /* Screen 3 — Detection */
+  .s3-bg { background: #0D0D0D; flex: 1; display: flex; flex-direction: column; padding: 6px 0; }
+  .s3-notif { background: rgba(30,30,30,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px; margin-top: 12px; }
+  .s3-notif-hdr { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+  .s3-notif-icon { width: 16px; height: 16px; background: #C8FF00; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .s3-notif-icon-t { font-size: 7px; font-weight: 800; color: #0D0D0D; }
+  .s3-notif-app { font-size: 8px; color: #666; }
+  .s3-notif-time { font-size: 8px; color: #666; margin-left: auto; }
+  .s3-notif-title { font-size: 10px; font-weight: 700; }
+  .s3-notif-body { font-size: 9px; color: #888; margin-top: 1px; }
+  .s3-pulse { width: 52px; height: 52px; border-radius: 50%; background: #C8FF00; display: flex; align-items: center; justify-content: center; align-self: center; margin: 16px auto 6px; box-shadow: 0 0 0 10px rgba(200,255,0,0.1), 0 0 0 20px rgba(200,255,0,0.05); }
+  .s3-pulse-t { font-size: 20px; font-weight: 800; color: #0D0D0D; }
+  .s3-det { font-size: 10px; font-weight: 700; text-align: center; }
+  .s3-toll { font-size: 8px; color: #C8FF00; text-align: center; margin-top: 1px; }
+  .s3-cost { font-size: 20px; font-weight: 800; color: #C8FF00; text-align: center; margin-top: 6px; }
+  .s3-trip { font-size: 7px; color: #666; text-align: center; margin-top: 1px; }
+
+  /* Icons */
+  .a-icons { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .a-icon-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .a-icon-lbl { font-size: 9px; color: #666; }
+  .a-icon-t { font-weight: 800; color: #0D0D0D; letter-spacing: -0.03em; }
+
+  /* Voice / Rules */
+  .a-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .a-card { background: #1a1a1a; border-radius: 10px; padding: 18px; }
+  .a-card-lbl { font-size: 9px; color: #C8FF00; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px; font-weight: 600; }
+  .a-card-txt { font-size: 13px; line-height: 1.6; }
+  .a-card-muted { font-size: 11px; color: #666; margin-top: 5px; line-height: 1.5; }
+
+  .a-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .a-rule-do { border-radius: 10px; padding: 18px; background: rgba(200,255,0,0.05); border: 1px solid rgba(200,255,0,0.12); }
+  .a-rule-dont { border-radius: 10px; padding: 18px; background: rgba(255,80,80,0.04); border: 1px solid rgba(255,80,80,0.1); }
+  .a-rule-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; }
+  .a-rule-do .a-rule-lbl { color: #C8FF00; }
+  .a-rule-dont .a-rule-lbl { color: #ff6b6b; }
+  .a-rule-item { font-size: 11px; color: #888; margin-bottom: 5px; padding-left: 10px; position: relative; line-height: 1.5; }
+  .a-rule-item::before { content: '—'; position: absolute; left: 0; opacity: 0.5; }
+
+  .a-footer { border-top: 1px solid #333; padding-top: 24px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .a-footer-logo { font-size: 18px; font-weight: 800; }
+  .a-footer-logo span { color: #C8FF00; }
+  .a-footer-copy { font-size: 10px; color: #555; }
+
+  /* ══════════════════════════════════
+     PROPUESTA B — Forest + Signal
+  ══════════════════════════════════ */
+  #propB {
+    background: #F7F6F3;
+    color: #0F0F0F;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .b-page { max-width: 960px; margin: 0 auto; padding: 64px 24px; }
+
+  .b-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.5px solid #E5E3DF; padding-bottom: 24px; margin-bottom: 48px; }
+  .b-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #999; text-transform: uppercase; }
+  .b-badge { background: #0A6E50; color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+
+  .b-expert-bar { background: #0F0F0F; color: #fff; padding: 9px 14px; border-radius: 9px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 48px; display: inline-flex; gap: 16px; }
+  .b-expert-bar span { color: #00C896; }
+
+  .b-logo { font-size: clamp(48px, 10vw, 80px); font-weight: 800; letter-spacing: -0.04em; line-height: 0.9; }
+  .b-logo em { font-style: normal; color: #0A6E50; }
+  .b-logo-sub { font-size: 12px; font-weight: 500; color: #999; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 14px; margin-bottom: 40px; }
+
+  .b-insight { background: #0A6E50; border-radius: 14px; padding: 24px 28px; margin-bottom: 64px; }
+  .b-insight-q { font-size: clamp(16px, 3vw, 20px); font-weight: 600; color: #fff; line-height: 1.45; letter-spacing: -0.01em; }
+  .b-insight-q em { font-style: normal; color: #00C896; }
+  .b-insight-src { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 10px; }
+
+  .b-section { margin-bottom: 64px; }
+  .b-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: #0A6E50; text-transform: uppercase; margin-bottom: 20px; }
+
+  .b-colors { display: flex; gap: 12px; flex-wrap: wrap; }
+  .b-swatch { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 110px; }
+  .b-swatch-block { height: 80px; border-radius: 10px; border: 1px solid #E5E3DF; }
+  .b-swatch-name { font-size: 13px; font-weight: 600; color: #0F0F0F; }
+  .b-swatch-hex { font-size: 10px; color: #999; font-family: 'Courier New', monospace; }
+  .b-swatch-role { font-size: 11px; color: #555; line-height: 1.5; }
+
+  .b-type-box { background: #fff; border: 1px solid #E5E3DF; border-radius: 14px; padding: 28px; }
+  .b-type-note { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; color: #999; text-transform: uppercase; margin-bottom: 16px; }
+  .b-type-big { font-size: clamp(40px, 8vw, 60px); font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: #0F0F0F; }
+  .b-type-big em { font-style: normal; color: #0A6E50; }
+  .b-type-scale { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #E5E3DF; padding-top: 16px; }
+  .b-type-row { display: flex; align-items: baseline; gap: 12px; }
+  .b-sz { font-size: 10px; color: #999; width: 34px; flex-shrink: 0; font-family: monospace; }
+  .b-wt { font-size: 10px; color: #999; width: 56px; flex-shrink: 0; }
+
+  /* B Phone mockups */
+  .b-mockups { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .b-mockup-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .b-mockup-caption { font-size: 10px; color: #999; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .b-phone {
+    width: 180px; height: 360px;
+    background: #fff;
+    border-radius: 32px;
+    border: 4px solid #D4D2CE;
+    box-shadow: 0 20px 48px rgba(0,0,0,0.10);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .b-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 52px; height: 5px; background: #D4D2CE; border-radius: 3px; z-index: 10; }
+  .b-screen { width: 100%; height: 100%; padding: 24px 12px 14px; display: flex; flex-direction: column; background: #F7F6F3; }
+
+  /* B Screen 1 — Home light */
+  .lh-top { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .lh-icon { width: 40px; height: 40px; background: #0A6E50; border-radius: 13px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+  .lh-icon-t { font-size: 14px; font-weight: 800; color: #fff; }
+  .lh-title { font-size: 12px; font-weight: 700; color: #0F0F0F; text-align: center; }
+  .lh-sub { font-size: 8px; color: #999; text-align: center; margin-top: 2px; margin-bottom: 10px; }
+  .lh-budget { background: #F7F6F3; border-radius: 9px; padding: 9px; margin-bottom: 10px; border: 1px solid #E5E3DF; width: 100%; }
+  .lh-budget-lbl { font-size: 7px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; }
+  .lh-budget-amt { font-size: 17px; font-weight: 700; color: #0F0F0F; margin-top: 2px; }
+  .lh-budget-bar { height: 2px; background: #E5E3DF; border-radius: 1px; margin-top: 5px; }
+  .lh-budget-fill { height: 2px; width: 45%; background: #0A6E50; border-radius: 1px; }
+  .lh-btn { background: #0A6E50; border-radius: 9px; padding: 11px; text-align: center; width: 100%; }
+  .lh-btn-t { font-size: 11px; font-weight: 700; color: #fff; }
+  .lh-hint { font-size: 7px; color: #999; text-align: center; margin-top: 5px; }
+
+  /* B Screen 2 — Active */
+  .la-card { background: #0A6E50; border-radius: 12px; padding: 12px; margin-top: 6px; margin-bottom: 8px; }
+  .la-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .la-lbl { font-size: 8px; color: rgba(255,255,255,0.6); font-weight: 600; }
+  .la-badge { background: rgba(255,255,255,0.15); border-radius: 5px; padding: 2px 5px; font-size: 7px; font-weight: 600; color: #fff; }
+  .la-amt { font-size: 26px; font-weight: 800; color: #fff; line-height: 1; }
+  .la-sub { font-size: 8px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+  .la-list { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .la-item { background: #fff; border-radius: 7px; padding: 7px 9px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #E5E3DF; }
+  .la-item-name { font-size: 8px; font-weight: 600; color: #0F0F0F; }
+  .la-item-route { font-size: 7px; color: #999; margin-top: 1px; }
+  .la-item-cost { font-size: 9px; font-weight: 700; color: #0A6E50; }
+  .la-stop { background: #F7F6F3; border: 1px solid #E5E3DF; border-radius: 9px; padding: 9px; text-align: center; margin-top: 6px; }
+  .la-stop-t { font-size: 10px; font-weight: 600; color: #555; }
+
+  /* B Screen 3 — Detection */
+  .ld-bg { background: linear-gradient(160deg, #0A6E50 0%, #083D2E 100%); flex: 1; display: flex; flex-direction: column; padding: 6px 0; }
+  .ld-notif { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px; margin-top: 12px; }
+  .ld-notif-hdr { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+  .ld-notif-icon { width: 16px; height: 16px; background: #00C896; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .ld-notif-icon-t { font-size: 7px; font-weight: 800; color: #0A6E50; }
+  .ld-notif-app { font-size: 8px; color: rgba(255,255,255,0.5); }
+  .ld-notif-time { font-size: 8px; color: rgba(255,255,255,0.4); margin-left: auto; }
+  .ld-notif-title { font-size: 10px; font-weight: 700; color: #fff; }
+  .ld-notif-body { font-size: 9px; color: rgba(255,255,255,0.6); }
+  .ld-check { width: 52px; height: 52px; border-radius: 50%; background: #00C896; display: flex; align-items: center; justify-content: center; align-self: center; margin: 16px auto 6px; box-shadow: 0 0 0 10px rgba(0,200,150,0.12), 0 0 0 20px rgba(0,200,150,0.06); }
+  .ld-check-t { font-size: 20px; color: #0A6E50; font-weight: 900; }
+  .ld-det-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.6); text-align: center; text-transform: uppercase; letter-spacing: 0.1em; }
+  .ld-toll { font-size: 10px; font-weight: 600; color: #fff; text-align: center; margin-top: 2px; }
+  .ld-amt { font-size: 24px; font-weight: 800; color: #00C896; text-align: center; margin-top: 6px; }
+  .ld-trip { font-size: 7px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 3px; }
+
+  /* B icons */
+  .b-icons { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .b-icon-card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .b-icon-lbl { font-size: 9px; color: #999; }
+
+  /* B principles */
+  .b-principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .b-principle { background: #fff; border: 1px solid #E5E3DF; border-radius: 12px; padding: 20px; }
+  .b-principle-num { font-size: 10px; font-weight: 700; color: #0A6E50; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .b-principle-title { font-size: 14px; font-weight: 700; color: #0F0F0F; margin-bottom: 6px; }
+  .b-principle-desc { font-size: 11px; color: #555; line-height: 1.6; }
+
+  /* B voice + tagline */
+  .b-tagline-hero { background: #fff; border: 1px solid #E5E3DF; border-radius: 14px; padding: 28px; text-align: center; margin-bottom: 14px; }
+  .b-tagline-main { font-size: clamp(20px, 4vw, 28px); font-weight: 800; color: #0F0F0F; letter-spacing: -0.02em; }
+  .b-tagline-main em { font-style: normal; color: #0A6E50; }
+  .b-tagline-sub { font-size: 12px; color: #999; margin-top: 6px; }
+
+  .b-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .b-card { background: #fff; border: 1px solid #E5E3DF; border-radius: 10px; padding: 20px; }
+  .b-card-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; color: #0A6E50; text-transform: uppercase; margin-bottom: 8px; }
+  .b-card-txt { font-size: 13px; color: #0F0F0F; line-height: 1.6; }
+  .b-card-muted { font-size: 11px; color: #999; margin-top: 6px; line-height: 1.5; }
+
+  .b-footer { border-top: 1.5px solid #E5E3DF; padding-top: 24px; margin-top: 32px; display: flex; justify-content: space-between; align-items: center; }
+  .b-footer-logo { font-size: 20px; font-weight: 800; color: #0F0F0F; letter-spacing: -0.02em; }
+  .b-footer-logo em { font-style: normal; color: #0A6E50; }
+  .b-footer-note { font-size: 10px; color: #999; max-width: 240px; text-align: right; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .a-grid2, .a-rules, .b-grid2, .b-principles { grid-template-columns: 1fr; }
+    .b-principles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Switcher -->
+<div class="bar">
+  <span class="bar-label">TAGcontrol · Brand</span>
+  <div class="pill">
+    <button class="pill-btn on" id="btnA" onclick="show('A')">A · Tu elección</button>
+    <button class="pill-btn" id="btnB" onclick="show('B')">B · Expertos</button>
+  </div>
+</div>
+
+<!-- ══ PROPUESTA A ══ -->
+<div id="propA" class="visible">
+<div class="a-page">
+
+  <div class="a-header">
+    <span class="a-label">Propuesta A · Carbon + Volt</span>
+    <div style="text-align:right">
+      <div class="a-label">Brand Identity · TAGcontrol · 2026</div>
+    </div>
+  </div>
+
+  <div class="a-logo"><span class="tag">TAG</span><span class="ctrl">control</span></div>
+  <div class="a-tagline">Etiqueta · Rastrea · Controla</div>
+
+  <div class="a-section">
+    <div class="a-section-label">Paleta de color</div>
+    <div class="a-colors">
+      <div class="a-swatch">
+        <div class="a-swatch-block" style="background:#0D0D0D;border-color:#333"></div>
+        <div class="a-swatch-name">Carbon</div>
+        <div class="a-swatch-hex">#0D0D0D</div>
+        <div class="a-swatch-desc">Fondo. Contraste máximo.</div>
+      </div>
+      <div class="a-swatch">
+        <div class="a-swatch-block" style="background:#C8FF00"></div>
+        <div class="a-swatch-name" style="color:#C8FF00">Volt</div>
+        <div class="a-swatch-hex">#C8FF00</div>
+        <div class="a-swatch-desc">Acción, alerta, energía.</div>
+      </div>
+      <div class="a-swatch">
+        <div class="a-swatch-block" style="background:#1A1A1A;border-color:#333"></div>
+        <div class="a-swatch-name" style="color:#888">Dark</div>
+        <div class="a-swatch-hex">#1A1A1A</div>
+        <div class="a-swatch-desc">Tarjetas elevadas.</div>
+      </div>
+      <div class="a-swatch">
+        <div class="a-swatch-block" style="background:#FFFFFF"></div>
+        <div class="a-swatch-name">White</div>
+        <div class="a-swatch-hex">#FFFFFF</div>
+        <div class="a-swatch-desc">Texto principal.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-section">
+    <div class="a-section-label">Tipografía — Space Grotesk</div>
+    <div class="a-type-box">
+      <div class="a-type-note">Condensada · Industrial · Técnica</div>
+      <div class="a-type-big">TAG<span>ctrl</span></div>
+      <div class="a-type-scale">
+        <div class="a-type-row"><span class="a-sz">32px</span><span class="a-wt">Bold 700</span><span style="font-size:30px;font-weight:700">Peajes detectados</span></div>
+        <div class="a-type-row"><span class="a-sz">22px</span><span class="a-wt">Semi 600</span><span style="font-size:20px;font-weight:600">Vespucio Norte Express</span></div>
+        <div class="a-type-row"><span class="a-sz">16px</span><span class="a-wt">Regular 400</span><span style="font-size:15px">Tu viaje en tiempo real</span></div>
+        <div class="a-type-row"><span class="a-sz">12px</span><span class="a-wt">Med 500</span><span style="font-size:11px;color:#888;letter-spacing:0.05em">TARIFA PUNTA · $1.560</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-section">
+    <div class="a-section-label">Mockups — App nativa</div>
+    <div class="a-mockups">
+
+      <div class="a-mockup-wrap">
+        <div class="a-phone">
+          <div class="a-notch"></div>
+          <div class="a-screen">
+            <div class="s1-icon"><div class="s1-icon-t">TC</div></div>
+            <div class="s1-title">Registra tus peajes</div>
+            <div class="s1-sub">Detección automática en ruta</div>
+            <div style="height:8px"></div>
+            <div class="s1-card">
+              <div class="s1-card-lbl">Peajes este mes</div>
+              <div class="s1-card-amt">$43.200</div>
+              <div class="s1-bar"><div class="s1-fill"></div></div>
+            </div>
+            <div class="s1-btn"><div class="s1-btn-t">Iniciar viaje</div></div>
+            <div class="s1-hint">Tarifa punta activa</div>
+          </div>
+        </div>
+        <div class="a-mockup-caption">Home</div>
+      </div>
+
+      <div class="a-mockup-wrap">
+        <div class="a-phone">
+          <div class="a-notch"></div>
+          <div class="a-screen">
+            <div class="s2-card">
+              <div class="s2-hdr"><div class="s2-lbl">Viaje en curso</div><div class="s2-badge">87 km/h</div></div>
+              <div class="s2-amt">$4.230</div>
+              <div class="s2-sub">3 peajes · tarifa punta</div>
+            </div>
+            <div class="s2-list">
+              <div class="s2-item"><div><div class="s2-item-name">Pórtico Vespucio</div><div class="s2-item-route">Vespucio Norte · 09:14</div></div><div class="s2-item-cost">$1.540</div></div>
+              <div class="s2-item"><div><div class="s2-item-name">Pórtico Ruta 5</div><div class="s2-item-route">VNE · 09:19</div></div><div class="s2-item-cost">$890</div></div>
+              <div class="s2-item"><div><div class="s2-item-name">Pórtico Carrascal</div><div class="s2-item-route">Costanera Norte · 09:26</div></div><div class="s2-item-cost">$1.800</div></div>
+            </div>
+            <div class="s2-stop"><div class="s2-stop-t">Detener viaje</div></div>
+          </div>
+        </div>
+        <div class="a-mockup-caption">Viaje activo</div>
+      </div>
+
+      <div class="a-mockup-wrap">
+        <div class="a-phone">
+          <div class="a-notch"></div>
+          <div class="a-screen">
+            <div class="s3-bg">
+              <div class="s3-notif">
+                <div class="s3-notif-hdr">
+                  <div class="s3-notif-icon"><div class="s3-notif-icon-t">TC</div></div>
+                  <div class="s3-notif-app">TAGcontrol</div>
+                  <div class="s3-notif-time">ahora</div>
+                </div>
+                <div class="s3-notif-title">¡Peaje detectado!</div>
+                <div class="s3-notif-body">Pórtico Carrascal · $1.800</div>
+              </div>
+              <div class="s3-pulse"><div class="s3-pulse-t">✓</div></div>
+              <div class="s3-det">Peaje cruzado</div>
+              <div class="s3-toll">Pórtico Carrascal — Costanera Norte</div>
+              <div class="s3-cost">$1.800</div>
+              <div class="s3-trip">Total viaje: $4.230 · 3 peajes</div>
+            </div>
+          </div>
+        </div>
+        <div class="a-mockup-caption">Detección</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-section">
+    <div class="a-section-label">Ícono de app</div>
+    <div class="a-icons">
+      <div class="a-icon-block">
+        <div style="width:96px;height:96px;background:#C8FF00;border-radius:22px;display:flex;align-items:center;justify-content:center">
+          <div class="a-icon-t" style="font-size:32px">TC</div>
+        </div>
+        <div class="a-icon-lbl">96×96</div>
+      </div>
+      <div class="a-icon-block">
+        <div style="width:64px;height:64px;background:#C8FF00;border-radius:16px;display:flex;align-items:center;justify-content:center">
+          <div class="a-icon-t" style="font-size:22px">TC</div>
+        </div>
+        <div class="a-icon-lbl">64×64</div>
+      </div>
+      <div class="a-icon-block">
+        <div style="width:48px;height:48px;background:#C8FF00;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <div class="a-icon-t" style="font-size:16px">TC</div>
+        </div>
+        <div class="a-icon-lbl">48×48</div>
+      </div>
+      <div style="margin-left:16px">
+        <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:8px">Variante oscura</div>
+        <div class="a-icon-block">
+          <div style="width:64px;height:64px;background:#0D0D0D;border:2px solid #C8FF00;border-radius:16px;display:flex;align-items:center;justify-content:center">
+            <div style="font-size:22px;font-weight:800;color:#fff">T<span style="color:#C8FF00">C</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-section">
+    <div class="a-section-label">Voz de marca</div>
+    <div class="a-grid2">
+      <div class="a-card">
+        <div class="a-card-lbl">Personalidad</div>
+        <div class="a-card-txt">Directo · Técnico · Confiable · Rápido</div>
+        <div class="a-card-muted">Habla como el dashboard de un auto de carreras: datos limpios, sin ruido.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-lbl">Copy ejemplo</div>
+        <div class="a-card-txt">"Peaje cruzado. $1.800."<br>"Viaje terminado. Total: $8.430."</div>
+        <div class="a-card-muted">Sin exclamaciones. Sin explicaciones. El conductor ya sabe.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-lbl">Tagline</div>
+        <div class="a-card-txt" style="font-size:18px;font-weight:700">Etiqueta. Rastrea. Controla.</div>
+        <div class="a-card-muted">Tres verbos. Tres momentos del producto.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-lbl">Posicionamiento</div>
+        <div class="a-card-txt">La app que sabe más de tus peajes que la concesionaria.</div>
+        <div class="a-card-muted">El usuario tiene poder sobre el sistema.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-section">
+    <div class="a-section-label">Reglas de uso</div>
+    <div class="a-rules">
+      <div class="a-rule-do">
+        <div class="a-rule-lbl">Hacer</div>
+        <div class="a-rule-item">TAGcontrol (T y C en mayúscula)</div>
+        <div class="a-rule-item">Volt solo en momentos de acción o alerta</div>
+        <div class="a-rule-item">Space Grotesk en toda la app</div>
+        <div class="a-rule-item">Dark mode nativo como pantalla principal</div>
+      </div>
+      <div class="a-rule-dont">
+        <div class="a-rule-lbl">No hacer</div>
+        <div class="a-rule-item">TAGControl, Tagcontrol, tag control</div>
+        <div class="a-rule-item">Volt como fondo en pantallas completas</div>
+        <div class="a-rule-item">Más de 2 colores acento en misma pantalla</div>
+        <div class="a-rule-item">Texto de más de 2 líneas en notificaciones</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-footer">
+    <div class="a-footer-logo">TAG<span>control</span></div>
+    <div class="a-footer-copy">Propuesta A · Carbon + Volt · Space Grotesk · 2026</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ PROPUESTA B ══ -->
+<div id="propB">
+<div class="b-page">
+
+  <div class="b-header">
+    <span class="b-label">Propuesta B · Expert Team</span>
+    <div class="b-badge">Nike · Apple · Agency · 2026</div>
+  </div>
+
+  <div class="b-expert-bar">
+    <span style="color:rgba(255,255,255,0.35)">Panel :</span>
+    <span>CMO Nike</span><span>CMO Apple</span><span>Steve Jobs</span><span>Landor & Fitch</span>
+  </div>
+
+  <div class="b-logo">tag<em>control</em></div>
+  <div class="b-logo-sub">Transparencia en cada peaje</div>
+
+  <div class="b-insight">
+    <div class="b-insight-q">
+      "Los conductores chilenos no necesitan otra app de tracking.<br>
+      Necesitan a <em>alguien de su lado</em> contra un sistema que se siente opaco."
+    </div>
+    <div class="b-insight-src">— Insight estratégico · Panel de expertos · 2026</div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-section-label">Paleta de color</div>
+    <div class="b-colors">
+      <div class="b-swatch">
+        <div class="b-swatch-block" style="background:#0A6E50"></div>
+        <div class="b-swatch-name">Forest</div>
+        <div class="b-swatch-hex">#0A6E50</div>
+        <div class="b-swatch-role">Primario. Confianza, dinero. El verde que dice "tuyo".</div>
+      </div>
+      <div class="b-swatch">
+        <div class="b-swatch-block" style="background:#00C896"></div>
+        <div class="b-swatch-name" style="color:#0A6E50">Signal</div>
+        <div class="b-swatch-hex">#00C896</div>
+        <div class="b-swatch-role">Acción y detección. El pulso de la app.</div>
+      </div>
+      <div class="b-swatch">
+        <div class="b-swatch-block" style="background:#FF7A30"></div>
+        <div class="b-swatch-name" style="color:#FF7A30">Amber</div>
+        <div class="b-swatch-hex">#FF7A30</div>
+        <div class="b-swatch-role">Alertas y budget. Solo para avisos.</div>
+      </div>
+      <div class="b-swatch">
+        <div class="b-swatch-block" style="background:#F7F6F3"></div>
+        <div class="b-swatch-name">Sand</div>
+        <div class="b-swatch-hex">#F7F6F3</div>
+        <div class="b-swatch-role">Fondo. Cálido, chileno, no corporativo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-section-label">Tipografía — Inter</div>
+    <div class="b-type-box">
+      <div class="b-type-note">Geométrica · Universal · Legible en cualquier tamaño</div>
+      <div class="b-type-big">tag<em>ctrl</em></div>
+      <div class="b-type-scale">
+        <div class="b-type-row"><span class="b-sz">32px</span><span class="b-wt">Black 900</span><span style="font-size:28px;font-weight:900;letter-spacing:-0.02em">Peajes detectados</span></div>
+        <div class="b-type-row"><span class="b-sz">20px</span><span class="b-wt">Semi 600</span><span style="font-size:19px;font-weight:600">Vespucio Norte Express</span></div>
+        <div class="b-type-row"><span class="b-sz">15px</span><span class="b-wt">Regular 400</span><span style="font-size:14px">Tu viaje en tiempo real</span></div>
+        <div class="b-type-row"><span class="b-sz">11px</span><span class="b-wt">Med 500</span><span style="font-size:11px;color:#999;letter-spacing:0.04em">TARIFA PUNTA · $1.560</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-section-label">Mockups — App nativa (light mode)</div>
+    <div class="b-mockups">
+
+      <div class="b-mockup-wrap">
+        <div class="b-phone">
+          <div class="b-notch"></div>
+          <div class="b-screen">
+            <div class="lh-top">
+              <div class="lh-icon"><div class="lh-icon-t">TC</div></div>
+              <div class="lh-title">Registra tus peajes</div>
+              <div class="lh-sub">Detección automática en ruta</div>
+            </div>
+            <div class="lh-budget">
+              <div class="lh-budget-lbl">Peajes este mes</div>
+              <div class="lh-budget-amt">$43.200</div>
+              <div class="lh-budget-bar"><div class="lh-budget-fill"></div></div>
+            </div>
+            <div class="lh-btn"><div class="lh-btn-t">Iniciar viaje</div></div>
+            <div class="lh-hint">Tarifa punta activa</div>
+          </div>
+        </div>
+        <div class="b-mockup-caption">Home</div>
+      </div>
+
+      <div class="b-mockup-wrap">
+        <div class="b-phone">
+          <div class="b-notch"></div>
+          <div class="b-screen">
+            <div class="la-card">
+              <div class="la-hdr"><div class="la-lbl">Viaje en curso</div><div class="la-badge">87 km/h</div></div>
+              <div class="la-amt">$4.230</div>
+              <div class="la-sub">3 peajes · tarifa punta</div>
+            </div>
+            <div class="la-list">
+              <div class="la-item"><div><div class="la-item-name">Pórtico Vespucio</div><div class="la-item-route">Vespucio Norte · 09:14</div></div><div class="la-item-cost">$1.540</div></div>
+              <div class="la-item"><div><div class="la-item-name">Pórtico Ruta 5</div><div class="la-item-route">VNE · 09:19</div></div><div class="la-item-cost">$890</div></div>
+              <div class="la-item"><div><div class="la-item-name">Pórtico Carrascal</div><div class="la-item-route">Costanera Norte · 09:26</div></div><div class="la-item-cost">$1.800</div></div>
+            </div>
+            <div class="la-stop"><div class="la-stop-t">Detener viaje</div></div>
+          </div>
+        </div>
+        <div class="b-mockup-caption">Viaje activo</div>
+      </div>
+
+      <div class="b-mockup-wrap">
+        <div class="b-phone" style="background:#0A6E50">
+          <div class="b-notch" style="background:#083D2E"></div>
+          <div class="b-screen" style="background:transparent">
+            <div class="ld-bg">
+              <div class="ld-notif">
+                <div class="ld-notif-hdr">
+                  <div class="ld-notif-icon"><div class="ld-notif-icon-t">TC</div></div>
+                  <div class="ld-notif-app">tagcontrol</div>
+                  <div class="ld-notif-time">ahora</div>
+                </div>
+                <div class="ld-notif-title">Peaje detectado</div>
+                <div class="ld-notif-body">Pórtico Carrascal · $1.800</div>
+              </div>
+              <div class="ld-check"><div class="ld-check-t">✓</div></div>
+              <div class="ld-det-lbl">Peaje cruzado</div>
+              <div class="ld-toll">Pórtico Carrascal — Costanera Norte</div>
+              <div class="ld-amt">$1.800</div>
+              <div class="ld-trip">Total viaje: $4.230 · 3 peajes</div>
+            </div>
+          </div>
+        </div>
+        <div class="b-mockup-caption">Detección</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-section-label">Ícono de app</div>
+    <div class="b-icons">
+      <div class="b-icon-card">
+        <div style="width:96px;height:96px;background:#0A6E50;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(10,110,80,0.28)">
+          <div style="font-size:36px;font-weight:900;color:#fff;font-family:Inter,sans-serif">T<span style="color:#00C896">C</span></div>
+        </div>
+        <div class="b-icon-lbl">96×96</div>
+      </div>
+      <div class="b-icon-card">
+        <div style="width:64px;height:64px;background:#0A6E50;border-radius:16px;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:24px;font-weight:900;color:#fff;font-family:Inter,sans-serif">T<span style="color:#00C896">C</span></div>
+        </div>
+        <div class="b-icon-lbl">64×64</div>
+      </div>
+      <div class="b-icon-card">
+        <div style="width:48px;height:48px;background:#0A6E50;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:18px;font-weight:900;color:#fff;font-family:Inter,sans-serif">T<span style="color:#00C896">C</span></div>
+        </div>
+        <div class="b-icon-lbl">48×48</div>
+      </div>
+      <div style="margin-left:20px">
+        <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Variante clara</div>
+        <div class="b-icon-card">
+          <div style="width:64px;height:64px;background:#fff;border:1.5px solid #E5E3DF;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.07)">
+            <div style="font-size:24px;font-weight:900;color:#0A6E50;font-family:Inter,sans-serif">T<span style="color:#00C896">C</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-section-label">3 principios de diseño</div>
+    <div class="b-principles">
+      <div class="b-principle">
+        <div class="b-principle-num">01 — CLARIDAD</div>
+        <div class="b-principle-title">El dato es el diseño</div>
+        <div class="b-principle-desc">Cada pantalla tiene un solo número que importa. El conductor lo lee en 1 segundo sin bajar la vista.</div>
+      </div>
+      <div class="b-principle">
+        <div class="b-principle-num">02 — CONFIANZA</div>
+        <div class="b-principle-title">Calma que da certeza</div>
+        <div class="b-principle-desc">Sin animaciones ansiosas. El verde Forest comunica: "Lo tenemos. Todo está registrado."</div>
+      </div>
+      <div class="b-principle">
+        <div class="b-principle-num">03 — MOMENTO</div>
+        <div class="b-principle-title">El peaje es el pulso</div>
+        <div class="b-principle-desc">La detección merece su propia pantalla, su propio color, su propio sonido. No es un evento secundario.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-section">
+    <div class="b-tagline-hero">
+      <div class="b-tagline-main">Transparencia en <em>cada peaje</em>.</div>
+      <div class="b-tagline-sub">No es tracking. Es el derecho a saber exactamente lo que pagas.</div>
+    </div>
+    <div class="b-grid2">
+      <div class="b-card">
+        <div class="b-card-lbl">Voz de marca</div>
+        <div class="b-card-txt">Calma. Precisa. De tu lado.</div>
+        <div class="b-card-muted">Como el amigo contador que te explica tu boleta sin pena.</div>
+      </div>
+      <div class="b-card">
+        <div class="b-card-lbl">Copy ejemplo</div>
+        <div class="b-card-txt">"Peaje registrado. $1.800."<br>"Este mes: $43.200 en peajes."</div>
+        <div class="b-card-muted">Sin emoji. Sin caps. Como Stripe, como Apple Pay.</div>
+      </div>
+      <div class="b-card">
+        <div class="b-card-lbl">Posicionamiento</div>
+        <div class="b-card-txt">El aliado del conductor contra un sistema que no da la cara.</div>
+        <div class="b-card-muted">Nosotros contamos. La concesionaria cobra.</div>
+      </div>
+      <div class="b-card">
+        <div class="b-card-lbl">Lo que Steve diría</div>
+        <div class="b-card-txt">"¿Por qué el conductor no sabe cuánto gasta en peajes? Porque nadie le dijo que podía saberlo."</div>
+        <div class="b-card-muted">El producto más simple hace obvia una verdad que siempre estuvo ahí.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-footer">
+    <div class="b-footer-logo">tag<em>control</em></div>
+    <div class="b-footer-note">Propuesta B · Expert Team · Inter · Forest + Signal · 2026</div>
+  </div>
+
+</div>
+</div>
+
+<script>
+  function show(which) {
+    document.getElementById('propA').className = which === 'A' ? 'visible' : '';
+    document.getElementById('propB').className = which === 'B' ? 'visible' : '';
+    document.getElementById('btnA').className = 'pill-btn' + (which === 'A' ? ' on' : '');
+    document.getElementById('btnB').className = 'pill-btn' + (which === 'B' ? ' on' : '');
+  }
+</script>
+</body>
+</html>
