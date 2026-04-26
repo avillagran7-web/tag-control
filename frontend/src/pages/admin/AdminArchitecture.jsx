@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { supabase } from '../../lib/supabase';
+const AdminTeam = lazy(() => import('./AdminTeam'));
 
 // ── Primitives ────────────────────────────────────────────────────────────────
 

@@ -37,6 +37,9 @@ No hay fechas. Construimos en bloques de valor. Un día de trabajo intenso vale 
 
 ### Bloque 1 — Base sólida
 - [x] README top-level en GitHub
+- [x] Admin tab "Equipo" — diagramas visuales: User Journey, Tech Stack, Fases
+- [x] Slack #tagcontrol-ops — canal de ops para outputs de agents
+- [ ] GPS adaptivo — baja precisión en ciudad, alta solo cerca de peajes (fix batería ~70%)
 - [x] ROADMAP.md vivo
 - [x] Admin status board en vivo (métricas live, estado de agents, build status)
 - [ ] MCP → Supabase (contexto live de DB en cada sesión de desarrollo)

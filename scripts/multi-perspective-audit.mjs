@@ -16,6 +16,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import { sendMessage, agentBlock, isConfigured as slackReady } from './lib/slack.mjs';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -156,6 +157,23 @@ async function main() {
       lines.push('');
     }
     console.log(lines.join('\n'));
+    return;
+  }
+
+  if (format === 'slack') {
+    if (!slackReady()) {
+      console.error('Slack no configurado. Agrega SLACK_WEBHOOK_URL al env.');
+      console.error('Ver instrucciones en scripts/lib/slack.mjs');
+      process.exit(1);
+    }
+    const summary = results.map(r =>
+      `${r.emoji} *${r.name}*\n${r.findings.split('\n').slice(0, 4).join('\n')}`
+    ).join('\n\n---\n\n');
+    await sendMessage(agentBlock(
+      `Multi-Perspective Audit · ${new Date().toLocaleDateString('es-CL')}`,
+      summary
+    ));
+    console.log('✓ Enviado a Slack #tagcontrol-ops');
     return;
   }
 

@@ -9,6 +9,7 @@ import AdminTrips from './admin/AdminTrips';
 import AdminGrowth from './admin/AdminGrowth';
 import AdminData from './admin/AdminData';
 import AdminArchitecture from './admin/AdminArchitecture';
+import AdminTeam from './admin/AdminTeam';
 
 const ADMIN_PIN = '2026';
 
@@ -354,6 +355,7 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
     { id: 'trips',  label: 'Viajes' },
     { id: 'data',   label: 'DB', badge: qaIssues },
     { id: 'arch',   label: 'Arch' },
+    { id: 'team',   label: 'Equipo' },
   ];
 
   return (
@@ -460,6 +462,8 @@ function AdminDashboard({ tab, setTab, mapRef, mapInstanceRef, markersRef }) {
         )}
 
         {tab === 'arch' && <AdminArchitecture qaResult={qaResult} />}
+
+        {tab === 'team' && <AdminTeam />}
 
         <p className="text-center text-[11px] text-gray-600 pt-6 pb-4">
           powered by <a href="https://weareblooming.co" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Blooming</a>
