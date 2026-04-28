@@ -55,8 +55,12 @@ export default function SettingsScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            await deleteAccount(user.name);
-            logout();
+            try {
+              await deleteAccount(user.name);
+              logout();
+            } catch {
+              Alert.alert('Error', 'No se pudo eliminar la cuenta. Intenta de nuevo.');
+            }
           },
         },
       ]

@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { getStoredUser, login, updateEmail, logout } from '../src/lib/auth';
+import { getStoredUser, login, logout } from '../src/lib/auth';
 import AuthScreen from '../src/components/AuthScreen';
 
 export const UserContext = createContext(null);
