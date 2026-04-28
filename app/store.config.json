@@ -31,7 +31,7 @@
             "store/apple/screenshot/es-MX/APP_IPHONE_65/01_login.png",
             "store/apple/screenshot/es-MX/APP_IPHONE_65/02_home.png",
             "store/apple/screenshot/es-MX/APP_IPHONE_65/03_history.png",
-            "store/apple/screenshot/es-MX/APP_IPHONE_65/04_planificar.png"
+            "store/apple/screenshot/es-MX/APP_IPHONE_65/04_settings.png"
           ]
         }
       }
@@ -76,7 +76,7 @@
       "demoUsername": "revisor",
       "demoPassword": "2026",
       "demoRequired": true,
-      "notes": "DEMO ACCOUNT:\n- Name: revisor (all lowercase — the name field is case-sensitive)\n- PIN: 2026\n- Email: leave blank\n\nAPP PURPOSE:\nTAGcontrol automatically tracks toll charges on Chilean highways (autopistas) using GPS. The app detects when the user crosses a toll, logs the cost, and maintains a trip history. It is designed for drivers in Santiago, Chile.\n\nTESTING:\nThe test account has 5 pre-loaded trips showing real toll data from Chilean highways (Ruta 68, Costanera Norte, Autopista Central). You can view these in the \"Historial\" tab immediately after login.\n\nTo test the core flow:\n1. Log in with the demo account above\n2. Tap \"Iniciar viaje\" (Start trip)\n3. Grant location permission when prompted\n4. The app will begin GPS tracking\n5. Tap \"Detener viaje\" (Stop trip) to end and save\n6. The trip will appear in \"Historial\"\n\nNOTE: Live toll detection requires driving near actual Chilean toll booths. The pre-loaded demo trips demonstrate the full history and statistics functionality.\n\nBACKGROUND LOCATION:\nBackground location is essential — drivers need toll detection even when their screen is off. This is the core value of the app vs. manual tracking.\n\nLANGUAGE: The app is in Spanish (es-CL), as it serves Chilean drivers exclusively."
+      "notes": "DEMO ACCOUNT:\n- Name: revisor (iOS may auto-capitalize to \"Revisor\" — both work)\n- PIN: 2026\n- Email: leave blank (optional field, skip it)\n\nAPP PURPOSE:\nTAGcontrol automatically tracks toll charges on Chilean highways (autopistas) using GPS. The app detects when the user crosses a toll, logs the cost, and maintains a trip history. It is designed for drivers in Santiago, Chile.\n\nTESTING:\nThe test account has 5 pre-loaded trips showing real toll data from Chilean highways (Ruta 68, Costanera Norte, Autopista Central). You can view these in the \"Historial\" tab immediately after login.\n\nTo test the core flow:\n1. Log in with the demo account above\n2. Tap \"Iniciar viaje\" (Start trip)\n3. Grant location permission when prompted\n4. The app will begin GPS tracking\n5. Tap \"Detener viaje\" (Stop trip) to end and save\n6. The trip will appear in \"Historial\"\n\nNOTE: Live toll detection requires driving near actual Chilean toll booths. The pre-loaded demo trips demonstrate the full history and statistics functionality.\n\nBACKGROUND LOCATION:\nBackground location is essential — drivers need toll detection even when their screen is off. This is the core value of the app vs. manual tracking.\n\nLANGUAGE: The app is in Spanish (es-CL), as it serves Chilean drivers exclusively."
     }
   }
 }
