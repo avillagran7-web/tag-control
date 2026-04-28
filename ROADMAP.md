@@ -12,7 +12,7 @@ No hay fechas. Construimos en bloques de valor. Un día de trabajo intenso vale 
 - App nativa (React Native + Expo SDK 54) — background GPS real, notificaciones push
 - Admin dashboard — tabs Live, DB, Arquitectura con QA findings y at-risk trips
 - Agent layer — QA, GPS Calibration, Analytics, Code Review, Release
-- Apple App Store — Build 5 submitted (PrivacyInfo, privacy policy, location fallback)
+- Apple App Store — Build 10 submitted for review (28 Abr 2026) — fixes: icon PNG, login ilike(), privacy URL, in-app icon, deleteAccount error handling
 - Auth PIN-based — SHA-256 hash, SecureStore nativa, compatible Hermes/Expo SDK 54
 - Inferencia de peajes — túneles, gaps GPS, ROUTE_SEQUENCES
 - Build & deploy — EAS (iOS/Android) + Vercel auto-deploy
@@ -21,7 +21,7 @@ No hay fechas. Construimos en bloques de valor. Un día de trabajo intenso vale 
 
 ## 🔨 En progreso
 
-- Apple App Store review — Build 5 bajo revisión (credenciales: revisor / 2026)
+- Apple App Store review — Build 10 submitted (28 Abr 2026, EAS: 63d9ef74). Esperando revisión de Apple. Reply en Resolution Center si piden aclaración.
 - 100 usuarios activos con detección 100% precisa
 
 ---

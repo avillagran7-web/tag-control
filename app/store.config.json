@@ -1,0 +1,82 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0",
+    "copyright": "2026 Andres Villagran",
+    "release": {
+      "automaticRelease": true
+    },
+    "info": {
+      "es-MX": {
+        "description": "TAGcontrol detecta automáticamente los peajes que cruzas mientras conduces por las autopistas de Chile, sin que tengas que hacer nada.\n\n¿Cómo funciona?\n  Activa un viaje, pon el teléfono en el soporte y maneja. La app detecta cada peaje usando GPS en tiempo real y        \n  registra el costo según la tarifa vigente (hora punta, saturación o normal).                                  \n                                                                                                                        \n  Características principales:\n  • Detección automática de 80+ peajes en Santiago y regiones                                                           \n  • Tarifas actualizadas por horario (punta, saturación, normal)\n  • Historial completo de viajes y gastos                                                                               \n  • Presupuesto mensual con alerta de límite\n  • Funciona con pantalla apagada (GPS en segundo plano)                                                                \n  • Sin publicidad                  \n\nCompatible con todas las autopistas urbanas de Santiago: Costanera Norte, Autopista Central, Vespucio Norte, Vespucio Sur, Vespucio Oriente, Acceso Sur y más.      ",
+        "keywords": [
+          "peaje",
+          "tag",
+          "autopista",
+          "chile",
+          "santiago",
+          "costanera",
+          "vespucio",
+          "conducir",
+          "ruta",
+          "gps"
+        ],
+        "promoText": "Detecta y registra tus peajes automáticamente mientras conduces por las autopistas de Chile.",
+        "supportUrl": "https://tag-control.vercel.app",
+        "title": "TAGcontrol",
+        "subtitle": "Registro de peajes de Chile",
+        "privacyPolicyUrl": "https://tag-control.vercel.app/privacy",
+        "screenshots": {
+          "APP_IPHONE_65": [
+            "store/apple/screenshot/es-MX/APP_IPHONE_65/01_login.png",
+            "store/apple/screenshot/es-MX/APP_IPHONE_65/02_home.png",
+            "store/apple/screenshot/es-MX/APP_IPHONE_65/03_history.png",
+            "store/apple/screenshot/es-MX/APP_IPHONE_65/04_planificar.png"
+          ]
+        }
+      }
+    },
+    "categories": [
+      "NAVIGATION"
+    ],
+    "advisory": {
+      "ageRatingOverride": "NONE",
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "kidsAgeBand": null,
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false,
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "advertising": false,
+      "ageAssurance": false,
+      "ageRatingOverrideV2": "NONE",
+      "developerAgeRatingInfoUrl": null,
+      "gunsOrOtherWeapons": "NONE",
+      "healthOrWellnessTopics": false,
+      "messagingAndChat": false,
+      "parentalControls": false,
+      "userGeneratedContent": false
+    },
+    "review": {
+      "firstName": "Andres",
+      "lastName": "Villagran",
+      "email": "a.villagran7@gmail.com",
+      "phone": "4157981209",
+      "demoUsername": "revisor",
+      "demoPassword": "2026",
+      "demoRequired": true,
+      "notes": "DEMO ACCOUNT:\n- Name: revisor (all lowercase — the name field is case-sensitive)\n- PIN: 2026\n- Email: leave blank\n\nAPP PURPOSE:\nTAGcontrol automatically tracks toll charges on Chilean highways (autopistas) using GPS. The app detects when the user crosses a toll, logs the cost, and maintains a trip history. It is designed for drivers in Santiago, Chile.\n\nTESTING:\nThe test account has 5 pre-loaded trips showing real toll data from Chilean highways (Ruta 68, Costanera Norte, Autopista Central). You can view these in the \"Historial\" tab immediately after login.\n\nTo test the core flow:\n1. Log in with the demo account above\n2. Tap \"Iniciar viaje\" (Start trip)\n3. Grant location permission when prompted\n4. The app will begin GPS tracking\n5. Tap \"Detener viaje\" (Stop trip) to end and save\n6. The trip will appear in \"Historial\"\n\nNOTE: Live toll detection requires driving near actual Chilean toll booths. The pre-loaded demo trips demonstrate the full history and statistics functionality.\n\nBACKGROUND LOCATION:\nBackground location is essential — drivers need toll detection even when their screen is off. This is the core value of the app vs. manual tracking.\n\nLANGUAGE: The app is in Spanish (es-CL), as it serves Chilean drivers exclusively."
+    }
+  }
+}
