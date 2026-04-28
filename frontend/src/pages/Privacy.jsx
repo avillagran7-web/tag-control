@@ -34,9 +34,11 @@ export default function Privacy() {
       <section className="mb-6">
         <h2 className="text-base font-semibold text-text mb-2">4. Almacenamiento y seguridad</h2>
         <p className="text-sm text-text-secondary leading-relaxed">
-          Los datos se almacenan en Supabase (infraestructura en la nube). Las posiciones GPS
-          se eliminan automáticamente después de 24 horas. Los viajes e historial se conservan
-          mientras tengas cuenta activa. No vendemos ni compartimos tus datos con terceros.
+          Los datos se almacenan en Supabase (supabase.com), nuestro procesador de datos en la
+          nube, que cumple con los estándares SOC 2 Type 2 y GDPR y proporciona el mismo nivel
+          de protección descrito en esta política. Las posiciones GPS se eliminan automáticamente
+          después de 24 horas. Los viajes e historial se conservan mientras tengas cuenta activa.
+          No vendemos ni compartimos tus datos con terceros.
         </p>
       </section>
 

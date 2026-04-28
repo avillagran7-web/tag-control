@@ -20,7 +20,7 @@
         "NSLocationAlwaysAndWhenInUseUsageDescription": "TAGcontrol usa tu ubicación para detectar peajes automáticamente mientras conduces. Solo se activa durante un viaje y se detiene cuando terminas.",
         "NSLocationWhenInUseUsageDescription": "TAGcontrol usa tu ubicación para detectar peajes mientras conduces. Solo se activa durante un viaje activo.",
         "NSLocationAlwaysUsageDescription": "TAGcontrol usa tu ubicación en segundo plano para detectar peajes aunque cierres la app durante el viaje. Solo se activa cuando inicias un viaje.",
-        "UIBackgroundModes": ["location", "fetch"],
+        "UIBackgroundModes": ["location"],
         "ITSAppUsesNonExemptEncryption": false
       },
       "privacyManifests": {
