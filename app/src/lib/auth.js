@@ -32,10 +32,19 @@ export async function getStoredUser() {
  * UI can ask for it.
  */
 export async function login(name, pin, email) {
-  const hashed = await hashPin(name, pin);
+  // Fetch canonical name first so the hash always uses the name as stored in DB.
+  // iOS auto-capitalizes the name field ("Revisor" vs "revisor"), which would
+  // produce a different SHA-256 hash and cause a false "PIN incorrecto" error.
+  const { data: nameRow } = await supabase
+    .from('users')
+    .select('name')
+    .ilike('name', name)
+    .single();
+  const canonicalName = nameRow?.name ?? name;
+
+  const hashed = await hashPin(canonicalName, pin);
 
   // Try hashed PIN first (new standard).
-  // ilike = case-insensitive match so "Revisor" finds "revisor" (iOS auto-caps the name field).
   let { data: existing } = await supabase
     .from('users')
     .select('*')
@@ -54,7 +63,7 @@ export async function login(name, pin, email) {
 
     if (legacy) {
       // Upgrade plaintext PIN to hashed in the background
-      await supabase.from('users').update({ pin: hashed }).eq('name', name);
+      await supabase.from('users').update({ pin: hashed }).eq('name', canonicalName);
       legacy.pin = hashed;
       existing = legacy;
     }
@@ -62,7 +71,7 @@ export async function login(name, pin, email) {
 
   if (existing) {
     if (email && !existing.email) {
-      await supabase.from('users').update({ email }).eq('name', name);
+      await supabase.from('users').update({ email }).eq('name', canonicalName);
       existing.email = email;
     }
     await SecureStore.setItemAsync(USER_KEY, JSON.stringify(existing));
@@ -72,14 +81,8 @@ export async function login(name, pin, email) {
     return { user: existing };
   }
 
-  // Check if name exists with any PIN (wrong PIN case)
-  const { data: byName } = await supabase
-    .from('users')
-    .select('name')
-    .ilike('name', name)
-    .single();
-
-  if (byName) return { error: 'PIN incorrecto' };
+  // nameRow already tells us if this name exists (wrong PIN vs new user)
+  if (nameRow) return { error: 'PIN incorrecto' };
 
   // Register new user — email required
   if (!email) return { error: 'Ingresa tu email para registrarte' };
