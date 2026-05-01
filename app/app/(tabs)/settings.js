@@ -67,6 +67,37 @@ export default function SettingsScreen() {
     );
   };
 
+  if (user.isDemo) {
+    return (
+      <ScrollView style={s.container} contentContainerStyle={s.content}>
+        <View style={s.profileCard}>
+          <View style={s.avatar}>
+            <Text style={s.avatarText}>D</Text>
+          </View>
+          <View>
+            <Text style={s.profileName}>Modo Demo</Text>
+            <Text style={s.profileEmail}>Explorando sin cuenta</Text>
+          </View>
+        </View>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>SOBRE TAGCONTROL</Text>
+          <View style={s.card}>
+            <Text style={{ fontSize: 14, color: '#555', lineHeight: 20 }}>
+              TAGcontrol detecta automáticamente cada peaje que cruzas en autopistas de Chile. Crea una cuenta para guardar tus viajes reales y ver tu historial de gastos.
+            </Text>
+          </View>
+        </View>
+        <TouchableOpacity style={s.logoutButton} onPress={logout}>
+          <Text style={s.logoutText}>Salir del modo demo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => Linking.openURL('https://tag-control.vercel.app/privacy')}>
+          <Text style={s.privacyLink}>Política de privacidad</Text>
+        </TouchableOpacity>
+        <Text style={s.version}>TAGcontrol · Blooming</Text>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView style={s.container} contentContainerStyle={s.content}>
       {/* Profile */}

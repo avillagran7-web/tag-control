@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Platform, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Platform, Image, Linking } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useUser } from '../_layout';
 import { formatCLP, formatTime } from '../../src/lib/format';
@@ -201,6 +201,30 @@ export default function HomeScreen() {
 
   const tarifaLabel = getTarifaLabel();
 
+  // ── Demo mode ──
+  if (user.isDemo && !isActive) {
+    return (
+      <ScrollView style={s.container} contentContainerStyle={s.content}>
+        <Image source={require('../../assets/icon.png')} style={s.heroIcon} />
+        <Text style={s.heroTitle}>TAGcontrol</Text>
+        <Text style={s.heroSubtitle}>Detecta automaticamente cada peaje que cruzas</Text>
+        <View style={s.demoBanner}>
+          <Text style={s.demoBannerTitle}>Modo demostración</Text>
+          <Text style={s.demoBannerText}>
+            Estás explorando TAGcontrol con datos de ejemplo. Crea una cuenta para registrar tus viajes reales.
+          </Text>
+          <TouchableOpacity onPress={() => Linking.openURL('https://tag-control.vercel.app/privacy')}>
+            <Text style={s.demoBannerLink}>Política de privacidad</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={[s.startButton, { opacity: 0.4 }]} disabled>
+          <Text style={s.startButtonText}>Iniciar viaje</Text>
+        </TouchableOpacity>
+        <Text style={s.tarifaHint}>Disponible al crear una cuenta</Text>
+      </ScrollView>
+    );
+  }
+
   // ── Before trip ──
   if (!isActive && crossings.length === 0) {
     return (
@@ -328,6 +352,10 @@ const s = StyleSheet.create({
   startButton: { backgroundColor: PRIMARY, borderRadius: 16, paddingVertical: 16, alignItems: 'center', marginBottom: 12 },
   startButtonText: { color: '#fff', fontWeight: '600', fontSize: 17 },
   tarifaHint: { fontSize: 11, color: '#aaa', textAlign: 'center' },
+  demoBanner: { backgroundColor: '#f0faf6', borderWidth: 1, borderColor: '#a7f3d0', borderRadius: 16, padding: 16, marginBottom: 20, width: '100%' },
+  demoBannerTitle: { fontSize: 14, fontWeight: '700', color: '#065f46', marginBottom: 4 },
+  demoBannerText: { fontSize: 13, color: '#374151', lineHeight: 18 },
+  demoBannerLink: { fontSize: 11, color: '#0F6E56', marginTop: 10, textDecorationLine: 'underline' },
 
   totalCard: { backgroundColor: PRIMARY, borderRadius: 20, padding: 20, marginBottom: 12 },
   totalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },

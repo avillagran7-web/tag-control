@@ -3,12 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 
 const PRIMARY = '#0F6E56';
 
-export default function AuthScreen({ onLogin }) {
+export default function AuthScreen({ onLogin, onDemoLogin }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [needsEmail, setNeedsEmail] = useState(false);
   const [pendingUser, setPendingUser] = useState(null);
 
@@ -20,7 +21,7 @@ export default function AuthScreen({ onLogin }) {
     setError('');
 
     const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('timeout')), 12000)
+      setTimeout(() => reject(new Error('timeout')), 25000)
     );
 
     try {
@@ -38,10 +39,16 @@ export default function AuthScreen({ onLogin }) {
         }
       }
     } catch {
-      setError('Sin conexión. Verifica tu internet e intenta de nuevo.');
+      setError('Sin conexión. Puedes explorar la app en modo demo.');
     }
 
     setLoading(false);
+  };
+
+  const handleDemo = async () => {
+    setDemoLoading(true);
+    await onDemoLogin();
+    setDemoLoading(false);
   };
 
   return (
@@ -117,6 +124,22 @@ export default function AuthScreen({ onLogin }) {
         <TouchableOpacity onPress={() => Linking.openURL('https://tag-control.vercel.app/privacy')}>
           <Text style={s.privacyLink}>Política de privacidad</Text>
         </TouchableOpacity>
+
+        <View style={s.divider}>
+          <View style={s.dividerLine} />
+          <Text style={s.dividerText}>o</Text>
+          <View style={s.dividerLine} />
+        </View>
+
+        <TouchableOpacity
+          style={s.demoButton}
+          onPress={handleDemo}
+          disabled={demoLoading}
+        >
+          <Text style={s.demoButtonText}>
+            {demoLoading ? 'Cargando...' : 'Explorar sin cuenta'}
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -136,4 +159,9 @@ const s = StyleSheet.create({
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
   hint: { fontSize: 12, color: '#aaa', marginTop: 12, textAlign: 'center' },
   privacyLink: { fontSize: 11, color: '#bbb', marginTop: 16, textAlign: 'center', textDecorationLine: 'underline' },
+  divider: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 4, width: '100%' },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#eee' },
+  dividerText: { fontSize: 12, color: '#ccc', marginHorizontal: 10 },
+  demoButton: { width: '100%', paddingVertical: 14, alignItems: 'center', borderRadius: 14, borderWidth: 1, borderColor: '#eee', marginTop: 4 },
+  demoButtonText: { fontSize: 14, color: '#888', fontWeight: '500' },
 });

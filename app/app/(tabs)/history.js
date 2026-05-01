@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
 import { useUser } from '../_layout';
 import { supabase } from '../../src/lib/supabase';
+import { DEMO_TRIPS } from '../../src/lib/demoData';
 import { formatCLP, formatDate, formatTime } from '../../src/lib/format';
 
 const PRIMARY = '#0F6E56';
@@ -26,6 +27,13 @@ export default function HistoryScreen() {
   const [expandedTrip, setExpandedTrip] = useState(null);
 
   const load = useCallback(async (replace = true) => {
+    if (user.isDemo) {
+      setAllTrips(DEMO_TRIPS);
+      setHasMore(false);
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
     const offset = replace ? 0 : allTrips.length;
     const { data } = await supabase
       .from('trips')
@@ -39,7 +47,7 @@ export default function HistoryScreen() {
     setHasMore((data || []).length === PAGE_SIZE);
     setLoading(false);
     setRefreshing(false);
-  }, [user.name, allTrips.length]);
+  }, [user.name, user.isDemo, allTrips.length]);
 
   useEffect(() => { load(true); }, [user.name]);
 

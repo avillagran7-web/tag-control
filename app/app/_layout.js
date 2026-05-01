@@ -2,6 +2,7 @@ import { useEffect, useState, createContext, useContext } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getStoredUser, login, logout } from '../src/lib/auth';
+import { demoLogin } from '../src/lib/demoData';
 import AuthScreen from '../src/components/AuthScreen';
 
 export const UserContext = createContext(null);
@@ -24,13 +25,19 @@ export default function RootLayout() {
     return (
       <>
         <StatusBar style="dark" />
-        <AuthScreen onLogin={async (name, pin, email) => {
-          const result = await login(name, pin, email);
-          if (result.error) return false;
-          if (result.needsEmail) return 'needsEmail';
-          if (result.user) { setUser(result.user); return true; }
-          return false;
-        }} />
+        <AuthScreen
+          onLogin={async (name, pin, email) => {
+            const result = await login(name, pin, email);
+            if (result.error) return false;
+            if (result.needsEmail) return 'needsEmail';
+            if (result.user) { setUser(result.user); return true; }
+            return false;
+          }}
+          onDemoLogin={async () => {
+            const demoUser = await demoLogin();
+            setUser(demoUser);
+          }}
+        />
       </>
     );
   }
